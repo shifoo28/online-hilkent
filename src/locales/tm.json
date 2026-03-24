@@ -1,0 +1,169 @@
+{
+  "Auth": {
+    "signIn": {
+      "page": "Hasabym",
+      "form": {
+        "title": "Hasabyňyza Giriň",
+        "description": "Hoş geldiňiz! Maglumatlaryňyzy giriziň.",
+        "phone": {
+          "label": "Telefon",
+          "placeholder": "Telefon belgini giriziň"
+        },
+        "password": {
+          "label": "Açar sözi",
+          "placeholder": "Açar sözi giriziň"
+        },
+        "button": "Giriň",
+        "google": "Google bilen giriň",
+        "github": "GitHub bilen giriň",
+        "forgotPassword": "Paroly unutdynyz?",
+        "footer": {
+          "text": "Hasabyňyz açylmadykmy?",
+          "link": "Hasap açyň"
+        }
+      }
+    },
+    "signUp": {
+      "page": "Hasap aç",
+      "form": {
+        "title": "Hasap açmak",
+        "description": "Biziň bilen goşulyň! Hasap açmak üçin maglumatlaryňyzy dolduryň.",
+        "name": {
+          "label": "Doly ady",
+          "placeholder": "Doly adyňyzy giriziň"
+        },
+        "phone": {
+          "label": "Telefon",
+          "placeholder": "Telefon belgini giriziň"
+        },
+        "password": {
+          "label": "Açar sözi",
+          "placeholder": "Açar sözi dörediň"
+        },
+        "confirmPassword": {
+          "label": "Açar sözi tassyklaň",
+          "placeholder": "Açar sözini gaýtadan giriziň"
+        },
+        "button": "Hasap aç",
+        "google": "Google bilen hasap aç",
+        "github": "GitHub bilen hasap aç",
+        "footer": {
+          "text": "Siz öň ulgama birikdiňizmi?",
+          "link": "Giriň"
+        }
+      }
+    }
+  },
+  "Home": {
+    "title": "Hilkende hoş geldiňiz",
+    "description": "Siziň ynanýan bazaryňyz",
+    "bestSeller": {
+      "title": "Iň gowy satylýanlar",
+      "description": "Iň köp satyn alnan harytlar",
+      "viewAll": "Ählisini Gör"
+    },
+    "sectionCategory": {
+      "title": "Kategoriýalar",
+      "description": "Kategoriýa boýunça saýlaň"
+    },
+    "newArrival": {
+      "title": "Şu hepdäniň",
+      "description": "Täze Harytlary",
+      "button": "Ählisi"
+    }
+  },
+  "Common": {
+    "breadcrumb": {
+      "link": "Baş sahypa"
+    },
+    "newsletter": {
+      "title": "Soňky tendensiýalary we teklipleri geçirmeň",
+      "description": "Soňky teklipler we arzanladyş kodlary barada habarlary almak üçin ýazylyň",
+      "form": {
+        "placeholder": "Email salgy girizmeli",
+        "button": "Ugratmak"
+      }
+    },
+    "quickViewModal": {
+      "saleOff": "Arzanladyş",
+      "stock": "Satuwda",
+      "price": "Bahasy",
+      "quantity": "Mukdar",
+      "addToCart": "Sebede goş",
+      "addToWishlist": "Haladym sanawyna goş",
+      "rating": "Reýting",
+      "reviews": "Teswirler"
+    },
+    "cartSidebarModal": {
+      "viewCart": "Sebedi Gör",
+      "title": "Siziň Sebediňiz",
+      "empty": "Siziň sebediňiz häli boş",
+      "continueShopping": "Satyn almaga dowam et",
+      "subtotal": "Jemi",
+      "checkout": "Hasaplaşmak",
+      "price": "Bahasy"
+    },
+    "productItem": {
+      "button": "Sebede goş"
+    }
+  },
+  "Header": {
+    "category": {
+      "all": "Kategoriýalar",
+      "desktop": "Desktop",
+      "laptop": "Noutbuk",
+      "monitor": "Monitor",
+      "phone": "Telefon",
+      "watch": "Sagat",
+      "mouse": "Syçan",
+      "tablet": "Planşet"
+    },
+    "search": "Gözleýän harydym...",
+    "support": "24/7 KÖMEK",
+    "account": {
+      "title": "HASABYM",
+      "username": "Giriş"
+    },
+    "cart": {
+      "title": "sebet"
+    },
+    "menu": {
+      "popular": "Trendda",
+      "shop": "Dükan",
+      "contact": "Habarlaşmak",
+      "recentlyViewed": "Soňky görenlerim",
+      "wishlist": "Halanlarym"
+    }
+  },
+  "Contact": {
+    "info": {
+      "title": "Gerekli Maglumatlar",
+      "name": "Doly Ady: Huşnudbek RAHIMOw",
+      "phone": "Telefon: +993 62 863012",
+      "address": "Salgy: Daşoguz şäher, A.Nyýazow köçe, 61-nji jaý"
+    },
+    "message": {
+      "first": {
+        "name": "Ady",
+        "placeholder": "Adyňyzy ýazyň"
+      },
+      "last": {
+        "name": "Familiýa",
+        "placeholder": "Familiýaňyzy ýazyň"
+      },
+      "subject": {
+        "name": "Tema",
+        "placeholder": "Hatyň gysga ady"
+      },
+      "phone": {
+        "name": "Telefon",
+        "placeholder": "Telefon belgiňizi giriziň"
+      },
+      "text": {
+        "name": "Hat",
+        "placeholder": "Şu ýere hatyňyzy ýazyň"
+      },
+      "button": "Ugratmak"
+    }
+  }
+}

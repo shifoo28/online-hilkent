@@ -1,0 +1,172 @@
+{
+  "Auth": {
+    "signIn": {
+      "page": "Sign In",
+      "form": {
+        "title": "Sign In to Your Account",
+        "description": "Welcome back! Please enter your details.",
+        "phone": {
+          "label": "Phone",
+          "placeholder": "Enter your phone"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "button": "Sign In",
+        "google": "Sign in with Google",
+        "github": "Sign in with GitHub",
+        "forgotPassword": "Forgot your password?",
+        "footer": {
+          "text": "Don't have an account?",
+          "link": "Sign Up"
+        }
+      }
+    },
+    "signUp": {
+      "page": "Sign Up",
+      "form": {
+        "title": "Create Your Account",
+        "description": "Join us today! Please fill in the details to create your account.",
+        "name": {
+          "label": "Full Name",
+          "placeholder": "Enter your full name"
+        },
+        "phone": {
+          "label": "Phone",
+          "placeholder": "Enter your phone number"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Create a password"
+        },
+        "confirmPassword": {
+          "label": "Confirm Password",
+          "placeholder": "Re-enter your password"
+        },
+        "button": "Sign Up",
+        "google": "Sign up with Google",
+        "github": "Sign up with GitHub",
+        "footer": {
+          "text": "Already have an account?",
+          "link": "Sign In Now"
+        }
+      }
+    }
+  },
+  "Home": {
+    "title": "Welcome to Hilkent",
+    "description": "Your trusted marketplace",
+    "bestSeller": {
+      "title": "Best Sellers",
+      "description": "Products that are purchased most frequently",
+      "viewAll": "View All"
+    },
+    "sectionCategory": {
+      "title": "Categories",
+      "description": "Browse by Category"
+    },
+    "newArrival": {
+      "title": "This week's",
+      "description": "New Arrivals",
+      "button": "View All"
+    }
+  },
+  "Common": {
+    "breadcrumb": {
+      "link": "Home"
+    },
+    "newsletter": {
+      "title": "Don&apos;t Miss Out Latest Trends & Offers",
+      "description": "Register to receive news about the latest offers & discount codes",
+      "form": {
+        "placeholder": "Enter your email",
+        "button": "Subscribe"
+      }
+    },
+    "quickViewModal": {
+      "saleOff": "Sale Off",
+      "stock": "In Stock",
+      "price": "Price",
+      "quantity": "Quantity",
+      "addToCart": "Add to cart",
+      "addToWishlist": "Add to wishlist",
+      "rating": "Rating",
+      "reviews": "Reviews"
+    },
+    "cartSidebarModal": {
+      "viewCart": "View Cart",
+      "title": "Your Cart",
+      "empty": "Your cart is currently empty.",
+      "continueShopping": "Continue Shopping",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "price": "Price"
+    },
+    "productItem": {
+      "button": "Add to cart"
+    }
+  },
+  "Header": {
+    "category": {
+      "all": "All Categories",
+      "desktop": "Desktop",
+      "laptop": "Laptop",
+      "monitor": "Monitor",
+      "phone": "Phone",
+      "watch": "Watch",
+      "mouse": "Mouse",
+      "tablet": "Tablet"
+    },
+    "search": "I am shopping for...",
+    "support": "24/7 SUPPORT",
+    "account": {
+      "title": "ACCOUNT",
+      "username": "Sign In"
+    },
+    "cart": {
+      "title": "cart"
+    },
+    "menu": {
+      "popular": "Popular",
+      "shop": "Shop",
+      "contact": "Contact",
+      "recentlyViewed": "Recently Viewed",
+      "wishlist": "Wishlist"
+    }
+  },
+  "ShopDetails": {
+    
+  },
+  "Contact": {
+    "info": {
+      "title": "Contact Information",
+      "name": "Fullname: Hushnudbek RAHIMOV",
+      "phone": "Phone: +993 62 863012",
+      "address": "Address: Dashoguz city, A.Nyyazov street, N61"
+    },
+    "message": {
+      "first": {
+        "name": "First Name",
+        "placeholder": "Provide first name"
+      },
+      "last": {
+        "name": "Last Name",
+        "placeholder": "Provide last name"
+      },
+      "subject": {
+        "name": "Subject",
+        "placeholder": "Type four subject"
+      },
+      "phone": {
+        "name": "Phone",
+        "placeholder": "Enter your number"
+      },
+      "text": {
+        "name": "Message",
+        "placeholder": "Write your message here"
+      },
+      "button": "Send Message"
+    }
+  }
+}
