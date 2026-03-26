@@ -1,7 +1,7 @@
 import React from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import blogData from "./blogData";
-import BlogItem from "../Blog/BlogItem";
+import BlogItem from "../Blog/BlogItems";
 
 const BlogGrid = () => {
   return (
@@ -134,7 +134,7 @@ const BlogGrid = () => {
           </div>
           {/* <!-- Blog Pagination End --> */}
         </div>
-      </section> 
+      </section>
     </>
   );
 };

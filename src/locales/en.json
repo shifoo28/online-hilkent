@@ -70,6 +70,10 @@
       "title": "This week's",
       "description": "New Arrivals",
       "button": "View All"
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "description": "Real feedback from our valued users"
     }
   },
   "Common": {
@@ -131,12 +135,77 @@
       "popular": "Popular",
       "shop": "Shop",
       "contact": "Contact",
+      "pages": {
+        "title": "Pages",
+        "checkout": "Checkout",
+        "cart": "Cart",
+        "error": "Error 404",
+        "success": "Mail Success"
+      },
       "recentlyViewed": "Recently Viewed",
       "wishlist": "Wishlist"
+    },
+    "language": {
+      "english": "English",
+      "turkmen": "Turkmen",
+      "russian": "Russian"
     }
   },
+  "Shop": {
+    "pageTitleAll": "Explore All Products",
+    "pageTitleCategory": "Explore {category} Products",
+    "filters": "Filters:",
+    "clearAll": "Clear All",
+    "searchPlaceholder": "Search products...",
+    "searchButton": "Search",
+    "loading": "Loading products...",
+    "error": "Unable to load products.",
+    "summary": "Showing {count} of {total} products, page {page} of {pages}",
+    "noProducts": "No products found."
+  },
   "ShopDetails": {
-    
+    "title": "Product Details",
+    "discount": "% OFF",
+    "review": "customer reviews",
+    "stock": "In Stock",
+    "price": "Price:",
+    "delivery": "Free delivery available",
+    "promotion": "Unlock the magical world of savings by using the spell:",
+    "button": "Purchase Now",
+    "overview": {
+      "review": {
+        "title": "Customer Reviews",
+        "listDescription": "See what our customers are saying about this product",
+        "noUser": {
+          "message": "Please log in to write a review",
+          "button": "Sign In"
+        },
+        "noReviews": "No reviews yet. Be the first to review this product!",
+        "form": {
+          "title": "Write a Review",
+          "description": "Your phone number will not be published. Required fields are marked",
+          "rating": {
+            "label": "Your Rating",
+            "placeholder": "Select a rating"
+          },
+          "stars": "stars",
+          "comment": {
+            "label": "Your Comment",
+            "placeholder": "Share your thoughts about the product"
+          },
+          "maximum": "Maximum",
+          "submit": "Submit Review"
+        }
+      },
+      "specification": {
+        "title": "Specification",
+        "description": "Detailed information about the product's features and technical specifications."
+      },
+      "description": {
+        "title": "Description",
+        "description": "Comprehensive overview of the product, including its features, benefits, and usage instructions."
+      }
+    }
   },
   "Contact": {
     "info": {
@@ -168,5 +237,22 @@
       },
       "button": "Send Message"
     }
+  },
+  "Wishlist": {
+    "title": "Wishlist",
+    "label": "Your Wishlist",
+    "clear": "Clear Wishlist",
+    "table": {
+      "product": "Product",
+      "price": "Unit Price",
+      "stock": "Stock Status",
+      "action": "Action"
+    },
+    "empty": "Your wishlist is currently empty.",
+    "stock": {
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "addToCart": "Add to cart"
   }
 }

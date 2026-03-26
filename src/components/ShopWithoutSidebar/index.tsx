@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Breadcrumb from "../Common/Breadcrumb";
 
 import SingleGridItem from "../Shop/SingleGridItem";
@@ -8,8 +10,13 @@ import CustomSelect from "../ShopWithSidebar/CustomSelect";
 import { useProducts } from "@/hooks/useProducts";
 
 const ShopWithoutSidebar = () => {
+  const t = useTranslations("Shop");
   const [productStyle, setProductStyle] = useState("grid");
-  const { products, loading, error } = useProducts();
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
+  const { products, totalItems, totalPages, loading, error } = useProducts({
+    search: search || undefined,
+  });
 
   const options = [
     { label: "Latest Products", value: "0" },
@@ -20,7 +27,7 @@ const ShopWithoutSidebar = () => {
   return (
     <>
       <Breadcrumb
-        title={"Explore All Products"}
+        title={t("pageTitleAll")}
         pages={["shop", "/", "shop without sidebar"]}
       />
       <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28 bg-[#f3f4f6]">
@@ -35,8 +42,12 @@ const ShopWithoutSidebar = () => {
                     <CustomSelect options={options} />
 
                     <p>
-                      Showing <span className="text-dark">9 of 50</span>{" "}
-                      Products
+                      {t("summary", {
+                        count: products.length,
+                        total: totalItems || products.length,
+                        page: 1,
+                        pages: 1,
+                      })}
                     </p>
                   </div>
 
@@ -147,7 +158,7 @@ const ShopWithoutSidebar = () => {
                       <SingleGridItem item={item} key={key} />
                     ) : (
                       <SingleListItem item={item} key={key} />
-                    ),
+                    )
                   )
                 )}
               </div>

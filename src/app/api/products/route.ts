@@ -47,6 +47,7 @@ export async function GET(request: NextRequest) {
     const limit = Math.max(parseInt(searchParams.get("limit") || "9", 10), 1);
     const category = searchParams.get("category")?.trim();
     const brand = searchParams.get("brand")?.trim();
+    const search = searchParams.get("search")?.trim();
     const minPrice = parseFloat(searchParams.get("minPrice") || "0");
     const maxPrice = parseFloat(searchParams.get("maxPrice") || "0");
     const minRating = parseFloat(searchParams.get("minRating") || "0");
@@ -76,6 +77,14 @@ export async function GET(request: NextRequest) {
           value: brand,
         },
       };
+    }
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { category: { contains: search, mode: "insensitive" } },
+      ];
     }
 
     const totalItems = await prisma.product.count({ where });

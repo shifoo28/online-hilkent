@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import shopData from "@/components/Shop/shopData";
+import React, { useEffect, useState } from "react";
 import ProductItem from "@/components/Common/ProductItem";
 import Image from "next/image";
 
@@ -9,8 +8,15 @@ import { useCallback, useRef } from "react";
 import "swiper/css/navigation";
 import "swiper/css";
 
-const RecentlyViewdItems = () => {
+const RecentlyViewedItems = () => {
   const sliderRef = useRef(null);
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+  useEffect(() => {
+    // Load recently viewed products from localStorage
+    const viewed = JSON.parse(localStorage.getItem("recentlyViewed") || "[]");
+    setRecentlyViewed(viewed);
+  }, []);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -36,10 +42,10 @@ const RecentlyViewdItems = () => {
                   height={17}
                   alt="icon"
                 />
-                Categories
+                Recently Viewed
               </span>
               <h2 className="font-semibold text-xl xl:text-heading-5 text-dark">
-                Browse by Category
+                Your Recently Viewed Items
               </h2>
             </div>
 
@@ -105,9 +111,9 @@ const RecentlyViewdItems = () => {
               },
             }}
           >
-            {shopData.map((item, key) => (
+            {recentlyViewed.map((item, key) => (
               <SwiperSlide key={key}>
-                <ProductItem item={item} />
+                {item ? <ProductItem item={item} /> : <div>Loading...</div>}
               </SwiperSlide>
             ))}
           </Swiper>
@@ -117,4 +123,4 @@ const RecentlyViewdItems = () => {
   );
 };
 
-export default RecentlyViewdItems;
+export default RecentlyViewedItems;

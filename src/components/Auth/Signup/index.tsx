@@ -3,6 +3,7 @@ import Breadcrumb from "@/components/Common/Breadcrumb";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useState } from "react";
+import { TEMP_PHONE_KEY } from "../Signin";
 
 const Signup = () => {
   const nameOf = useTranslations("Auth.signUp");
@@ -38,7 +39,7 @@ const Signup = () => {
       return;
     }
 
-    localStorage.setItem("phoneNumber", phoneNumber);
+    localStorage.setItem(TEMP_PHONE_KEY, phoneNumber);
     window.location.href = "/otp";
   };
 

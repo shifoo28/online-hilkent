@@ -8,7 +8,7 @@ type InitialState = {
 const initialState = {
   value: {
     title: "",
-    reviews: 0,
+    reviewCount: 0,
     price: 0,
     discountedPrice: 0,
     img: "",

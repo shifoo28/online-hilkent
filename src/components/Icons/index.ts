@@ -1,0 +1,11 @@
+export { default as UserIcon } from "@/components/Icons/UserIcon";
+export { default as SearchIcon } from "@/components/Icons/SearchIcon";
+export { default as PhoneIcon } from "@/components/Icons/PhoneIcon";
+export { default as CartIcon } from "@/components/Icons/CartIcon";
+export { default as ThinCloseIcon } from "@/components/Icons/ThinCloseIcon";
+export { default as FilterIcon } from "@/components/Icons/FilterIcon";
+export { default as CheckIcon } from "@/components/Icons/CheckIcon";
+export { default as ArrowIcon } from "@/components/Icons/ArrowIcon";
+export { default as ExclamationIcon } from "@/components/Icons/ExclamationIcon";
+export { default as RemoveIcon } from "@/components/Icons/RemoveIcon";
+export { default as GlobeIcon } from "@/components/Icons/GlobeIcon";

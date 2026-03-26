@@ -1,7 +1,7 @@
 "use client";
+import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import GenerateStar from "./generateStars";
 
 interface ReviewFormProps {
   productId: number;
@@ -17,6 +17,8 @@ const ReviewForm = ({
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const translate = useTranslations("ShopDetails.overview.review.form");
+  const MAX_COMMENT_LENGTH = 500;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +56,7 @@ const ReviewForm = ({
     } catch (error) {
       console.error("Error submitting review:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to submit review",
+        error instanceof Error ? error.message : "Failed to submit review"
       );
     } finally {
       setIsSubmitting(false);
@@ -63,15 +65,19 @@ const ReviewForm = ({
 
   return (
     <div className="max-w-[550px] w-full">
-      <h2 className="font-medium text-2xl text-dark mb-3.5">Add a Review</h2>
+      <h2 className="font-medium text-2xl text-dark mb-3.5">
+        {translate("title")}
+      </h2>
 
       <p className="mb-6">
-        Your email address will not be published. Required fields are marked *
+        {translate("description")} <span className="text-red">*</span>
       </p>
 
       {/* Rating */}
       <div className="flex items-center gap-3 mb-7.5">
-        <span>Your Rating*</span>
+        <span>
+          {translate("rating.label")} <span className="text-red">*</span>:
+        </span>
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -92,7 +98,9 @@ const ReviewForm = ({
               </svg>
             </button>
           ))}
-          <span className="ml-2 text-sm text-dark-2">({rating} stars)</span>
+          <span className="ml-2 text-sm text-dark-2">
+            ({rating} {translate("stars")})
+          </span>
         </div>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-1">
@@ -103,20 +111,30 @@ const ReviewForm = ({
               htmlFor="comment"
               className="block text-sm font-medium text-dark mb-2"
             >
-              Your Review
+              {translate("comment.label")} <span className="text-red">*</span>
             </label>
             <textarea
               id="comment"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Share your thoughts about this product..."
-              className="w-full p-3 border border-gray-3 rounded-md resize-none focus:border-blue focus:ring-2 focus:ring-blue/20 outline-none"
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length <= MAX_COMMENT_LENGTH) {
+                  setComment(value);
+                }
+              }}
+              placeholder={translate("comment.placeholder")}
+              className="w-full max-h-55 p-3 border border-gray-3 rounded-md resize-y focus:border-blue focus:ring-2 focus:ring-blue/20 outline-none"
               rows={4}
+              maxLength={MAX_COMMENT_LENGTH}
               required
             />
             <span className="flex items-center justify-between mt-2.5">
-              <span className="text-custom-sm text-dark-4">Maximum</span>
-              <span className="text-custom-sm text-dark-4">0/250</span>
+              <span className="text-custom-sm text-dark-4">
+                {translate("maximum")}
+              </span>
+              <span className="text-custom-sm text-dark-4">
+                {comment.length}/{MAX_COMMENT_LENGTH}
+              </span>
             </span>
           </div>
 
@@ -150,7 +168,7 @@ const ReviewForm = ({
                 Submitting...
               </>
             ) : (
-              "Submit Review"
+              translate("submit")
             )}
           </button>
         </form>

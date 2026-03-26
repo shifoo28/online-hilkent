@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import GenerateStars from "./generateStars";
+import { useTranslations } from "next-intl";
 
 interface Review {
   id: number;
@@ -32,6 +33,7 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
   const [loading, setLoading] = useState(true);
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
+  const translate = useTranslations("ShopDetails.overview.review");
 
   useEffect(() => {
     fetchReviews();
@@ -57,7 +59,7 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
       if (productId && data.length > 0) {
         const total = data.reduce(
           (sum: number, review: Review) => sum + review.rating,
-          0,
+          0
         );
         setAverageRating(total / data.length);
         setTotalReviews(data.length);
@@ -72,7 +74,8 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+
+    return date.toLocaleDateString("en-EN", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -80,7 +83,7 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
   };
 
   const renderStars = (rating: number) => {
-    return <GenerateStars rating={rating} size={4}/>;
+    return <GenerateStars rating={rating} size={4} />;
   };
 
   if (loading) {
@@ -113,19 +116,14 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
       {/* Rating Summary (only for product reviews) */}
       {productId && totalReviews > 0 && (
         <h2 className="font-medium text-2xl text-dark mb-9">
-          {totalReviews} review{totalReviews !== 1 ? "s" : ""} for this product
+          {translate("listDescription")} ({totalReviews})
         </h2>
       )}
 
       {/* Reviews List */}
       {displayedReviews.length === 0 ? (
         <div className="bg-white p-6 rounded-lg shadow-1 text-center">
-          <p className="text-dark-2">No reviews yet.</p>
-          {productId && (
-            <p className="text-sm text-dark-3 mt-1">
-              Be the first to review this product!
-            </p>
-          )}
+          <p className="text-dark-2">{translate("noReviews")}</p>
         </div>
       ) : (
         <div className="space-y-4">

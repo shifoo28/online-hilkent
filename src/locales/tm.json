@@ -70,6 +70,10 @@
       "title": "Şu hepdäniň",
       "description": "Täze Harytlary",
       "button": "Ählisi"
+    },
+    "testimonials": {
+      "title": "Minnetdarlyklar",
+      "description": "Gymmatly ulanyjylarymyzdan hakyky teswirler"
     }
   },
   "Common": {
@@ -131,8 +135,76 @@
       "popular": "Trendda",
       "shop": "Dükan",
       "contact": "Habarlaşmak",
+      "pages": {
+        "title": "Sahypalar",
+        "checkout": "Hasaplaşmak",
+        "cart": "Sebedim",
+        "error": "Ýalňyşlyk 404",
+        "success": "Hat üstünlikli"
+      },
       "recentlyViewed": "Soňky görenlerim",
       "wishlist": "Halanlarym"
+    },
+    "language": {
+      "english": "Iňlis dili",
+      "turkmen": "Türkmen dili",
+      "russian": "Rus dili"
+    }
+  },
+  "Shop": {
+    "pageTitleAll": "Ähli Harytlary Gözden Geçir",
+    "pageTitleCategory": "{category} Harytlary Gözden Geçir",
+    "filters": "Filtrler:",
+    "clearAll": "Arassala",
+    "searchPlaceholder": "Haryt gözläň...",
+    "searchButton": "Gözle",
+    "loading": "Harytlar ýüklenilýär...",
+    "error": "Harytlar ýüklenip bilmedi.",
+    "summary": "{pages} sahypada {count} / {total} haryt görkezilýär",
+    "noProducts": "Haryt tapylmady."
+  },
+  "ShopDetails": {
+    "title": "Haryt maglumatlary",
+    "discount": "% Arzanladyş",
+    "review": "müşderi teswirleri",
+    "stock": "Satuwda",
+    "price": "Bahasy:",
+    "delivery": "Mugt eltip bermek hyzmaty",
+    "promotion": "Arzanladyşlaryň ajaýyp dünýäsini açmak üçin jadyly söz:",
+    "button": "Häzir satyn al",
+    "overview": {
+      "review": {
+        "title": "Müşderi Teswirleri",
+        "listDescription": "Bu haryt barada müşderilerimiziň näme diýýändigini görüň",
+        "noUser": {
+          "message": "Teswir ýazmak üçin bize goşulyň",
+          "button": "Giriş"
+        },
+        "noReviews": "Bu haryt barada heniz teswir ýok. Bu haryt barada ilkinji teswir ýazyň!",
+        "form": {
+          "title": "Teswir ýazyň",
+          "description": "Telefon belgiňiz çap edilmez. Talap edilýän meýdanlar bellidir",
+          "rating": {
+            "label": "Siziň reýtingiňiz",
+            "placeholder": "Reýting saýlaň"
+          },
+          "stars": "ýyldyz",
+          "comment": {
+            "label": "Siziň teswiriniz",
+            "placeholder": "Bu haryt barada pikirleriňizi paýlaşyň"
+          },
+          "maximum": "Maksimum",
+          "submit": "Teswir iber"
+        }
+      },
+      "specification": {
+        "title": "Haryt aýratynlyklary",
+        "description": "Bu harydyň aýratynlyklary barada maglumat alyň."
+      },
+      "description": {
+        "title": "Düşündiriş",
+        "description": "Bu harydyň aýratynlyklary, artykmaçlyklary we ulanyş görkezmeleri barada doly düşündiriş."
+      }
     }
   },
   "Contact": {
@@ -165,5 +237,22 @@
       },
       "button": "Ugratmak"
     }
+  },
+  "Wishlist": {
+    "title": "Halanlarym",
+    "label": "Siziň Halan Harytlaryňyz",
+    "clear": "Sanawy arassala",
+    "table": {
+      "product": "Haryt ady",
+      "price": "Baha birligi",
+      "stock": "Nagt ýagdaýy",
+      "action": "Amaly"
+    },
+    "empty": "Siziň halan harytlar sanawyňyz şu wagt boş.",
+    "stock": {
+      "inStock": "Satuwda",
+      "outOfStock": "Satuwda ýok"
+    },
+    "addToCart": "Sebede goş"
   }
 }

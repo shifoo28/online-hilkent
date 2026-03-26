@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 
+export const STORAGE_KEY = "verifiedPhoneNumber";
+
 export default function OTP() {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
@@ -32,7 +34,7 @@ export default function OTP() {
           ? setError(data.error || "Verification failed")
           : (alert("OTP verified successfully!"),
             localStorage.removeItem("phoneNumber"), // Clear the phone number after successful verification
-            localStorage.setItem("verifiedPhoneNumber", phoneNumber), // Store verified phone number for later use (e.g., auto-fill on homepage)
+            localStorage.setItem(STORAGE_KEY, phoneNumber), // Store verified phone number for later use (e.g., auto-fill on homepage)
             (window.location.href = "/"));
     } catch (err) {
       console.error(err);

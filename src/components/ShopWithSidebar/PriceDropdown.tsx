@@ -2,13 +2,20 @@ import { useState } from "react";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 
-const PriceDropdown = () => {
-  const [toggleDropdown, setToggleDropdown] = useState(true);
+type PriceDropdownProps = {
+  minPrice: number;
+  maxPrice: number;
+  setMinPrice: (price: number) => void;
+  setMaxPrice: (price: number) => void;
+};
 
-  const [selectedPrice, setSelectedPrice] = useState({
-    from: 0,
-    to: 100,
-  });
+const PriceDropdown = ({
+  setMinPrice,
+  setMaxPrice,
+  minPrice,
+  maxPrice,
+}: PriceDropdownProps) => {
+  const [toggleDropdown, setToggleDropdown] = useState(true);
 
   return (
     <div className="bg-white shadow-1 rounded-lg">
@@ -51,30 +58,30 @@ const PriceDropdown = () => {
               id="range-slider-gradient"
               className="margin-lg"
               step={"any"}
-              onInput={(e) =>
-                setSelectedPrice({
-                  from: Math.floor(e[0]),
-                  to: Math.ceil(e[1]),
-                })
-              }
+              defaultValue={[300, 700]}
+              max={999}
+              onInput={(e) => {
+                setMinPrice(Math.floor(e[0]));
+                setMaxPrice(Math.ceil(e[1]));
+              }}
             />
 
             <div className="price-amount flex items-center justify-between pt-4">
-              <div className="text-custom-xs text-dark-4 flex rounded border border-gray-3/80">
-                <span className="block border-r border-gray-3/80 px-2.5 py-1.5">
+              <div className="text-custom-xs flex rounded border border-gray-3/80">
+                <span className="block border-r text-dark-4 border-gray-3/80 px-2.5 py-1.5">
                   TMT
                 </span>
                 <span id="minAmount" className="block px-3 py-1.5">
-                  {selectedPrice.from}
+                  {minPrice}
                 </span>
               </div>
 
-              <div className="text-custom-xs text-dark-4 flex rounded border border-gray-3/80">
-                <span className="block border-r border-gray-3/80 px-2.5 py-1.5">
+              <div className="text-custom-xs flex rounded border border-gray-3/80">
+                <span className="block border-r text-dark-4 border-gray-3/80 px-2.5 py-1.5">
                   TMT
                 </span>
                 <span id="maxAmount" className="block px-3 py-1.5">
-                  {selectedPrice.to}
+                  {maxPrice}
                 </span>
               </div>
             </div>

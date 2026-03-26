@@ -11,16 +11,19 @@ import { Product } from "@/types/product";
 import { useParams } from "next/navigation";
 import GenerateStars from "../Review/generateStars";
 import { useWishlist } from "@/context/WishlistContext";
+import { useTranslations } from "next-intl";
 
 interface ProductPageProps {
   params: { id: string };
 }
 
+const STORAGE_KEY = "recentlyViewed";
+
 const ShopDetails = () => {
   const { addItem } = useWishlist();
   const params = useParams() as ProductPageProps["params"];
+  const translate = useTranslations("ShopDetails");
 
-  const [averageRating, setAverageRating] = useState(0);
   const [product, setProduct] = useState({} as Product);
   const [activeColor, setActiveColor] = useState("blue");
   const { openPreviewModal } = usePreviewSlider();
@@ -37,7 +40,13 @@ const ShopDetails = () => {
       .then((data) => {
         setProduct(data);
       });
-  }, [params.id]);
+    const viewed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+    // Remove if already exists to avoid duplicates
+    const filtered = viewed.filter((item) => item.id !== product.id);
+    product.id && filtered.unshift(product); // Add to front
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered.slice(0, 10))); // Keep last 10
+  }, [params.id, product.id]);
 
   // pass the product here when you get the real data.
   const handlePreviewSlider = () => {
@@ -54,7 +63,7 @@ const ShopDetails = () => {
 
   return (
     <>
-      <Breadcrumb title={"Shop Details"} pages={["shop details"]} />
+      <Breadcrumb title={translate("title")} pages={["shop details"]} />
 
       {product.title === "" ? (
         "Please add product"
@@ -99,7 +108,6 @@ const ShopDetails = () => {
                     </div>
                   </div>
 
-                  {/* ?  &apos;border-blue &apos; :  &apos;border-transparent&apos; */}
                   <div className="flex flex-wrap sm:flex-nowrap gap-4.5 mt-6">
                     {product.imgs?.thumbnails.map((item, key) => (
                       <button
@@ -129,8 +137,8 @@ const ShopDetails = () => {
                       {product.title}
                     </h2>
 
-                    <div className="inline-flex font-medium text-custom-sm text-white bg-blue rounded py-0.5 px-2.5">
-                      30% OFF
+                    <div className="min-w-max inline-flex font-medium text-custom-sm text-white bg-blue rounded py-0.5 px-2.5">
+                      30{translate("discount")}
                     </div>
                   </div>
 
@@ -139,7 +147,10 @@ const ShopDetails = () => {
                       {/* <!-- stars --> */}
                       <GenerateStars rating={product.rating} size={18} />
 
-                      <span> ({product.reviewCount} customer reviews) </span>
+                      <span>
+                        {" "}
+                        ({product.reviewCount} {translate("review")}){" "}
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-1.5">
@@ -167,13 +178,13 @@ const ShopDetails = () => {
                         </defs>
                       </svg>
 
-                      <span className="text-green"> In Stock </span>
+                      <span className="text-green">{translate("stock")}</span>
                     </div>
                   </div>
 
                   <h3 className="font-medium text-custom-1 mb-4.5">
                     <span className="text-sm sm:text-base text-dark">
-                      Price: {product.price} TMT
+                      {translate("price")} {product.price} TMT
                     </span>{" "}
                     <span className="line-through">
                       {" "}
@@ -189,6 +200,7 @@ const ShopDetails = () => {
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="min-w-max"
                       >
                         <path
                           d="M13.3589 8.35863C13.603 8.11455 13.603 7.71882 13.3589 7.47475C13.1149 7.23067 12.7191 7.23067 12.4751 7.47475L8.75033 11.1995L7.5256 9.97474C7.28152 9.73067 6.8858 9.73067 6.64172 9.97474C6.39764 10.2188 6.39764 10.6146 6.64172 10.8586L8.30838 12.5253C8.55246 12.7694 8.94819 12.7694 9.19227 12.5253L13.3589 8.35863Z"
@@ -201,7 +213,7 @@ const ShopDetails = () => {
                           fill="#3C50E0"
                         />
                       </svg>
-                      Free delivery available
+                      {translate("delivery")}
                     </li>
 
                     <li className="flex items-center gap-2.5">
@@ -211,6 +223,7 @@ const ShopDetails = () => {
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="min-w-max"
                       >
                         <path
                           d="M13.3589 8.35863C13.603 8.11455 13.603 7.71882 13.3589 7.47475C13.1149 7.23067 12.7191 7.23067 12.4751 7.47475L8.75033 11.1995L7.5256 9.97474C7.28152 9.73067 6.8858 9.73067 6.64172 9.97474C6.39764 10.2188 6.39764 10.6146 6.64172 10.8586L8.30838 12.5253C8.55246 12.7694 8.94819 12.7694 9.19227 12.5253L13.3589 8.35863Z"
@@ -223,7 +236,7 @@ const ShopDetails = () => {
                           fill="#3C50E0"
                         />
                       </svg>
-                      Sales 30% Off Use Code: PROMO30
+                      {translate("promotion")} PROMO30
                     </li>
                   </ul>
 
@@ -529,7 +542,7 @@ const ShopDetails = () => {
                         href="#"
                         className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
                       >
-                        Purchase Now
+                        {translate("button")}
                       </a>
 
                       <button

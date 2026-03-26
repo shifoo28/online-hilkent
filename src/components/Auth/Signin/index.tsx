@@ -3,6 +3,9 @@ import Breadcrumb from "@/components/Common/Breadcrumb";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useState } from "react";
+import { STORAGE_KEY } from "../OTP";
+
+export const TEMP_PHONE_KEY = "phoneNumber";
 
 const Signin = () => {
   const nameOf = useTranslations("Auth.signIn");
@@ -41,7 +44,7 @@ const Signin = () => {
       return;
     }
 
-    localStorage.setItem("verifiedPhoneNumber", phoneNumber);
+    localStorage.setItem(STORAGE_KEY, phoneNumber);
     window.location.href = "/";
   };
 
@@ -57,20 +60,20 @@ const Signin = () => {
       return;
     }
 
-    localStorage.setItem("phoneNumber", phoneNumber);
+    localStorage.setItem(TEMP_PHONE_KEY, phoneNumber);
     window.location.href = "/otp";
   }
 
   function handleForgotPassword(): void {
     if (!phoneNumber) {
       setError(
-        "Provide your Phone Number first, then click on the 'Forgot Password' link",
+        "Provide your Phone Number first, then click on the 'Forgot Password' link"
       );
       return;
     }
     // Redirect to forgot password page with phone number as query param
     window.location.href = `/forgot-password?phone=${encodeURIComponent(
-      phoneNumber,
+      phoneNumber
     )}`;
   }
 

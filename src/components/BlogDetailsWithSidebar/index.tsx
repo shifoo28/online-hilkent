@@ -274,7 +274,7 @@ const BlogDetailsWithSidebar = async () => {
               <LatestPosts blogs={blogData} />
 
               {/* <!-- Latest Products box --> */}
-              <LatestProducts products={products} />
+              <LatestProducts items={products}/>
 
               {/* <!-- Popular Category box --> */}
               <div className="shadow-1 bg-white rounded-xl mt-7.5">

@@ -1,6 +1,6 @@
 import React from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import BlogItem from "../Blog/BlogItem";
+import BlogItem from "../Blog/BlogItems";
 import blogData from "../BlogGrid/blogData";
 import SearchForm from "../Blog/SearchForm";
 import LatestPosts from "../Blog/LatestPosts";
@@ -180,7 +180,7 @@ const BlogGridWithSidebar = async () => {
               <LatestPosts blogs={blogData} />
 
               {/* <!-- Latest Products box --> */}
-              <LatestProducts products={products} />
+              <LatestProducts items={products} />
 
               {/* <!-- Popular Category box --> */}
               <Categories categories={categories} />

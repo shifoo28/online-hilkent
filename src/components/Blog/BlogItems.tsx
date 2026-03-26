@@ -3,7 +3,7 @@ import { BlogItem } from "@/types/blogItem";
 import Image from "next/image";
 import Link from "next/link";
 
-const BlogItem = ({ blog }: { blog: BlogItem }) => {
+const BlogItems = ({ blog }: { blog: BlogItem }) => {
   return (
     <div className="shadow-1 bg-white rounded-xl px-4 sm:px-5 pt-5 pb-4">
       <Link href="/blogs/blog-details" className="rounded-md overflow-hidden">
@@ -66,4 +66,4 @@ const BlogItem = ({ blog }: { blog: BlogItem }) => {
   );
 };
 
-export default BlogItem;
+export default BlogItems;

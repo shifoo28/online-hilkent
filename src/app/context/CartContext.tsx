@@ -25,7 +25,7 @@ const STORAGE_KEY = "cart";
 function loadCart(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -39,7 +39,7 @@ function loadCart(): CartItem[] {
 function saveCart(items: CartItem[]) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   } catch (error) {
     console.error("Failed to save cart to localStorage", error);
   }
@@ -74,12 +74,17 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const isFirstRender = React.useRef(true);
 
   useEffect(() => {
     setItems(loadCart());
   }, []);
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     saveCart(items);
   }, [items]);
 
@@ -88,7 +93,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       const existingItem = prev.find((i) => i.id === item.id);
       if (existingItem) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i,
+          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
         );
       }
       return [...prev, item];
@@ -102,10 +107,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const updateCartItemQuantity = useCallback(
     ({ id, quantity }: { id: number; quantity: number }) => {
       setItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity } : item)),
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
       );
     },
-    [],
+    []
   );
 
   const removeAllItemsFromCart = useCallback(() => {
@@ -134,7 +139,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       updateCartItemQuantity,
       removeAllItemsFromCart,
       totalPrice,
-    ],
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

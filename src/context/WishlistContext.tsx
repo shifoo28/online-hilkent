@@ -33,7 +33,7 @@ function loadWishlist(): WishlistItem[] {
 function saveWishlist(items: WishlistItem[]) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   } catch (error) {
     console.error("Failed to save wishlist to localStorage", error);
   }
@@ -48,19 +48,24 @@ type WishlistContextType = {
 };
 
 const WishlistContext = createContext<WishlistContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [items, setItems] = useState<WishlistItem[]>([]);
+  const isFirstRender = React.useRef(true);
 
   useEffect(() => {
     setItems(loadWishlist());
   }, []);
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     saveWishlist(items);
   }, [items]);
 
@@ -71,7 +76,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
         return prev.map((i) =>
           i.id === item.id
             ? { ...i, quantity: (i.quantity || 0) + (item.quantity || 0) }
-            : i,
+            : i
         );
       }
       return [...prev, item];
@@ -88,7 +93,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
 
   const isInWishlist = useCallback(
     (id: number) => items.some((item) => item.id === id),
-    [items],
+    [items]
   );
 
   return (

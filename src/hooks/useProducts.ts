@@ -10,6 +10,7 @@ type UseProductsOptions = {
   limit?: number;
   category?: string;
   brand?: string;
+  search?: string;
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;
@@ -25,6 +26,7 @@ export function useProducts({
   minPrice,
   maxPrice,
   minRating,
+  search,
 }: UseProductsOptions = {}) {
   const [products, setProducts] = useState<Product[]>(initialData ?? []);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -44,9 +46,20 @@ export function useProducts({
     if (minPrice !== undefined) params.set("minPrice", String(minPrice));
     if (maxPrice !== undefined) params.set("maxPrice", String(maxPrice));
     if (minRating !== undefined) params.set("minRating", String(minRating));
+    if (search) params.set("search", search);
 
     return `/api/products?${params.toString()}`;
-  }, [productId, page, limit, category, brand, minPrice, maxPrice, minRating]);
+  }, [
+    productId,
+    page,
+    limit,
+    category,
+    brand,
+    minPrice,
+    maxPrice,
+    minRating,
+    search,
+  ]);
 
   useEffect(() => {
     let cancelled = false;

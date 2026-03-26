@@ -1,9 +1,12 @@
+"use client";
 import React, { useState } from "react";
 import { ReviewList, ReviewForm } from "../../Review";
 import { tabs } from "../data";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslations } from "next-intl";
 
 const Overview = ({ id }: { id: number }) => {
+  const translate = useTranslations("ShopDetails.overview");
   const [activeTab, setActiveTab] = useState("tabOne");
   const { user } = useAuth();
 
@@ -22,7 +25,11 @@ const Overview = ({ id }: { id: number }) => {
                   : "text-dark before:w-0"
               }`}
             >
-              {item.title}
+              {item.id === "tabOne"
+                ? translate("review.title")
+                : item.id === "tabTwo"
+                  ? translate("specification.title")
+                  : translate("description.title")}
             </button>
           ))}
         </div>
@@ -52,13 +59,13 @@ const Overview = ({ id }: { id: number }) => {
             ) : (
               <div className="bg-white p-6 rounded-lg shadow-1 text-center">
                 <p className="text-dark-2 mb-4">
-                  Please log in to write a review
+                  {translate("review.noUser.message")}
                 </p>
                 <a
                   href="/signin"
                   className="inline-block bg-blue text-white px-6 py-2 rounded-md hover:bg-blue-dark transition-colors"
                 >
-                  Sign In
+                  {translate("review.noUser.button")}
                 </a>
               </div>
             )}
