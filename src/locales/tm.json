@@ -57,6 +57,31 @@
   "Home": {
     "title": "Hilkende hoş geldiňiz",
     "description": "Siziň ynanýan bazaryňyz",
+    "hero": {
+      "title": "Hilkentde elektronika üçin iň gowy teklipleri açyň",
+      "description": "Elektronika üçin giň saýlamamyzdan ajaýyp bahalara göz aýlaň. Aram alyş we ajaýyp müşderi hyzmatyny başdan geçiriň.",
+      "discount": "Arzanladyş",
+      "button": "Giňişleýin",
+      "offer": "çäkli wagt teklibi",
+      "features": {
+        "shipping": {
+          "title": "Mugt Eltip bermek",
+          "description": "200 TMT-den ýokary ähli sargytlar üçin"
+        },
+        "return": {
+          "title": "1 we 1 Gaýtarmalar",
+          "description": "1 günden soň ýatyrmak"
+        },
+        "payment": {
+          "title": "100% Howpsuz Tölegler",
+          "description": "Howpsuz Tölegleri Kepillendirmek"
+        },
+        "support": {
+          "title": "24/7 Ýöriteleşdirilen Goldaw",
+          "description": "Islendik ýerde we islendik wagtda"
+        }
+      }
+    },
     "bestSeller": {
       "title": "Iň gowy satylýanlar",
       "description": "Iň köp satyn alnan harytlar",

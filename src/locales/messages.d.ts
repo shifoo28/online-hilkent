@@ -1,6 +1,6 @@
-import en from "./locales/en.json";
+import tm from "./locales/tm.json";
 
-type Messages = typeof en;
+type Messages = typeof tm;
 declare module "next-intl" {
   interface IntlMessages extends Messages {}
 }

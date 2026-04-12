@@ -2,10 +2,44 @@ import React from "react";
 import HeroCarousel from "./HeroCarousel";
 import HeroFeature from "./HeroFeature";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Product } from "@/types/product";
 
-const Hero = () => {
+const mapHeroSlide = (product: Product) => {
+  const discountPrice = product.discountedPrice;
+  const discountPercent =
+    product.price > discountPrice
+      ? `${Math.round(((product.price - discountPrice) / product.price) * 100)}%`
+      : "New";
+
+  return {
+    id: product.id,
+    productId: product.id,
+    image: product.image,
+    discount: discountPercent,
+  };
+};
+
+const mapHeroCard = (product: Product) => ({
+  id: product.id,
+  productId: product.id,
+  name: product.title,
+  image: product.image,
+  price: product.price,
+  discountPrice: product.discountedPrice,
+});
+
+type HeroProps = {
+  products: Product[];
+};
+
+const Hero = ({ products }: HeroProps) => {
+  const translate = useTranslations("Home.hero");
+  const heroProducts = products.slice(0, 2).map(mapHeroCard);
+  const heroSlides = products.slice(0, 2).map(mapHeroSlide);
+
   return (
-    <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-67 sm:pt-45 lg:pt-30 xl:pt-51.5 bg-[#E5EAF4]">
+    <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-67 sm:pt-50 lg:pt-46 xl:pt-51.5 bg-[#E5EAF4]">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
         <div className="flex flex-wrap gap-5">
           <div className="xl:max-w-[757px] w-full">
@@ -19,76 +53,51 @@ const Hero = () => {
                 height={520}
               />
 
-              <HeroCarousel />
+              <HeroCarousel slides={heroSlides} />
             </div>
           </div>
 
           <div className="xl:max-w-[393px] w-full">
             <div className="flex flex-col sm:flex-row xl:flex-col gap-5">
-              <div className="w-full relative rounded-[10px] bg-white p-4 sm:p-7.5">
-                <div className="flex items-center gap-14">
-                  <div>
-                    <h2 className="max-w-[153px] font-semibold text-dark text-xl mb-20">
-                      <a href="#"> iPhone 14 Plus & 14 Pro Max </a>
-                    </h2>
+              {heroProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="w-full relative rounded-[10px] bg-white p-4 sm:p-7.5"
+                >
+                  <div className="flex items-center gap-14">
+                    <div>
+                      <h2 className="max-w-[153px] font-semibold text-dark text-xl mb-20">
+                        <a href={`/shop-details/${item.productId}`}>
+                          {item.name}
+                        </a>
+                      </h2>
+
+                      <div>
+                        <p className="font-medium text-dark-4 text-custom-sm mb-1.5">
+                          {translate("offer")}
+                        </p>
+                        <span className="flex items-center gap-3">
+                          <span className="font-medium text-heading-5 text-red">
+                            {item.discountPrice} TMT
+                          </span>
+                          <span className="font-medium text-2xl text-dark-4 line-through">
+                            {item.price} TMT
+                          </span>
+                        </span>
+                      </div>
+                    </div>
 
                     <div>
-                      <p className="font-medium text-dark-4 text-custom-sm mb-1.5">
-                        limited time offer
-                      </p>
-                      <span className="flex items-center gap-3">
-                        <span className="font-medium text-heading-5 text-red">
-                          699 TMT
-                        </span>
-                        <span className="font-medium text-2xl text-dark-4 line-through">
-                          999 TMT
-                        </span>
-                      </span>
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={123}
+                        height={161}
+                      />
                     </div>
                   </div>
-
-                  <div>
-                    <Image
-                      src="/images/hero/hero-021.png"
-                      alt="mobile image"
-                      width={123}
-                      height={161}
-                    />
-                  </div>
                 </div>
-              </div>
-              <div className="w-full relative rounded-[10px] bg-white p-4 sm:p-7.5">
-                <div className="flex items-center gap-14">
-                  <div>
-                    <h2 className="max-w-[153px] font-semibold text-dark text-xl mb-20">
-                      <a href="#"> Wireless Headphone </a>
-                    </h2>
-
-                    <div>
-                      <p className="font-medium text-dark-4 text-custom-sm mb-1.5">
-                        limited time offer
-                      </p>
-                      <span className="flex items-center gap-3">
-                        <span className="font-medium text-heading-5 text-red">
-                          699 TMT
-                        </span>
-                        <span className="font-medium text-2xl text-dark-4 line-through">
-                          999 TMT
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Image
-                      src="/images/hero/hero-022.png"
-                      alt="mobile image"
-                      width={123}
-                      height={161}
-                    />
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

@@ -7,11 +7,14 @@ import BestSeller from "./BestSeller";
 import CounDown from "./Countdown";
 import Testimonials from "./Testimonials";
 import Newsletter from "../Common/Newsletter";
+import { getProducts } from "@/lib/products";
 
-const Home = () => {
+const Home = async () => {
+  const products = await getProducts();
+
   return (
     <main>
-      <Hero />
+      <Hero products={products} />
       <Categories />
       <NewArrival />
       <PromoBanner />

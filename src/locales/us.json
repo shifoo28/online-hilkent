@@ -57,6 +57,31 @@
   "Home": {
     "title": "Welcome to Hilkent",
     "description": "Your trusted marketplace",
+    "hero": {
+      "title": "Discover the Best Deals on Electronics at Hilkent",
+      "description": "Explore our wide selection of electronics, from all at unbeatable prices. Experience seamless shopping and exceptional customer service.",
+      "discount": "Sale off",
+      "button": "Details",
+      "offer": "limited time offer",
+      "features": {
+        "shipping": {
+          "title": "Free Shipping",
+          "description": "For all orders 200 TMT"
+        },
+        "return": {
+          "title": "1 & 1 Returns",
+          "description": "Cancellation after 1 day"
+        },
+        "payment": {
+          "title": "100% Secure Payments",
+          "description": "Guarantee secure payments"
+        },
+        "support": {
+          "title": "24/7 Dedicated Support",
+          "description": "Anywhere & anytime"
+        }
+      }
+    },
     "bestSeller": {
       "title": "Best Sellers",
       "description": "Products that are purchased most frequently",

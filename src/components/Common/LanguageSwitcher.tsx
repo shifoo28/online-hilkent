@@ -12,7 +12,7 @@ const LanguageSwitcher = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const languages = [
-    { code: "en", name: t("language.english"), flag: "🇺🇸" },
+    { code: "us", name: t("language.english"), flag: "🇺🇸" },
     { code: "tm", name: t("language.turkmen"), flag: "🇹🇲" },
     { code: "ru", name: t("language.russian"), flag: "🇷🇺" },
   ];
@@ -61,7 +61,7 @@ const LanguageSwitcher = () => {
         }`}
       >
         <GlobeIcon width={20} height={20} fill="#9ca3af" />
-        <span className="text-blue">
+        <span className="text-gray-6">
           {languages.find((l) => l.code === locale).name}
         </span>
       </div>

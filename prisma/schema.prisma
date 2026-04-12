@@ -25,8 +25,8 @@ model User {
     // relations
     orders          Order[]
     reviews         Review[]
-    // posts           Post[]
-    // wishlist        Wishlist[]
+    // accounts         Account[]
+    // sessions         Session[]
 }
 
 // model Account {
@@ -66,17 +66,6 @@ model User {
 //     @@index([expiresAt])
 // }
 
-// model Post {
-//     id        Int      @id @default(autoincrement())
-//     title     String
-//     content   String
-//     published Boolean  @default(false)
-//     authorId  Int
-//     createdAt DateTime @default(now())
-//     updatedAt DateTime @updatedAt
-//     author    User     @relation(fields: [authorId], references: [id])
-// }
-
 model Order {
     id        Int         @id @default(autoincrement())
     orderId   String      @unique
@@ -98,18 +87,58 @@ enum OrderStatus {
 }
 
 model Product {
-    id           Int                  @id @default(autoincrement())
-    price        Float
-    image        String?
-    category     String?
-    inStock      Boolean              @default(true)
-    rating       Float?               @default(0)
-    createdAt    DateTime             @default(now())
-    updatedAt    DateTime             @updatedAt
+    id        Int      @id @default(autoincrement())
+    price     Float
+    image     String?
+    category  String?
+    inStock   Boolean  @default(true)
+    rating    Float?   @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
     reviews      Review[]
-    // wishlist     Wishlist[]
     properties   ProductProperty[]
     translations ProductTranslation[]
+    Discount     Discount[]
+    ProductImage ProductImage[]
+}
+
+model HeroSlider {
+    id        Int      @id @default(autoincrement())
+    title     String
+    subtitle  String?
+    image     String
+    link      String?
+    position  Int      @default(0) // for ordering slides
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model ProductImage {
+    id        String  @id @default(cuid())
+    url       String // image URL (CDN, S3, etc.)
+    thumbnail String
+    altText   String? // optional accessibility text, SEO friendly
+    position  Int? // optional ordering (e.g., 1 = main image)
+    productId Int
+
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Discount {
+    id        String       @id @default(cuid())
+    type      DiscountType
+    value     Int // percentage or fixed amount
+    startDate DateTime
+    endDate   DateTime
+    productId Int?
+
+    product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum DiscountType {
+    PERCENTAGE
+    FIXED
 }
 
 model ProductTranslation {
@@ -118,7 +147,8 @@ model ProductTranslation {
     locale      Locale
     name        String
     description String?
-    product     Product @relation(fields: [productId], references: [id])
+
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 enum Locale {
@@ -135,20 +165,10 @@ model Review {
     comment   String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
-
-// model Wishlist {
-//     id        Int      @id @default(autoincrement())
-//     userId    Int
-//     productId Int
-//     createdAt DateTime @default(now())
-//     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-//     @@unique([userId, productId])
-// }
 
 model Coupon {
     id                 Int       @id @default(autoincrement())
@@ -169,33 +189,36 @@ model Coupon {
 }
 
 model ProductProperty {
-    id             Int          @id @default(autoincrement())
+    id             Int      @id @default(autoincrement())
     productId      Int
-    name           PropertyName @relation(fields: [propertyNameId], references: [id])
-    value          String
-    createdAt      DateTime     @default(now())
-    updatedAt      DateTime     @updatedAt
-    product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
     propertyNameId Int
+    value          String
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    name    PropertyName @relation(fields: [propertyNameId], references: [id], onDelete: Cascade)
+    product Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
     @@index([productId])
 }
 
 model PropertyName {
-    id                       Int                       @id @default(autoincrement())
-    name                     String                    @unique
-    createdAt                DateTime                  @default(now())
-    updatedAt                DateTime                  @updatedAt
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
     properties               ProductProperty[]
     propertyNameTranslations PropertyNameTranslation[]
 }
 
 model PropertyNameTranslation {
-    id             Int          @id @default(autoincrement())
+    id             Int    @id @default(autoincrement())
     propertyNameId Int
     locale         Locale
     name           String
-    propertyName   PropertyName @relation(fields: [propertyNameId], references: [id], onDelete: Cascade)
+
+    propertyName PropertyName @relation(fields: [propertyNameId], references: [id], onDelete: Cascade)
 }
 
 enum Color {
