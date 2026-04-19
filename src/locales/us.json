@@ -176,6 +176,98 @@
       "russian": "Russian"
     }
   },
+  "Account": {
+    "title": "My Account",
+    "breadcrumb": {
+      "link": "Account"
+    },
+    "bar": {
+      "membersince": "Member since",
+      "dashboard": "Dashboard",
+      "orders": "Orders",
+      "downloads": "Downloads",
+      "address": "Addresses",
+      "accountdetails": "Account Details",
+      "logout": "Logout"
+    },
+    "details": {
+      "dashboard": {
+        "greeting": "Hello {name} (not {name}? Log out)",
+        "message": "From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.",
+        "metrics": {
+          "totalOrders": "Total Orders",
+          "reviews": "Reviews",
+          "wishlistItems": "Wishlist Items"
+        }
+      },
+      "orders": {
+        "tableheader": {
+          "order": "Order",
+          "date": "Date",
+          "status": "Status",
+          "total": "Total",
+          "actions": "Actions"
+        },
+        "tablebody": {}
+      },
+      "address": {
+        "label": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "actions": "Actions"
+        },
+        "billing": {
+          "title": "Billing Addresses"
+        },
+        "shipping": {
+          "title": "Shipping Addresses"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete",
+          "setDefault": "Set as Default"
+        }
+      },
+      "accountDetails": {
+        "formUser": {
+          "firstName": {
+            "label": "First Name",
+            "placeholder": "Enter your first name"
+          },
+          "lastName": {
+            "label": "Last Name",
+            "placeholder": "Enter your last name"
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "example@example.com"
+          },
+          "defaultAddress": {
+            "label": "Default Address",
+            "placeholder": "Choose your default address"
+          },
+          "button": "Save Changes"
+        },
+        "formPassword": {
+          "currentPassword": {
+            "label": "Current Password",
+            "placeholder": "Enter your current password"
+          },
+          "newPassword": {
+            "label": "New Password",
+            "placeholder": "Create a new password"
+          },
+          "confirmNewPassword": {
+            "label": "Confirm New Password",
+            "placeholder": "Re-enter your new password"
+          },
+          "button": "Change Password"
+        }
+      }
+    }
+  },
   "Shop": {
     "pageTitleAll": "Explore All Products",
     "pageTitleCategory": "Explore {category} Products",

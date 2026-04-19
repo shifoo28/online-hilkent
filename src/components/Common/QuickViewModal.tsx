@@ -29,6 +29,8 @@ const QuickViewModal = () => {
   const handleAddToCart = () => {
     addItemToCart({
       ...product,
+      title: product.translations[0].name,
+      discountedPrice: product.discounts[0]?.value,
       quantity,
     });
 
@@ -74,7 +76,7 @@ const QuickViewModal = () => {
             <div className="max-w-[526px] w-full">
               <div className="flex gap-5">
                 <div className="flex flex-col gap-5">
-                  {product.imgs.thumbnails?.map((img, key) => (
+                  {product?.images.map((img, key) => (
                     <button
                       onClick={() => setActivePreview(key)}
                       key={key}
@@ -83,7 +85,7 @@ const QuickViewModal = () => {
                       }`}
                     >
                       <Image
-                        src={img || ""}
+                        src={img.thumbnail || ""}
                         alt="thumbnail"
                         width={61}
                         height={61}
@@ -117,9 +119,9 @@ const QuickViewModal = () => {
                       </svg>
                     </button>
 
-                    {product?.imgs?.previews?.[activePreview] && (
+                    {product?.images[0] && (
                       <Image
-                        src={product.imgs.previews[activePreview]}
+                        src={product.images[0].url}
                         alt="products-details"
                         width={400}
                         height={400}
@@ -136,7 +138,7 @@ const QuickViewModal = () => {
               </span>
 
               <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
-                {product.title}
+                {product?.translations?.[0]?.name}
               </h3>
 
               <div className="flex flex-wrap items-center gap-5 mb-6">
@@ -260,7 +262,7 @@ const QuickViewModal = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {product.inStock ? (
+                  {product?.inStock ? (
                     <CheckIcon width={20} height={20} fill="#22AD5C" />
                   ) : (
                     <ExclamationIcon width={20} height={20} fill="#E02424" />
@@ -285,10 +287,11 @@ const QuickViewModal = () => {
 
                   <span className="flex items-center gap-2">
                     <span className="font-semibold text-dark text-xl xl:text-heading-4">
-                      {product.discountedPrice} TMT
+                      {product?.discounts[0]?.value}{" "}
+                      {product?.discounts[0]?.type === "FIXED" ? "TMT" : "%"}
                     </span>
                     <span className="font-medium text-dark-4 text-lg xl:text-2xl line-through">
-                      {product.price} TMT
+                      {product?.price} TMT
                     </span>
                   </span>
                 </div>

@@ -1,9 +1,9 @@
 import React from "react";
-import { useCart } from "@/hooks/useCart";
+import { CartItem, useCart } from "@/hooks/useCart";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-const SingleItem = ({ item }) => {
+const SingleItem = ({ item }: { item: CartItem }) => {
   const translate = useTranslations("Common.cartSidebarModal");
   const { removeItemFromCart } = useCart();
 
@@ -15,12 +15,14 @@ const SingleItem = ({ item }) => {
     <div className="flex items-center justify-between gap-5">
       <div className="w-full flex items-center gap-6">
         <div className="flex items-center justify-center rounded-[10px] bg-gray-3 max-w-[90px] w-full h-22.5">
-          <Image
-            src={item.imgs?.thumbnails[0]}
-            alt="product"
-            width={100}
-            height={100}
-          />
+          {item.images?.[0] && (
+            <Image
+              src={item.images[0].thumbnail}
+              alt={item.images[0].altText}
+              width={100}
+              height={100}
+            />
+          )}
         </div>
 
         <div>

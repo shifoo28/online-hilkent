@@ -1,22 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Product } from "@/types/product";
 
 type InitialState = {
-  value: Product;
+  value: Product | null;
 };
 
-const initialState = {
-  value: {
-    title: "",
-    reviewCount: 0,
-    price: 0,
-    discountedPrice: 0,
-    img: "",
-    id: 0,
-    images: [],
-    imgs: { thumbnails: [], previews: [] },
-  } as Product,
-} as InitialState;
+const initialState: InitialState = {
+  value: null,
+};
 
 export const quickView = createSlice({
   name: "quickView",

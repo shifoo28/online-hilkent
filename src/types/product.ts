@@ -1,16 +1,31 @@
+import {
+  Discount,
+  ProductImage,
+  ProductProperty,
+  ProductTranslation,
+  Review,
+} from "@prisma/client";
+
 export type Product = {
-  id: number;
-  title: string;
+  id: string;
   price: number;
-  discountedPrice: number;
-  imgs?: {
-    thumbnails: string[];
-    previews: string[];
-  };
-  image?: string;
-  description?: string;
-  category?: string;
-  inStock?: boolean;
-  rating?: number;
-  reviewCount: number;
+  categoryId: number;
+  inStock: boolean;
+  rating: number;
+  reviews: Review[];
+  properties: ProductProperty[];
+  translations: ProductTranslation[];
+  discounts: Discount[];
+  images: ProductImage[];
+};
+
+export type HeroProduct = {
+  id: number;
+  productId: string;
+  isSlider: boolean;
+  headline?: string;
+  subline?: string;
+  image: string;
+  position: number;
+  product?: Product | null;
 };

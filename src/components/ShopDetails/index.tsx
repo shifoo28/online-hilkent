@@ -65,7 +65,7 @@ const ShopDetails = () => {
     <>
       <Breadcrumb title={translate("title")} pages={["shop details"]} />
 
-      {product.title === "" ? (
+      {product.translations?.[0]?.name === "" ? (
         "Please add product"
       ) : (
         <>
@@ -97,9 +97,9 @@ const ShopDetails = () => {
                         </svg>
                       </button>
 
-                      {product.imgs?.previews?.[previewImg] && (
+                      {product.images[0] && (
                         <Image
-                          src={product.imgs.previews[previewImg]}
+                          src={product.images[0].url}
                           alt="products-details"
                           width={400}
                           height={400}
@@ -109,7 +109,7 @@ const ShopDetails = () => {
                   </div>
 
                   <div className="flex flex-wrap sm:flex-nowrap gap-4.5 mt-6">
-                    {product.imgs?.thumbnails.map((item, key) => (
+                    {product.images?.map((item, key) => (
                       <button
                         onClick={() => setPreviewImg(key)}
                         key={key}
@@ -122,7 +122,7 @@ const ShopDetails = () => {
                         <Image
                           width={50}
                           height={50}
-                          src={item}
+                          src={item.thumbnail}
                           alt="thumbnail"
                         />
                       </button>
@@ -134,7 +134,7 @@ const ShopDetails = () => {
                 <div className="max-w-[539px] w-full">
                   <div className="flex items-center justify-between mb-3">
                     <h2 className="font-semibold text-xl sm:text-2xl xl:text-custom-3 text-dark">
-                      {product.title}
+                      {product.translations?.[0]?.name}
                     </h2>
 
                     <div className="min-w-max inline-flex font-medium text-custom-sm text-white bg-blue rounded py-0.5 px-2.5">
@@ -149,7 +149,7 @@ const ShopDetails = () => {
 
                       <span>
                         {" "}
-                        ({product.reviewCount} {translate("review")}){" "}
+                        ({product.reviews.length} {translate("review")}){" "}
                       </span>
                     </div>
 
@@ -188,7 +188,8 @@ const ShopDetails = () => {
                     </span>{" "}
                     <span className="line-through">
                       {" "}
-                      {product.discountedPrice} TMT
+                      {product.discounts[0]?.value}{" "}
+                      {product.discounts[0]?.type === "FIXED" ? "TMT" : "%"}
                     </span>
                   </h3>
 

@@ -18,7 +18,7 @@ async function verifyOtp(subject: string, inputOtp: string): Promise<boolean> {
   if (otp !== inputOtp) throw new Error("Invalid OTP");
 
   // Store all user info by hashing password in DB password before deleting OTP, so we can use it for future authentication
-  storeUserInDB({ phone: subject, password, name: fullName });
+  storeUserInDB({ phone: parseInt(subject), password, name: fullName });
 
   // OTP is valid → delete immediately to prevent reuse
   await redis.del(key);
@@ -30,7 +30,7 @@ async function storeUserInDB({
   phone,
   password,
 }: {
-  phone: string;
+  phone: number;
   password?: string;
   name?: string;
 }) {

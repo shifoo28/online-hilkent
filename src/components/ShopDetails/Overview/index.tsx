@@ -5,7 +5,7 @@ import { tabs } from "../data";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslations } from "next-intl";
 
-const Overview = ({ id }: { id: number }) => {
+const Overview = ({ id }: { id: string }) => {
   const translate = useTranslations("ShopDetails.overview");
   const [activeTab, setActiveTab] = useState("tabOne");
   const { user } = useAuth();

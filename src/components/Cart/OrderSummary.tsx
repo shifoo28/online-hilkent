@@ -32,11 +32,13 @@ const OrderSummary = () => {
               <div>
                 <p className="text-dark">{item.title}</p>
               </div>
-              <div>
-                <p className="text-dark text-right">
-                  {item.discountedPrice * item.quantity} TMT
-                </p>
-              </div>
+              {item.discountedPrice && (
+                <div>
+                  <p className="text-dark text-right">
+                    {item.discountedPrice * item.quantity} TMT
+                  </p>
+                </div>
+              )}
             </div>
           ))}
 

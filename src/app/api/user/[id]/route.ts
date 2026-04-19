@@ -6,12 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params;
-    const userId = parseInt(id);
-
-    if (isNaN(userId)) {
-      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
-    }
+    const { id: userId } = await params;
 
     // Fetch user with related data
     const user = await prisma.user.findUnique({
@@ -23,13 +18,11 @@ export async function GET(
         phone: true,
         avatar: true,
         bio: true,
-        memberSince: true,
         createdAt: true,
         _count: {
           select: {
-            orders: true,
-            reviews: true,
-            wishlist: true,
+            Orders: true,
+            Reviews: true,
           },
         },
       },
@@ -47,7 +40,6 @@ export async function GET(
       select: {
         id: true,
         orderId: true,
-        title: true,
         status: true,
         createdAt: true,
       },
@@ -69,7 +61,7 @@ export async function GET(
     const recentActivity = [
       ...recentOrders.map((order) => ({
         type: "order" as const,
-        description: `Placed order #${order.orderId} - ${order.title}`,
+        description: `Placed order #${order.orderId} - ${order.status}`,
         date: formatDate(order.createdAt),
       })),
       ...recentReviews.map((review) => ({
@@ -87,15 +79,14 @@ export async function GET(
       name: user.name || "Anonymous User",
       email: user.email || "",
       avatar: user.avatar || "/images/users/default-avatar.jpg",
-      memberSince: user.memberSince.toLocaleDateString("en-US", {
+      memberSince: user.createdAt.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
       }),
       bio: user.bio || "No bio available",
       stats: {
-        orders: user._count.orders,
-        reviews: user._count.reviews,
-        wishlist: user._count.wishlist,
+        orders: user._count.Orders,
+        reviews: user._count.Reviews,
       },
       recentActivity,
     };

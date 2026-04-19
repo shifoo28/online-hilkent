@@ -6,24 +6,19 @@ import { mapPrismaProduct } from "@/lib/products";
 export const revalidate = 60; // seconds
 
 // GET /api/products - Get all products with pagination and filters
-// GET /api/products?id=1 - Get specific product with reviews
+// GET /api/products?id=1 - Get specific product with Reviews
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get("id");
 
     if (productId) {
-      const id = parseInt(productId, 10);
-      if (Number.isNaN(id)) {
-        return NextResponse.json({ error: "Invalid id" }, { status: 400 });
-      }
-
-      // Get specific product with reviews
+      // Get specific product with Reviews
       const product = await prisma.product.findUnique({
-        where: { id },
+        where: { id: productId },
         include: {
           _count: {
-            select: { reviews: true },
+            select: { Reviews: true },
           },
         },
       });
@@ -39,7 +34,7 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
         ...baseProduct,
-        reviewCount: product._count.reviews,
+        reviewCount: product._count.Reviews,
       });
     }
 
@@ -94,7 +89,7 @@ export async function GET(request: NextRequest) {
       where,
       include: {
         _count: {
-          select: { reviews: true },
+          select: { Reviews: true },
         },
       },
       orderBy: { createdAt: "desc" },

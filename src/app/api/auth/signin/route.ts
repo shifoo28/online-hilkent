@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     // 1. Check if phone number exists
     const user = await prisma.user.findUnique({
-      where: { phone: phoneNumber },
+      where: { phone: +phoneNumber },
     });
     if (!user) throw { message: "Phone number not registered", status: 404 };
 

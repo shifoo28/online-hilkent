@@ -7,10 +7,10 @@ import BestSeller from "./BestSeller";
 import CounDown from "./Countdown";
 import Testimonials from "./Testimonials";
 import Newsletter from "../Common/Newsletter";
-import { getProducts } from "@/lib/products";
+import { getHeroProducts } from "@/lib/products";
 
 const Home = async () => {
-  const products = await getProducts();
+  const products = await getHeroProducts();
 
   return (
     <main>

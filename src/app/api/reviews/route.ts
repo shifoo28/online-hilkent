@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
     }
 
     const where: any = {};
-    if (productId) where.productId = parseInt(productId);
-    if (userId) where.userId = parseInt(userId);
+    if (productId) where.productId = productId;
+    if (userId) where.userId = userId;
 
     const reviews = await prisma.review.findMany({
       where,
@@ -33,8 +33,12 @@ export async function GET(request: NextRequest) {
         product: {
           select: {
             id: true,
-            name: true,
-            image: true,
+            Translations: {
+              select: {
+                name: true,
+                locale: true,
+              },
+            },
           },
         },
       },
@@ -67,8 +71,8 @@ export async function POST(request: NextRequest) {
     // Check if user has already reviewed this product
     const existingReview = await prisma.review.findFirst({
       where: {
-        userId: parseInt(userId),
-        productId: parseInt(productId),
+        userId: userId,
+        productId: productId,
       },
     });
 
@@ -81,8 +85,8 @@ export async function POST(request: NextRequest) {
 
     const review = await prisma.review.create({
       data: {
-        userId: parseInt(userId),
-        productId: parseInt(productId),
+        userId: userId,
+        productId: productId,
         rating: parseInt(rating),
         comment: comment || null,
       },
@@ -97,8 +101,12 @@ export async function POST(request: NextRequest) {
         product: {
           select: {
             id: true,
-            name: true,
-            image: true,
+            Translations: {
+              select: {
+                name: true,
+                locale: true,
+              },
+            },
           },
         },
       },

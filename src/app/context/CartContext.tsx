@@ -1,4 +1,5 @@
 "use client";
+import { ProductImage } from "@prisma/client";
 import React, {
   createContext,
   useContext,
@@ -9,15 +10,12 @@ import React, {
 } from "react";
 
 export type CartItem = {
-  id: number;
+  id: string;
   title: string;
   price: number;
   discountedPrice: number;
   quantity: number;
-  imgs?: {
-    thumbnails: string[];
-    previews: string[];
-  };
+  images: ProductImage[];
 };
 
 const STORAGE_KEY = "cart";
@@ -48,12 +46,12 @@ function saveCart(items: CartItem[]) {
 interface CartContextType {
   items: CartItem[];
   addItemToCart: (item: CartItem) => void;
-  removeItemFromCart: (id: number) => void;
+  removeItemFromCart: (id: string) => void;
   updateCartItemQuantity: ({
     id,
     quantity,
   }: {
-    id: number;
+    id: string;
     quantity: number;
   }) => void;
   removeAllItemsFromCart: () => void;
@@ -93,24 +91,24 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       const existingItem = prev.find((i) => i.id === item.id);
       if (existingItem) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
+          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i,
         );
       }
       return [...prev, item];
     });
   }, []);
 
-  const removeItemFromCart = useCallback((id: number) => {
+  const removeItemFromCart = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
   const updateCartItemQuantity = useCallback(
-    ({ id, quantity }: { id: number; quantity: number }) => {
+    ({ id, quantity }: { id: string; quantity: number }) => {
       setItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item)),
       );
     },
-    []
+    [],
   );
 
   const removeAllItemsFromCart = useCallback(() => {
@@ -139,7 +137,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       updateCartItemQuantity,
       removeAllItemsFromCart,
       totalPrice,
-    ]
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

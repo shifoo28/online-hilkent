@@ -4,19 +4,41 @@ import { Autoplay, Pagination } from "swiper/modules";
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { HeroProduct } from "@/types/product";
 
 // Import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css";
 
-type HeroSlide = {
-  id: number;
-  productId: number;
-  image: string;
-  discount: string;
+const mapHeroSlide = (heroProduct: HeroProduct) => {
+  const discount = heroProduct.product?.discounts?.[0]?.value;
+  const type = heroProduct.product?.discounts?.[0]?.type;
+
+  const discountedPrice =
+    type === "PERCENTAGE"
+      ? `${discount}%`
+      : type === "FIXED"
+        ? `-${discount} TMT`
+        : "New";
+
+  return {
+    id: heroProduct.id,
+    productId: heroProduct.productId,
+    isSlider: heroProduct.isSlider,
+    position: heroProduct.position,
+    headline:
+      heroProduct.headline ||
+      heroProduct.product?.translations?.[0]?.name ||
+      "",
+    subline: heroProduct.subline || "",
+    image: heroProduct.image,
+    discount: discountedPrice,
+    discountType: type,
+  };
 };
 
-const HeroCarousel = ({ slides }: { slides: HeroSlide[] }) => {
+const HeroCarousel = ({ slides }: { slides: HeroProduct[] }) => {
+  const heroSlides = slides.map(mapHeroSlide);
   const translate = useTranslations("Home.hero");
 
   return (
@@ -33,16 +55,16 @@ const HeroCarousel = ({ slides }: { slides: HeroSlide[] }) => {
       modules={[Autoplay, Pagination]}
       className="hero-carousel"
     >
-      {slides.map((item) => (
+      {heroSlides.map((item) => (
         <SwiperSlide key={item.id}>
-          <div className="flex items-center pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
-            <div className="max-w-[394px] py-10 sm:py-15 lg:py-24.5 pl-4 sm:pl-7.5 lg:pl-12.5">
+          <div className="flex items-center justify-between pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
+            <div className="max-w-[394px] py-10 sm:py-15 lg:py-16.5 pl-4 sm:pl-7.5 lg:pl-12.5">
               <div className="flex items-center gap-4 mb-7.5 sm:mb-10">
                 <span className="block font-semibold text-heading-3 sm:text-heading-1 text-blue">
                   {item.discount}
                 </span>
                 <span className="block text-dark text-sm sm:text-custom-1 sm:leading-[24px]">
-                  {translate("discount")}
+                  {item.discountType ? translate("discount") : null}
                 </span>
               </div>
 

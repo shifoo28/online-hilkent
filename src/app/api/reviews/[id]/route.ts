@@ -7,12 +7,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params;
-    const reviewId = parseInt(id);
-
-    if (isNaN(reviewId)) {
-      return NextResponse.json({ error: "Invalid review ID" }, { status: 400 });
-    }
+    const { id: reviewId } = await params;
 
     const body = await request.json();
     const { rating, comment } = body;
@@ -35,8 +30,17 @@ export async function PUT(
         product: {
           select: {
             id: true,
-            name: true,
-            image: true,
+            Images: {
+              select: {
+                url: true,
+              },
+            },
+            Translations: {
+              select: {
+                name: true,
+                locale: true,
+              },
+            },
           },
         },
       },
@@ -65,9 +69,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const reviewId = parseInt(id);
+    const reviewId = id;
 
-    if (isNaN(reviewId)) {
+    if (!reviewId) {
       return NextResponse.json({ error: "Invalid review ID" }, { status: 400 });
     }
 

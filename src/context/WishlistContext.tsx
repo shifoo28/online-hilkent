@@ -42,13 +42,13 @@ function saveWishlist(items: WishlistItem[]) {
 type WishlistContextType = {
   items: WishlistItem[];
   addItem: (item: WishlistItem) => void;
-  removeItem: (id: number) => void;
+  removeItem: (id: string) => void;
   clearWishlist: () => void;
-  isInWishlist: (id: number) => boolean;
+  isInWishlist: (id: string) => boolean;
 };
 
 const WishlistContext = createContext<WishlistContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
@@ -76,14 +76,14 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
         return prev.map((i) =>
           i.id === item.id
             ? { ...i, quantity: (i.quantity || 0) + (item.quantity || 0) }
-            : i
+            : i,
         );
       }
       return [...prev, item];
     });
   }, []);
 
-  const removeItem = useCallback((id: number) => {
+  const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
@@ -92,8 +92,8 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const isInWishlist = useCallback(
-    (id: number) => items.some((item) => item.id === id),
-    [items]
+    (id: string) => items.some((item) => item.id === id),
+    [items],
   );
 
   return (

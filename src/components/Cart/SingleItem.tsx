@@ -49,9 +49,11 @@ const SingleItem = ({ item }) => {
         </div>
       </div>
 
-      <div className="min-w-[180px]">
-        <p className="text-dark">{item.discountedPrice} TMT</p>
-      </div>
+      {item.discountedPrice && (
+        <div className="min-w-[180px]">
+          <p className="text-dark">{item.discountedPrice} TMT</p>
+        </div>
+      )}
 
       <div className="min-w-[275px]">
         <div className="w-max flex items-center rounded-md border border-gray-3">

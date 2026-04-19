@@ -3,40 +3,40 @@ import HeroCarousel from "./HeroCarousel";
 import HeroFeature from "./HeroFeature";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Product } from "@/types/product";
+import { HeroProduct } from "@/types/product";
 
-const mapHeroSlide = (product: Product) => {
-  const discountPrice = product.discountedPrice;
-  const discountPercent =
-    product.price > discountPrice
-      ? `${Math.round(((product.price - discountPrice) / product.price) * 100)}%`
-      : "New";
+const mapHeroCard = (heroProduct: HeroProduct) => {
+  const product = heroProduct.product;
+  const price = product?.price || 0;
+  const discountObj = product?.discounts?.[0];
+  let discountedPrice = price;
+
+  if (discountObj) {
+    if (discountObj.type === "PERCENTAGE") {
+      discountedPrice = price * (1 - discountObj.value / 100);
+    } else if (discountObj.type === "FIXED") {
+      discountedPrice = price - discountObj.value;
+    }
+  }
 
   return {
-    id: product.id,
-    productId: product.id,
-    image: product.image,
-    discount: discountPercent,
+    id: heroProduct.id,
+    productId: heroProduct.id,
+    name: heroProduct.headline,
+    image: heroProduct.image,
+    price: price,
+    discount: discountedPrice,
   };
 };
 
-const mapHeroCard = (product: Product) => ({
-  id: product.id,
-  productId: product.id,
-  name: product.title,
-  image: product.image,
-  price: product.price,
-  discountPrice: product.discountedPrice,
-});
-
 type HeroProps = {
-  products: Product[];
+  products: HeroProduct[];
 };
 
 const Hero = ({ products }: HeroProps) => {
   const translate = useTranslations("Home.hero");
-  const heroProducts = products.slice(0, 2).map(mapHeroCard);
-  const heroSlides = products.slice(0, 2).map(mapHeroSlide);
+  const heroSlides = products.filter((p) => p.isSlider);
+  const heroProducts = products.filter((p) => !p.isSlider).map(mapHeroCard);  
 
   return (
     <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-67 sm:pt-50 lg:pt-46 xl:pt-51.5 bg-[#E5EAF4]">
@@ -64,9 +64,9 @@ const Hero = ({ products }: HeroProps) => {
                   key={item.id}
                   className="w-full relative rounded-[10px] bg-white p-4 sm:p-7.5"
                 >
-                  <div className="flex items-center gap-14">
-                    <div>
-                      <h2 className="max-w-[153px] font-semibold text-dark text-xl mb-20">
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex flex-col justify-between xl:min-h-[190px]">
+                      <h2 className="max-w-full font-semibold text-dark text-xl">
                         <a href={`/shop-details/${item.productId}`}>
                           {item.name}
                         </a>
@@ -76,22 +76,23 @@ const Hero = ({ products }: HeroProps) => {
                         <p className="font-medium text-dark-4 text-custom-sm mb-1.5">
                           {translate("offer")}
                         </p>
-                        <span className="flex items-center gap-3">
-                          <span className="font-medium text-heading-5 text-red">
-                            {item.discountPrice} TMT
+                        <span className="flex flex-col items-start">
+                          <span className="font-medium text-heading-5 text-green">
+                            {item.discount} TMT
                           </span>
-                          <span className="font-medium text-2xl text-dark-4 line-through">
-                            {item.price} TMT
-                          </span>
+                          {item.discount !== item.price && (
+                            <span className="font-medium text-2xl text-dark-4 line-through">
+                              {item.price} TMT
+                            </span>
+                          )}
                         </span>
                       </div>
                     </div>
-
-                    <div>
+                    <div className="min-w-max">
                       <Image
                         src={item.image}
-                        alt={item.name}
-                        width={123}
+                        alt={item.name || "Hilkent product"}
+                        width={135}
                         height={161}
                       />
                     </div>

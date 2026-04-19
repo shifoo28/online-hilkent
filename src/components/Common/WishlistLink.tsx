@@ -2,16 +2,20 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 type WishlistLinkProps = {};
 
 const WishlistLink = ({}: WishlistLinkProps) => {
   const translate = useTranslations("Header");
-  let itemsInWishlist = false;
-  localStorage.getItem("wishlist")
-    ? (itemsInWishlist =
-        JSON.parse(localStorage.getItem("wishlist")!).length > 0)
-    : (itemsInWishlist = false);
+  const [itemsInWishlist, setItemsInWishlist] = useState(false);
+
+  useEffect(() => {
+    const wishlist = localStorage.getItem("wishlist");
+    if (wishlist) {
+      setItemsInWishlist(JSON.parse(wishlist).length > 0);
+    }
+  }, []);
 
   return (
     <Link

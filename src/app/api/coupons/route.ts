@@ -48,8 +48,8 @@ export async function POST(request: NextRequest) {
       valid: true,
       coupon: {
         code: coupon.code,
-        discountAmount: coupon.discountAmount,
-        discountPercentage: coupon.discountPercentage,
+        discount: coupon.discount,
+        discountType: coupon.discountType,
         minOrderAmount: minAmount,
         description: coupon.description,
       },

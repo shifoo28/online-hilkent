@@ -35,21 +35,19 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
           <div className="min-w-[128px]">
             <p
               className={`inline-block text-custom-sm  py-0.5 px-2.5 rounded-[30px] capitalize ${
-                orderItem.status === "delivered"
+                orderItem.status === "DELIVERED"
                   ? "text-green bg-green-light-6"
-                  : orderItem.status === "on-hold"
+                  : orderItem.status === "CANCELLED"
                     ? "text-red bg-red-light-6"
-                    : orderItem.status === "processing"
+                    : orderItem.status === "PROCESSING"
                       ? "text-yellow bg-yellow-light-4"
-                      : "Unknown Status"
+                      : orderItem.status === "SHIPPED"
+                        ? "text-blue bg-blue-light-6"
+                        : "text-gray bg-gray-light-6"
               }`}
             >
-              {orderItem.status}
+              {orderItem.status.toLowerCase()}
             </p>
-          </div>
-
-          <div className="min-w-[213px]">
-            <p className="text-custom-sm text-dark">{orderItem.title}</p>
           </div>
 
           <div className="min-w-[113px]">
@@ -68,52 +66,48 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
       {smallView && (
         <div className="block md:hidden">
           <div className="py-4.5 px-7.5">
-            <div className="">
+            <div>
               <p className="text-custom-sm text-dark">
                 <span className="font-bold pr-2"> Order:</span> #
                 {orderItem.orderId.slice(-8)}
               </p>
             </div>
-            <div className="">
+            <div>
               <p className="text-custom-sm text-dark">
                 <span className="font-bold pr-2">Date:</span>{" "}
                 {orderItem.createdAt}
               </p>
             </div>
 
-            <div className="">
+            <div>
               <p className="text-custom-sm text-dark">
                 <span className="font-bold pr-2">Status:</span>{" "}
                 <span
                   className={`inline-block text-custom-sm  py-0.5 px-2.5 rounded-[30px] capitalize ${
-                    orderItem.status === "delivered"
+                    orderItem.status === "DELIVERED"
                       ? "text-green bg-green-light-6"
-                      : orderItem.status === "on-hold"
+                      : orderItem.status === "CANCELLED"
                         ? "text-red bg-red-light-6"
-                        : orderItem.status === "processing"
+                        : orderItem.status === "PROCESSING"
                           ? "text-yellow bg-yellow-light-4"
-                          : "Unknown Status"
+                          : orderItem.status === "SHIPPED"
+                            ? "text-blue bg-blue-light-6"
+                            : "text-gray bg-gray-light-6"
                   }`}
                 >
-                  {orderItem.status}
+                  {orderItem.status.toLowerCase()}
                 </span>
               </p>
             </div>
 
-            <div className="">
-              <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2">Title:</span> {orderItem.title}
-              </p>
-            </div>
-
-            <div className="">
+            <div>
               <p className="text-custom-sm text-dark">
                 <span className="font-bold pr-2">Total: </span>
                 {orderItem.total} TMT
               </p>
             </div>
 
-            <div className="">
+            <div>
               <p className="text-custom-sm text-dark flex items-center">
                 <span className="font-bold pr-2">Actions:</span>{" "}
                 <OrderActions

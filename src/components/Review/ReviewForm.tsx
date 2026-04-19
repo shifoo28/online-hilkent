@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface ReviewFormProps {
-  productId: number;
-  userId: number;
+  productId: string;
+  userId: string;
   onReviewSubmitted?: () => void;
 }
 
@@ -56,7 +56,7 @@ const ReviewForm = ({
     } catch (error) {
       console.error("Error submitting review:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to submit review"
+        error instanceof Error ? error.message : "Failed to submit review",
       );
     } finally {
       setIsSubmitting(false);

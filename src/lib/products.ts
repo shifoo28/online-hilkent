@@ -1,50 +1,87 @@
 import prisma from "@/lib/prisma";
 import { Product } from "@/types/product";
-
-const DEFAULT_IMAGE = "/images/products/default-product.png";
+import { HeroProduct } from "@prisma/client";
 
 export function mapPrismaProduct(product: any): Product {
-  const image = product.image ?? DEFAULT_IMAGE;
-  const previews = [image];
-  const thumbnails = [image];
-
   return {
     id: product.id,
-    title: product.name,
     price: product.price,
-    discountedPrice: product.price,
-    imgs: {
-      thumbnails,
-      previews,
-    },
-    // keep additional fields for downstream usage
-    image,
-    description: product.description,
-    category: product.category,
+    categoryId: product.categoryId,
     inStock: product.inStock,
     rating: product.rating,
-  } as Product;
+    reviews: product.Reviews || [],
+    discounts: product.Discounts || [],
+    properties: product.Properties || [],
+    translations: product.Translations || [],
+    images: product.Images || [],
+  };
+}
+
+export function mapPrismaHeroProduct(
+  heroProduct: any,
+): HeroProduct & { product: Product | null } {
+  return {
+    id: heroProduct.id,
+    productId: heroProduct.productId,
+    isSlider: heroProduct.isSlider,
+    headline: heroProduct.headline,
+    subline: heroProduct.subline,
+    image: heroProduct.image,
+    position: heroProduct.position,
+    createdAt: heroProduct.createdAt,
+    updatedAt: heroProduct.updatedAt,
+    product: heroProduct.product ? mapPrismaProduct(heroProduct.product) : null,
+  };
 }
 
 export async function getProducts(): Promise<Product[]> {
   const products = await prisma.product.findMany({
     include: {
-      _count: {
-        select: { reviews: true },
+      Reviews: {
+        include: {
+          user: true,
+        },
       },
+      Images: true,
+      Discounts: true,
+      Properties: true,
+      Translations: true,
     },
     orderBy: { createdAt: "desc" },
   });
+
   return products.map(mapPrismaProduct);
 }
 
-export async function getProductById(id: number): Promise<Product | null> {
+export async function getHeroProducts(): Promise<
+  (HeroProduct & { product: Product | null })[]
+> {
+  const heroProducts = await prisma.heroProduct.findMany({
+    include: {
+      product: {
+        include: {
+          Discounts: true,
+        },
+      },
+    },
+  });
+
+  return heroProducts.map(mapPrismaHeroProduct);
+}
+
+export async function getProductById(id: string): Promise<Product | null> {
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
-      _count: {
-        select: { reviews: true },
+      Reviews: {
+        include: {
+          user: true,
+        },
       },
+      Images: true,
+      Discounts: true,
+      Properties: true,
+      Translations: true,
     },
   });
   if (!product) return null;

@@ -39,7 +39,7 @@ export async function PUT(request: NextRequest) {
       });
 
       const user = await prisma.user.findUnique({
-        where: { phone: decoded.userId },
+        where: { phone: parseInt(decoded.userId) },
         select: { id: true },
       });
 
@@ -53,7 +53,7 @@ export async function PUT(request: NextRequest) {
 
     // Update user
     const updatedUser = await prisma.user.update({
-      where: { phone: decoded.userId },
+      where: { phone: parseInt(decoded.userId) },
       data: {
         ...(name && { name }),
         ...(email && { email }),
@@ -67,13 +67,11 @@ export async function PUT(request: NextRequest) {
         phone: true,
         avatar: true,
         bio: true,
-        memberSince: true,
         createdAt: true,
         _count: {
           select: {
-            orders: true,
-            reviews: true,
-            wishlist: true,
+            Orders: true,
+            Reviews: true,
           },
         },
       },
@@ -87,7 +85,6 @@ export async function PUT(request: NextRequest) {
       select: {
         id: true,
         orderId: true,
-        title: true,
         status: true,
         createdAt: true,
       },
@@ -108,7 +105,7 @@ export async function PUT(request: NextRequest) {
     const recentActivity = [
       ...recentOrders.map((order) => ({
         type: "order" as const,
-        description: `Placed order #${order.orderId} - ${order.title}`,
+        description: `Placed order #${order.orderId} - ${order.status}`,
         date: formatDate(order.createdAt),
       })),
       ...recentReviews.map((review) => ({
@@ -125,15 +122,14 @@ export async function PUT(request: NextRequest) {
       name: updatedUser.name || "Anonymous User",
       email: updatedUser.email || "",
       avatar: updatedUser.avatar || "/images/users/default-avatar.jpg",
-      memberSince: updatedUser.memberSince.toLocaleDateString("en-US", {
+      memberSince: updatedUser.createdAt.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
       }),
       bio: updatedUser.bio || "No bio available",
       stats: {
-        orders: updatedUser._count.orders,
-        reviews: updatedUser._count.reviews,
-        wishlist: updatedUser._count.wishlist,
+        orders: updatedUser._count.Orders,
+        reviews: updatedUser._count.Reviews,
       },
       recentActivity,
     };

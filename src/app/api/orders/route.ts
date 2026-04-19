@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export interface CreateOrderRequest {
-  userId?: number;
+  userId: string;
   items: Array<{
-    productId: number;
+    productId: string;
     quantity: number;
     price: number;
   }>;
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      couponDiscount = coupon.discountAmount || 0;
+      couponDiscount = coupon.discount || 0;
     }
 
     // Generate order ID
@@ -135,37 +135,23 @@ export async function POST(request: NextRequest) {
     const order = await prisma.order.create({
       data: {
         orderId,
-        userId: body.userId || 0, // 0 for guest users
-        title: `Order from ${firstName} ${lastName}`,
-        total: body.total.toString(),
-        status: "pending",
-        // Additional order metadata
-        ...(body.notes && {
-          notes: body.notes,
-        }),
+        userId: body.userId,
+        total: body.total.toString(), // Store as string to avoid floating point issues
+        status: "PENDING",
       },
     });
 
-    // Create order details (if OrderDetail model exists, otherwise store as JSON)
-    // For now, we'll store comprehensive order data in a separate model or record
-    const orderData = {
-      orderId: order.orderId,
-      items: body.items,
-      billingDetails: body.billingDetails,
-      shippingDetails: body.shippingDetails,
-      shippingMethod: body.shippingMethod,
-      paymentMethod: body.paymentMethod,
-      couponCode: body.couponCode,
-      notes: body.notes,
-      subtotal: body.subtotal,
-      shippingFee: body.shippingFee,
-      discount: body.discount || 0,
-      total: body.total,
-      createdAt: new Date().toISOString(),
-    };
+    // Create order items
+    const orderItems = body.items.map((item) => ({
+      orderId: order.id,
+      productId: item.productId,
+      quantity: item.quantity,
+      price: item.price.toString(),
+    }));
 
-    // Log order data for now (in production, you'd store this properly)
-    console.log("Order created:", orderData);
+    await prisma.orderItem.createMany({
+      data: orderItems,
+    });
 
     return NextResponse.json(
       {
@@ -204,7 +190,7 @@ export async function GET(request: NextRequest) {
 
     const orders = await prisma.order.findMany({
       where: {
-        userId: parseInt(userId, 10),
+        userId: userId,
       },
       orderBy: {
         createdAt: "desc",
@@ -215,6 +201,35 @@ export async function GET(request: NextRequest) {
             id: true,
             name: true,
             email: true,
+          },
+        },
+        OrderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                price: true,
+                Category: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+                Images: {
+                  select: {
+                    url: true,
+                    thumbnail: true,
+                    altText: true,
+                  },
+                },
+                Translations: {
+                  select: {
+                    name: true,
+                    locale: true,
+                  },
+                },
+              },
+            },
           },
         },
       },

@@ -1,88 +1,73 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import GenerateStars from "./generateStars";
-import { useTranslations } from "next-intl";
-
-interface Review {
-  id: number;
-  rating: number;
-  comment: string | null;
-  createdAt: string;
-  user: {
-    id: number;
-    name: string | null;
-    avatar: string | null;
-  };
-  product?: {
-    id: number;
-    name: string;
-    image: string | null;
-  };
-}
+import { useLocale, useTranslations } from "next-intl";
+import { getDateLocale } from "@/locales/map";
+import { useApiData } from "@/hooks/useApiCall";
+import { useApiError } from "@/hooks/useApiError";
+import { reviewsService } from "@/services/api";
+import type { ReviewResponse } from "@/types/api/responses";
+import type { PaginatedApiResponse } from "@/types/api/responses";
 
 interface ReviewListProps {
-  productId?: number;
-  userId?: number;
+  productId?: string;
+  userId?: string;
   limit?: number;
 }
 
 const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [averageRating, setAverageRating] = useState(0);
-  const [totalReviews, setTotalReviews] = useState(0);
+  const locale = useLocale();
   const translate = useTranslations("ShopDetails.overview.review");
+  const { handleError } = useApiError();
 
-  useEffect(() => {
-    fetchReviews();
-  }, [productId, userId]);
+  // Fetch reviews with proper type safety
+  const {
+    data: reviewsResponse,
+    loading,
+    error,
+  } = useApiData(
+    () =>
+      productId
+        ? reviewsService.getProductReviews(productId, {
+            page: 1,
+            pageSize: 100,
+          })
+        : userId
+          ? reviewsService.getUserReviews(userId, { page: 1, pageSize: 100 })
+          : reviewsService.getReviews({ page: 1, pageSize: 100 }),
+    [],
+    {
+      onError: (error) => {
+        handleError(error, {
+          showToast: true,
+          userMessage: translate("loadError") || "Failed to load reviews",
+        });
+      },
+    },
+  );
 
-  const fetchReviews = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (productId) params.append("productId", productId.toString());
-      if (userId) params.append("userId", userId.toString());
+  // Extract typed reviews data
+  const reviews: ReviewResponse[] = reviewsResponse?.data ?? [];
+  const totalReviews = reviews.length;
 
-      const response = await fetch(`/api/reviews?${params}`);
+  // Calculate average rating
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+      : 0;
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch reviews");
-      }
-
-      const data = await response.json();
-      setReviews(data);
-
-      // Calculate average rating if showing product reviews
-      if (productId && data.length > 0) {
-        const total = data.reduce(
-          (sum: number, review: Review) => sum + review.rating,
-          0
-        );
-        setAverageRating(total / data.length);
-        setTotalReviews(data.length);
-      }
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      toast.error("Failed to load reviews");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-
-    return date.toLocaleDateString("en-EN", {
+    return date.toLocaleDateString(getDateLocale(locale), {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
   };
 
-  const renderStars = (rating: number) => {
+  const renderStars = (rating: number): React.ReactNode => {
     return <GenerateStars rating={rating} size={4} />;
   };
 
@@ -109,6 +94,14 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-1 text-center">
+        <p className="text-red">{error.getUserMessage()}</p>
+      </div>
+    );
+  }
+
   const displayedReviews = limit ? reviews.slice(0, limit) : reviews;
 
   return (
@@ -127,15 +120,13 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {displayedReviews.map((review) => (
+          {displayedReviews.map((review: ReviewResponse) => (
             <div key={review.id} className="bg-white p-6 rounded-lg shadow-1">
               <div className="flex items-start gap-4">
                 {/* User Avatar */}
                 <div className="flex-shrink-0">
                   <Image
-                    src={
-                      review.user.avatar || "/images/users/default-avatar.jpg"
-                    }
+                    src={review.user.avatar || "/images/default-avatar.png"}
                     alt={review.user.name || "User"}
                     width={40}
                     height={40}
@@ -167,7 +158,7 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
                   {review.product && !productId && (
                     <div className="mt-3 pt-3 border-t border-gray-2">
                       <p className="text-sm text-dark-3">
-                        Review for: {review.product.name}
+                        Review for: {review.product.Translations[0]?.name}
                       </p>
                     </div>
                   )}
