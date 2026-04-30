@@ -96,10 +96,7 @@ export async function GET(request: NextRequest) {
       name: user.name || "Anonymous User",
       email: user.email || "",
       avatar: user.avatar || "/images/users/default-avatar.jpg",
-      memberSince: user.createdAt.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-      }),
+      createdAt: user.createdAt.toISOString(),
       bio: user.bio || "No bio available",
       stats: {
         orders: user._count.Orders,

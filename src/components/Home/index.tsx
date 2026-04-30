@@ -10,11 +10,11 @@ import Newsletter from "../Common/Newsletter";
 import { getHeroProducts } from "@/lib/products";
 
 const Home = async () => {
-  const products = await getHeroProducts();
+  const heroProducts = await getHeroProducts();
 
   return (
     <main>
-      <Hero products={products} />
+      <Hero products={heroProducts} />
       <Categories />
       <NewArrival />
       <PromoBanner />

@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { toast } from "react-hot-toast";
 import GenerateStars from "./generateStars";
 import { useLocale, useTranslations } from "next-intl";
 import { getDateLocale } from "@/locales/map";
@@ -9,7 +8,6 @@ import { useApiData } from "@/hooks/useApiCall";
 import { useApiError } from "@/hooks/useApiError";
 import { reviewsService } from "@/services/api";
 import type { ReviewResponse } from "@/types/api/responses";
-import type { PaginatedApiResponse } from "@/types/api/responses";
 
 interface ReviewListProps {
   productId?: string;

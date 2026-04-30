@@ -176,6 +176,152 @@
       "russian": "Rus dili"
     }
   },
+  "Account": {
+    "title": "Meniň hasabym",
+    "message": {
+      "deletionAddress": "Bu salgyny pozmak isleýändigiňize ynanýarsyňyzmy? Bu hereketi yzyna gaýtaryp bolmaýar.",
+      "unauthorized": "Hasabynyzy görmek üçin log in ediň",
+      "fetchUserError": "Hasabyňyzy ýükläp bolmady.",
+      "profileUpdated": "Maglumatlar üstünlikli üýtgedildi.",
+      "updateError": "Maglumatlary üýtgetmek başa barmady.",
+      "loading": "Hasabyňyz ýüklenýär...",
+      "loadingError": "Hasabyňyzy ýüklemekde ýalňyşlyk ýüze çykdy.",
+      "passwordMismatch": "Täze açar sözi we tassyklaýjy açar sözi gabat gelmedi."
+    },
+    "breadcrumb": {
+      "loading": "Hasabyňyz ýüklenýär...",
+      "error": "Hasabyňyzda ýalňyşlyk.",
+      "account": "Meniň hasabym",
+      "link": "hasabym"
+    },
+    "bar": {
+      "membersince": "{date} - den bäri agza",
+      "dashboard": "Dolandyryş paneli",
+      "orders": "Sargytlar",
+      "downloads": "Ýüklemeler",
+      "address": "Salgylar",
+      "reviews": "Teswirler",
+      "accountDetails": "Hasap maglumatlary",
+      "logout": "Çykyş"
+    },
+    "details": {
+      "dashboard": {
+        "greeting": "Salam {name} ({name} dälmi? ",
+        "logout": "Çykyş)",
+        "info": "Hasabyňyzyň dolandyryş panelinden soňky sargytlaryňyzy görüp, iberiş we töleg salgylaryňyzy dolandyryp, parolyňyzy we hasap maglumatlaryňyzy redaktirläp bilersiňiz",
+        "metrics": {
+          "totalOrders": "Ähli sargytlar",
+          "reviews": "Teswirler",
+          "wishlistItems": "Halanan harytlar"
+        }
+      },
+      "orders": {
+        "tableheader": {
+          "order": "Sargyt ID",
+          "date": "Senesi",
+          "status": "Ýagdaýy",
+          "total": "Jemi",
+          "actions": "Amallar"
+        },
+        "tablebody": {}
+      },
+      "downloads": {
+        "info": "Sizde häli ýüklemeler ýok."
+      },
+      "address": {
+        "terms": {
+          "billing": "Töleg geçilýän salgy",
+          "shipping": "Eltip berme salgy"
+        },
+        "label": {
+          "name": "Ady",
+          "email": "Email",
+          "phone": "Telefon",
+          "address": "Salgy",
+          "actions": "Amallar"
+        },
+        "billing": {
+          "title": "Töleg geçilýän salgylar"
+        },
+        "shipping": {
+          "title": "Eltip berme salgylar"
+        },
+        "actions": {
+          "edit": "Üýtget",
+          "delete": "Poz",
+          "setDefault": "Adaty salgy"
+        },
+        "message": {
+          "noAddress": "{type} tapylmady. Başlamak üçin birini goşuň!"
+        },
+        "modal": {
+          "titleNew": "{type} goşuň",
+          "titleEdit": "{type}ny üýtgediň",
+          "message": {
+            "required": "Talap edilýän meýdanlar doldurulmalydyr!",
+            "error": "Salgy ýatda saklananda ýalňyşlyk ýüze çykdy.",
+            "default": "{type}lary üçin adaty salgy"
+          },
+          "name": {
+            "label": "Gysga ady",
+            "placeholder": "Salgynyň gysgaça adyny giriziň"
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "Bu salgy üçin email adresini giriziň"
+          },
+          "phone": {
+            "label": "Telefon",
+            "placeholder": "Habarlaşmak üçin telefon belgisini giriziň"
+          },
+          "address": {
+            "label": "Doly menzil",
+            "placeholder": "Anyklyk açin menziliň doly görnüşini giriziň"
+          },
+          "buttonSave": "Ýatda sakla",
+          "buttonCancel": "Bes etmek"
+        }
+      },
+      "accountDetails": {
+        "formUser": {
+          "firstName": {
+            "label": "Ady",
+            "placeholder": "Adyňyzy giriziň"
+          },
+          "lastName": {
+            "label": "Familiýa",
+            "placeholder": "Familiýaňyzy giriziň"
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "example@example.com"
+          },
+          "defaultAddress": {
+            "label": "Adaty salgy",
+            "placeholder": "Adaty salgyňyzy giriziň"
+          },
+          "button": "Ýatda Sakla"
+        },
+        "info": "Bu, hasap bölümünde we siz ýazýan teswirlerde adyňyzyň nädip görkeziljekdigidir",
+        "formPassword": {
+          "title": "Açar sözi üýtgetmek",
+          "oldPassword": {
+            "label": "Häzirki Açar sözi",
+            "placeholder": "Häzirki açar sözüňizi giriziň"
+          },
+          "newPassword": {
+            "label": "Täze Açar sözi",
+            "placeholder": "Täze açar sözi dörediň"
+          },
+          "confirmPassword": {
+            "label": "Täze Açar sözi Tassykla",
+            "placeholder": "Täze açar sözüňizi tassyklaň"
+          },
+          "button": "Açar sözi üýtget"
+        }
+      }
+    }
+  },
   "Shop": {
     "pageTitleAll": "Ähli Harytlary Gözden Geçir",
     "pageTitleCategory": "{category} Harytlary Gözden Geçir",

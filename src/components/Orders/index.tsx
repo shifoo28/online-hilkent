@@ -6,12 +6,13 @@ import { useApiData } from "@/hooks/useApiCall";
 import { useApiError } from "@/hooks/useApiError";
 import { ordersService } from "@/services/api";
 import type { OrderResponse } from "@/types/api";
+import { UserProfile } from "@/types/profile";
 
 /**
  * Orders Component
  * Displays user's orders with type-safe API integration
  */
-const Orders = () => {
+const Orders = ({ user }: { user: UserProfile }) => {
   const { handleError } = useApiError();
 
   // Fetch orders with full type safety
@@ -20,14 +21,18 @@ const Orders = () => {
     data: ordersResponse,
     loading,
     error,
-  } = useApiData(() => ordersService.getOrders({ page: 1, pageSize: 50 }), [], {
-    onError: (error) => {
-      handleError(error, {
-        showToast: true,
-        userMessage: "Failed to load orders",
-      });
+  } = useApiData(
+    () => ordersService.getOrders({ page: 1, pageSize: 50, userId: user?.id }),
+    [],
+    {
+      onError: (error) => {
+        handleError(error, {
+          showToast: true,
+          userMessage: "Failed to load orders",
+        });
+      },
     },
-  });
+  );
 
   // Extract typed orders data
   const orders: OrderResponse[] = ordersResponse?.data ?? [];

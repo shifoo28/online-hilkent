@@ -8,23 +8,23 @@
 // ============================================================================
 
 export interface SignInRequest {
-  email: string;
+  phone: number;
   password: string;
 }
 
 export interface SignUpRequest {
-  email: string;
+  fullName: string;
+  phone: number;
   password: string;
   confirmPassword: string;
-  name: string;
 }
 
 export interface SendOtpRequest {
-  email: string;
+  phone: number;
 }
 
 export interface VerifyOtpRequest {
-  email: string;
+  phone: number;
   otp: string;
 }
 
@@ -39,8 +39,8 @@ export interface RefreshTokenRequest {
 export interface UpdateUserRequest {
   name?: string;
   email?: string;
-  phone?: string;
   avatar?: string;
+  bio?: string;
 }
 
 export interface UpdatePasswordRequest {
@@ -56,7 +56,7 @@ export interface UpdatePasswordRequest {
 export interface CreateReviewRequest {
   productId: string;
   rating: number;
-  comment?: string;
+  comment: string;
 }
 
 export interface UpdateReviewRequest {

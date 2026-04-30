@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
+import { hashPassword, verifyPassword } from "@/lib/bcrypt";
 
 const SECRET = process.env.JWT_SECRET!;
 
@@ -29,7 +30,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
 
     // Validate input
-    const { name, email, bio, avatar } = body;
+    const { name, email, bio, avatar, oldPassword, newPassword } = body;
 
     // Check if email is already taken by another user
     if (email) {
@@ -51,6 +52,21 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    // Check if user wants to change password and validate old password
+    if (newPassword) {
+      const user = await prisma.user.findUnique({
+        where: { phone: parseInt(decoded.userId) },
+        select: { passwordHash: true },
+      });
+
+      if (!user || !verifyPassword(oldPassword, user.passwordHash)) {
+        return NextResponse.json(
+          { error: "Invalid old password" },
+          { status: 400 },
+        );
+      }
+    }
+
     // Update user
     const updatedUser = await prisma.user.update({
       where: { phone: parseInt(decoded.userId) },
@@ -59,6 +75,7 @@ export async function PUT(request: NextRequest) {
         ...(email && { email }),
         ...(bio && { bio }),
         ...(avatar && { avatar }),
+        ...(newPassword && { passwordHash: await hashPassword(newPassword) }),
       },
       select: {
         id: true,

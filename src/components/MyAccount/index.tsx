@@ -32,12 +32,13 @@ const MyAccount = () => {
     lastName: "",
     email: "",
     address: "",
+    oldPassword: "",
+    newPassword: "",
   });
   const router = useRouter();
 
   // Use the addresses hook
   const {
-    addresses,
     addAddress,
     updateAddress,
     deleteAddress,
@@ -86,7 +87,7 @@ const MyAccount = () => {
   };
 
   const handleDeleteAddress = (id: string, type: "shipping" | "billing") => {
-    if (confirm("Are you sure you want to delete this address?")) {
+    if (confirm(translate("message.deletionAddress"))) {
       deleteAddress(id);
     }
   };
@@ -101,7 +102,7 @@ const MyAccount = () => {
 
         if (!response.ok) {
           if (response.status === 401) {
-            setError("Please log in to view your profile");
+            setError(translate("message.unauthorized"));
             router.push("/signin");
             return;
           }
@@ -112,7 +113,7 @@ const MyAccount = () => {
         setUser(userData);
       } catch (err) {
         console.error("Error fetching user profile:", err);
-        setError("Failed to load your profile. Please try again.");
+        setError(translate("message.fetchUserError"));
       } finally {
         setLoading(false);
       }
@@ -130,6 +131,8 @@ const MyAccount = () => {
         lastName: nameParts.slice(1).join(" ") || "",
         email: user.email || "",
         address: user.address || "",
+        oldPassword: "",
+        newPassword: "",
       });
     }
   }, [user]);
@@ -157,6 +160,8 @@ const MyAccount = () => {
         body: JSON.stringify({
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
+          oldPassword: formData.oldPassword,
+          newPassword: formData.newPassword,
         }),
       });
 
@@ -167,10 +172,10 @@ const MyAccount = () => {
 
       const updatedUser = await response.json();
       setUser(updatedUser);
-      alert("Profile updated successfully!");
+      alert(translate("message.updateSuccess") + formData.newPassword);
     } catch (err) {
       console.error("Error updating profile:", err);
-      setError("Failed to update profile. Please try again.");
+      setError(translate("message.updateError"));
     } finally {
       setUpdateLoading(false);
     }
@@ -203,13 +208,18 @@ const MyAccount = () => {
   if (loading) {
     return (
       <>
-        <Breadcrumb title="Loading Profile..." pages={["profile"]} />
+        <Breadcrumb
+          title={translate("breadcrumb.loading")}
+          pages={[translate("breadcrumb.link")]}
+        />
         <section className="overflow-hidden py-20 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="bg-white rounded-xl shadow-1 p-6 sm:p-8">
               <div className="flex items-center justify-center py-20">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue"></div>
-                <span className="ml-3 text-dark">Loading profile...</span>
+                <span className="ml-3 text-dark">
+                  {translate("message.loading")}
+                </span>
               </div>
             </div>
           </div>
@@ -221,7 +231,10 @@ const MyAccount = () => {
   if (error && !user) {
     return (
       <>
-        <Breadcrumb title="Profile Error" pages={["profile"]} />
+        <Breadcrumb
+          title={translate("breadcrumb.error")}
+          pages={[translate("breadcrumb.link")]}
+        />
         <section className="overflow-hidden py-20 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="bg-white rounded-xl shadow-1 p-6 sm:p-8">
@@ -230,7 +243,7 @@ const MyAccount = () => {
                   {error}
                 </div>
                 <p className="text-dark-2">
-                  Sorry, we couldn't load the profile information.
+                  {translate("message.loadingError")}
                 </p>
               </div>
             </div>
@@ -247,7 +260,10 @@ const MyAccount = () => {
 
   return (
     <>
-      <Breadcrumb title={"My Account"} pages={["account"]} />
+      <Breadcrumb
+        title={translate("breadcrumb.account")}
+        pages={[translate("breadcrumb.link")]}
+      />
 
       <section className="overflow-hidden py-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
@@ -270,11 +286,17 @@ const MyAccount = () => {
                       {user?.name || "User"}
                     </p>
                     <p className="text-custom-xs">
-                      Member Since{" "}
-                      {user?.createdAt?.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                      }) || "N/A"}
+                      {translate("bar.membersince", {
+                        date: user?.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                              },
+                            )
+                          : "N/A",
+                      })}
                     </p>
                   </div>
                 </div>
@@ -322,7 +344,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Dashboard
+                      {translate("bar.dashboard")}
                     </button>
 
                     <button
@@ -360,7 +382,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Orders
+                      {translate("bar.orders")}
                     </button>
 
                     <button
@@ -388,7 +410,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Downloads
+                      {translate("bar.downloads")}
                     </button>
 
                     <button
@@ -418,7 +440,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Addresses
+                      {translate("bar.address")}
                     </button>
 
                     <button
@@ -452,7 +474,7 @@ const MyAccount = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      Reviews
+                      {translate("bar.reviews")}
                     </button>
 
                     <button
@@ -484,7 +506,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Account Details
+                      {translate("bar.accountDetails")}
                     </button>
 
                     <button
@@ -517,7 +539,9 @@ const MyAccount = () => {
                           />
                         </svg>
                       )}
-                      {logoutLoading ? "Logging out..." : "Logout"}
+                      {logoutLoading
+                        ? "Logging out..."
+                        : translate("bar.logout")}
                     </button>
                   </div>
                 </div>
@@ -544,7 +568,7 @@ const MyAccount = () => {
                 activeTab === "orders" ? "block" : "hidden"
               }`}
             >
-              <OrdersTab />
+              <OrdersTab user={user} />
             </div>
             {/* <!-- orders tab content end -->
 
@@ -595,10 +619,10 @@ const MyAccount = () => {
             >
               <AccountDetailsTab
                 formData={formData}
-                error={error}
                 updateLoading={updateLoading}
                 handleInputChange={handleInputChange}
                 handleSaveProfile={handleSaveProfile}
+                error={error}
               />
             </div>
             {/* <!-- details tab content end -->

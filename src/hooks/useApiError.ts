@@ -36,10 +36,10 @@ export function useApiError() {
     }
 
     if (error instanceof Error) {
-      return error.message || "An unexpected error occurred";
+      return error.message || "Tüşünişölmin kaldym!";
     }
 
-    return "An unexpected error occurred";
+    return "Tüşünişölmin kaldym!";
   }, []);
 
   /**
@@ -155,9 +155,9 @@ function toApiError(error: unknown): ApiError {
   if (error instanceof Error) {
     return new ApiError(
       "UNKNOWN_ERROR" as any,
-      error.message || "An unexpected error occurred",
+      error.message || "Tüşünişölmin kaldym!",
     );
   }
 
-  return new ApiError("UNKNOWN_ERROR" as any, "An unexpected error occurred");
+  return new ApiError("UNKNOWN_ERROR" as any, "Tüşünişölmin kaldym!");
 }

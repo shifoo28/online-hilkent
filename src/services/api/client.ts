@@ -196,7 +196,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit & { timeout?: number } = {},
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    const url = `${this.baseUrl}${endpoint}`;    
     const timeout = options.timeout || this.timeout;
 
     try {

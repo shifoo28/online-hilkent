@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Address } from "@/hooks/useAddresses";
+import { Address, useAddresses } from "@/hooks/useAddresses";
+import { useTranslations } from "next-intl";
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -24,9 +25,9 @@ const AddressModal = ({
     address: "",
     isDefault: false,
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const translate = useTranslations("Account.details.address");
 
   // Initialize form with existing address data or reset
   useEffect(() => {
@@ -90,13 +91,8 @@ const AddressModal = ({
     setError(null);
 
     // Validation
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.address
-    ) {
-      setError("All fields are required");
+    if (!formData.name || !formData.phone || !formData.address) {
+      setError(translate("modal.message.required"));
       return;
     }
 
@@ -112,7 +108,7 @@ const AddressModal = ({
       });
       closeModal();
     } catch (err) {
-      setError("Failed to save address. Please try again.");
+      setError(translate("modal.message.error"));
       console.error("Error saving address:", err);
     } finally {
       setLoading(false);
@@ -152,8 +148,12 @@ const AddressModal = ({
           <div>
             <h3 className="text-xl font-semibold text-dark mb-6">
               {initialAddress
-                ? `Edit ${addressType.charAt(0).toUpperCase() + addressType.slice(1)} Address`
-                : `Add New ${addressType.charAt(0).toUpperCase() + addressType.slice(1)} Address`}
+                ? translate("modal.titleEdit", {
+                    type: translate(`terms.${addressType}`),
+                  })
+                : translate("modal.titleNew", {
+                    type: translate(`terms.${addressType}`),
+                  })}
             </h3>
 
             <form onSubmit={handleSubmit}>
@@ -166,14 +166,15 @@ const AddressModal = ({
               <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                 <div className="w-full">
                   <label htmlFor="name" className="block mb-2.5">
-                    Name <span className="text-red">*</span>
+                    {translate("modal.name.label")}{" "}
+                    <span className="text-red">*</span>
                   </label>
 
                   <input
                     type="text"
                     name="name"
                     id="name"
-                    placeholder="Enter full name"
+                    placeholder={translate("modal.name.placeholder")}
                     value={formData.name}
                     onChange={handleInputChange}
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -182,14 +183,14 @@ const AddressModal = ({
 
                 <div className="w-full">
                   <label htmlFor="email" className="block mb-2.5">
-                    Email <span className="text-red">*</span>
+                    {translate("modal.email.label")}
                   </label>
 
                   <input
                     type="email"
                     name="email"
                     id="email"
-                    placeholder="Enter email address"
+                    placeholder={translate("modal.email.placeholder")}
                     value={formData.email}
                     onChange={handleInputChange}
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -200,14 +201,15 @@ const AddressModal = ({
               <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                 <div className="w-full">
                   <label htmlFor="phone" className="block mb-2.5">
-                    Phone <span className="text-red">*</span>
+                    {translate("modal.phone.label")}{" "}
+                    <span className="text-red">*</span>
                   </label>
 
                   <input
                     type="text"
                     name="phone"
                     id="phone"
-                    placeholder="Enter phone number"
+                    placeholder={translate("modal.phone.placeholder")}
                     value={formData.phone}
                     onChange={handleInputChange}
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -216,14 +218,15 @@ const AddressModal = ({
 
                 <div className="w-full">
                   <label htmlFor="address" className="block mb-2.5">
-                    Address <span className="text-red">*</span>
+                    {translate("modal.address.label")}{" "}
+                    <span className="text-red">*</span>
                   </label>
 
                   <input
                     type="text"
                     name="address"
                     id="address"
-                    placeholder="Enter full address"
+                    placeholder={translate("modal.address.placeholder")}
                     value={formData.address}
                     onChange={handleInputChange}
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -241,7 +244,9 @@ const AddressModal = ({
                   className="rounded border-gray-3 text-blue focus:ring-blue"
                 />
                 <label htmlFor="isDefault" className="text-dark-2 text-sm">
-                  Set as default {addressType} address
+                  {translate("modal.message.default", {
+                    type: translate(`terms.${addressType}`),
+                  })}
                 </label>
               </div>
 
@@ -255,7 +260,7 @@ const AddressModal = ({
                       : "hover:bg-blue-dark"
                   }`}
                 >
-                  {loading ? "Saving..." : "Save Address"}
+                  {loading ? "Saving..." : translate("modal.buttonSave")}
                 </button>
 
                 <button
@@ -263,7 +268,7 @@ const AddressModal = ({
                   onClick={closeModal}
                   className="inline-flex font-medium text-dark-2 bg-gray-1 py-3 px-7 rounded-md ease-out duration-200 hover:bg-gray-2"
                 >
-                  Cancel
+                  {translate("modal.buttonCancel")}
                 </button>
               </div>
             </form>

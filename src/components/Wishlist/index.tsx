@@ -8,6 +8,8 @@ import { useTranslations } from "next-intl";
 export const Wishlist = () => {
   const { items: wishlistItems, clearWishlist } = useWishlist();
   const translate = useTranslations("Wishlist");
+  console.log(wishlistItems);
+  
 
   return (
     <>

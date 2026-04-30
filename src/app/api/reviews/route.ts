@@ -45,7 +45,10 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(reviews);
+    return NextResponse.json({
+      success: true,
+      data: reviews,
+    });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     return NextResponse.json(

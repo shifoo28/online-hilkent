@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";

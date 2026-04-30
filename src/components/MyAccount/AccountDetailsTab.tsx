@@ -1,6 +1,8 @@
 "use client";
 
-import type { ChangeEvent } from "react";
+import { useAddresses } from "@/hooks/useAddresses";
+import { useTranslations } from "next-intl";
+import { useState, type ChangeEvent } from "react";
 
 interface AccountDetailsTabProps {
   formData: {
@@ -24,21 +26,44 @@ export default function AccountDetailsTab({
   handleInputChange,
   handleSaveProfile,
 }: AccountDetailsTabProps) {
+  const translate = useTranslations("Account.details.accountDetails");
+  const [errorPassword, setErrorPassword] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Get addresses from the useAddresses hook and populate the address options in the select input
+  const { addresses } = useAddresses();
+
+  const handleChangePassword = () => {
+    setErrorPassword(null);
+
+    if (newPassword !== confirmPassword) {
+      setErrorPassword(translate("message.passwordMismatch"));
+      return;
+    }
+
+    handleSaveProfile();
+  };
+
+  // Note: The actual password change logic should be implemented in the parent component
+  // and passed down via props. This function just validates the input before calling the save handler.
+
   return (
     <div className="xl:max-w-[770px] w-full">
-      <form>
+      <form onSubmit={handleSaveProfile}>
         <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
           <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
             <div className="w-full">
               <label htmlFor="firstName" className="block mb-2.5">
-                First Name <span className="text-red">*</span>
+                {translate("formUser.firstName.label")}
+                <span className="text-red">*</span>
               </label>
 
               <input
                 type="text"
                 name="firstName"
                 id="firstName"
-                placeholder="Jhon"
+                placeholder={translate("formUser.firstName.placeholder")}
                 value={formData.firstName}
                 onChange={handleInputChange}
                 className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -47,14 +72,15 @@ export default function AccountDetailsTab({
 
             <div className="w-full">
               <label htmlFor="lastName" className="block mb-2.5">
-                Last Name <span className="text-red">*</span>
+                {translate("formUser.lastName.label")}
+                <span className="text-red">*</span>
               </label>
 
               <input
                 type="text"
                 name="lastName"
                 id="lastName"
-                placeholder="Deo"
+                placeholder={translate("formUser.lastName.placeholder")}
                 value={formData.lastName}
                 onChange={handleInputChange}
                 className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -65,14 +91,15 @@ export default function AccountDetailsTab({
           <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
             <div className="w-full">
               <label htmlFor="email" className="block mb-2.5">
-                Email <span className="text-red">*</span>
+                {translate("formUser.email.label")}
+                <span className="text-red">*</span>
               </label>
 
               <input
                 type="email"
                 name="email"
                 id="email"
-                placeholder="email@example.com"
+                placeholder={translate("formUser.email.placeholder")}
                 value={formData.email}
                 onChange={handleInputChange}
                 className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -81,7 +108,8 @@ export default function AccountDetailsTab({
 
             <div className="w-full">
               <label htmlFor="address" className="block mb-2.5">
-                Default Address <span className="text-red">*</span>
+                {translate("formUser.defaultAddress.label")}
+                <span className="text-red">*</span>
               </label>
 
               <div className="relative">
@@ -92,9 +120,11 @@ export default function AccountDetailsTab({
                   onChange={handleInputChange}
                   className="w-full bg-gray-1 rounded-md border border-gray-3 text-dark-4 py-2.5 pl-5 pr-9 duration-200 appearance-none outline-none focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                 >
-                  <option value="Address 1">Address 1</option>
-                  <option value="Address 2">Address 2</option>
-                  <option value="Address 3">Address 3</option>
+                  {addresses.map((address) => (
+                    <option key={address.id} value={address.id}>
+                      {address.name}
+                    </option>
+                  ))}
                 </select>
 
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-4">
@@ -126,7 +156,6 @@ export default function AccountDetailsTab({
 
           <button
             type="button"
-            onClick={handleSaveProfile}
             disabled={updateLoading}
             className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 ${
               updateLoading
@@ -134,67 +163,78 @@ export default function AccountDetailsTab({
                 : "hover:bg-blue-dark"
             }`}
           >
-            {updateLoading ? "Saving..." : "Save Changes"}
+            {updateLoading ? "Saving..." : translate("formUser.button")}
           </button>
         </div>
 
-        <p className="text-custom-sm mt-5 mb-9">
-          This will be how your name will be displayed in the account section
-          and in reviews
-        </p>
+        <p className="text-custom-sm mt-5 mb-9">{translate("info")}</p>
 
         <p className="font-medium text-xl sm:text-2xl text-dark mb-7">
-          Password Change
+          {translate("formPassword.title")}
         </p>
 
         <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
           <div className="mb-5">
             <label htmlFor="oldPassword" className="block mb-2.5">
-              Old Password
+              {translate("formPassword.oldPassword.label")}
             </label>
 
             <input
               type="password"
               name="oldPassword"
               id="oldPassword"
-              autoComplete="on"
+              onChange={handleInputChange}
+              placeholder={translate("formPassword.oldPassword.placeholder")}
               className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
             />
           </div>
 
           <div className="mb-5">
             <label htmlFor="newPassword" className="block mb-2.5">
-              New Password
+              {translate("formPassword.newPassword.label")}
             </label>
 
             <input
               type="password"
               name="newPassword"
               id="newPassword"
-              autoComplete="on"
+              required
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder={translate("formPassword.newPassword.placeholder")}
               className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
             />
           </div>
 
           <div className="mb-5">
-            <label htmlFor="confirmNewPassword" className="block mb-2.5">
-              Confirm New Password
+            <label htmlFor="confirmPassword" className="block mb-2.5">
+              {translate("formPassword.confirmPassword.label")}
             </label>
 
             <input
               type="password"
-              name="confirmNewPassword"
-              id="confirmNewPassword"
-              autoComplete="on"
+              name="confirmPassword"
+              id="confirmPassword"
+              required
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={translate(
+                "formPassword.confirmPassword.placeholder",
+              )}
               className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
             />
           </div>
 
+          {errorPassword && (
+            <div className="mb-6 p-4 bg-red-50 border border-red rounded-lg">
+              <p className="text-red text-custom-sm">{errorPassword}</p>
+            </div>
+          )}
+
           <button
-            type="submit"
+            type="button"
+            onClick={handleChangePassword}
             className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
           >
-            Change Password
+            {translate("formPassword.button")}
           </button>
         </div>
       </form>

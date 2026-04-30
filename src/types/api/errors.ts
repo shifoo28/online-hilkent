@@ -171,13 +171,13 @@ export function toApiError(error: unknown): ApiError {
   if (isError(error)) {
     return new ApiError(
       ApiErrorCode.UNKNOWN_ERROR,
-      error.message || "An unexpected error occurred",
+      error.message || "Öz programmam bilän çykyşölmin durupman!",
     );
   }
 
   return new ApiError(
     ApiErrorCode.UNKNOWN_ERROR,
-    "An unexpected error occurred",
+    "Öz programmam bilän çykyşölmin durupman!",
   );
 }
 

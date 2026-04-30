@@ -70,12 +70,14 @@ export function useProducts({
 
       try {
         const res = await fetch(url);
+                
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
           throw new Error(body?.error || "Failed to fetch products");
         }
 
         const data = await res.json();
+        
         if (!cancelled) {
           if (Array.isArray(data)) {
             setProducts(data);

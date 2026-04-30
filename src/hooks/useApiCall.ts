@@ -46,6 +46,7 @@ export function useApiCall<T, P extends any[] = []>(
 
   // Cleanup on unmount
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       abortControllerRef.current?.abort();
@@ -68,10 +69,9 @@ export function useApiCall<T, P extends any[] = []>(
           loading: true,
           error: null,
         }));
-
         const result = await apiFunction(...args);
 
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) return; // Check if component is still mounted before updating state
 
         setState({
           data: result,
@@ -145,8 +145,8 @@ export function useApiData<T, P extends any[] = []>(
   const { execute, ...state } = useApiCall(apiFunction, options);
 
   useEffect(() => {
-    execute(...args);
-  }, [execute, ...args]); // eslint-disable-line react-hooks/exhaustive-deps
+    execute(...args);    
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { ...state, refetch: () => execute(...args) };
 }

@@ -1,13 +1,13 @@
 export interface UserProfile {
-  address: string;
   id: string;
   name: string;
   email: string;
   avatar: string;
   bio: string;
+  address: string;
   stats: {
     orders: number;
-    reviewCount: number;
+    reviews: number;
   };
   recentActivity: {
     type: "order" | "review" | "wishlist";

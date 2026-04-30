@@ -1,7 +1,20 @@
 import { NextResponse } from "next/server";
 import Redis from "ioredis";
 
-const redis = new Redis(process.env.REDIS_URL); // defaults to localhost:6379
+const redisUrl = process.env.REDIS_URL ?? "redis://127.0.0.1:6379";
+const redis = new Redis(redisUrl, {
+  lazyConnect: true,
+  enableReadyCheck: true,
+  maxRetriesPerRequest: 0,
+  retryStrategy: (times) => Math.min(times * 50, 2000),
+});
+
+async function getRedis() {
+  if (redis.status !== "ready") {
+    await redis.connect();
+  }
+  return redis;
+}
 
 // Generate random 6-digit OTP
 function genOtp() {
@@ -9,18 +22,33 @@ function genOtp() {
 }
 
 async function storeOtp(subject: string, info: string) {
+  const client = await getRedis();
   const key = `otp:${subject}`;
-  await redis.set(key, info, "EX", 330); // expires in 330 seconds (5 min, 30 sec)
+  await client.set(key, info, "EX", 330); // expires in 330 seconds (5 min, 30 sec)
 }
 
 export async function POST(req: Request) {
-  const { fullName, phoneNumber, password } = await req.json();
-  const otp = genOtp();
+  try {
+    const { fullName, phoneNumber, password } = await req.json();
+    if (!phoneNumber) {
+      return NextResponse.json(
+        { error: "phoneNumber is required" },
+        { status: 400 },
+      );
+    }
 
-  storeOtp(phoneNumber, JSON.stringify({ otp, fullName, password }));
+    const otp = genOtp();
+    await storeOtp(phoneNumber, JSON.stringify({ otp, fullName, password }));
 
-  return NextResponse.json(
-    { message: "OTP getdi, tutyp alyp biläsiz" },
-    { status: 200 },
-  );
+    return NextResponse.json(
+      { message: "OTP getdi, tutyp alyp biläsiz" },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Error storing OTP:", error);
+    return NextResponse.json(
+      { error: "Unable to process OTP at this time" },
+      { status: 503 },
+    );
+  }
 }

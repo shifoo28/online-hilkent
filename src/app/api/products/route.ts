@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { mapPrismaProduct } from "@/lib/products";
 
-// 👇 This line tells Next.js to cache the page and re‑generate it every 60 seconds
+export const dynamic = "force-dynamic";
 export const revalidate = 60; // seconds
 
 // GET /api/products - Get all products with pagination and filters
 // GET /api/products?id=1 - Get specific product with Reviews
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     const productId = searchParams.get("id");
 
     if (productId) {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       if (!product) {
         return NextResponse.json(
           { error: "Product not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -91,6 +91,9 @@ export async function GET(request: NextRequest) {
         _count: {
           select: { Reviews: true },
         },
+        Discounts: true,
+        Images: true,
+        Translations: true,
       },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
@@ -112,13 +115,13 @@ export async function GET(request: NextRequest) {
         headers: {
           "Cache-Control": "public, max-age=60, stale-while-revalidate=30",
         },
-      }
+      },
     );
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -237,7 +237,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      orders,
+      data: orders,
     });
   } catch (error) {
     console.error("Error fetching orders:", error);

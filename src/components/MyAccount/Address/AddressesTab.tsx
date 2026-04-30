@@ -2,6 +2,7 @@
 
 import type { Address } from "@/hooks/useAddresses";
 import AddressCard from "./AddressCard";
+import { useTranslations } from "next-intl";
 
 interface AddressesTabProps {
   shippingAddresses: Address[];
@@ -36,16 +37,19 @@ const AddressesTab = ({
   handleDeleteAddress,
   setDefaultAddress,
 }: AddressesTabProps) => {
+  const translate = useTranslations("Account.details.address");
+
   return (
     <>
       <div className="xl:min-w-[370px] w-full bg-white shadow-1 rounded-xl">
         <div className="flex items-center justify-between py-5 px-4 sm:pl-7.5 sm:pr-6 border-b border-gray-3">
-          <p className="font-medium text-xl text-dark">Shipping Addresses</p>
+          <p className="font-medium text-xl text-dark">
+            {translate("shipping.title")}
+          </p>
           <button
             type="button"
             className="text-dark ease-out duration-200 hover:text-blue"
             onClick={() => openAddressModal("shipping")}
-            title="Add new shipping address"
           >
             {addIcon}
           </button>
@@ -66,7 +70,9 @@ const AddressesTab = ({
             </div>
           ) : (
             <p className="text-dark-2 text-sm">
-              No shipping address. Add one to get started!
+              {translate("message.noAddress", {
+                type: translate("terms.shipping"),
+              })}
             </p>
           )}
         </div>
@@ -74,12 +80,13 @@ const AddressesTab = ({
 
       <div className="xl:min-w-[370px] w-full bg-white shadow-1 rounded-xl">
         <div className="flex items-center justify-between py-5 px-4 sm:pl-7.5 sm:pr-6 border-b border-gray-3">
-          <p className="font-medium text-xl text-dark">Billing Addresses</p>
+          <p className="font-medium text-xl text-dark">
+            {translate("billing.title")}
+          </p>
           <button
             type="button"
             className="text-dark ease-out duration-200 hover:text-blue"
             onClick={() => openAddressModal("billing")}
-            title="Add new billing address"
           >
             {addIcon}
           </button>
@@ -100,7 +107,9 @@ const AddressesTab = ({
             </div>
           ) : (
             <p className="text-dark-2 text-sm">
-              No billing address. Add one to get started!
+              {translate("message.noAddress", {
+                type: translate("terms.billing"),
+              })}
             </p>
           )}
         </div>

@@ -109,7 +109,7 @@ export interface ReviewResponse {
   productId: string;
   rating: number;
   comment: string | null;
-  isVerified: boolean;
+//   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
   user: {
