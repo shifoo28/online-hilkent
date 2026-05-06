@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import Newsletter from "../Common/Newsletter";
-import RecentlyViewdItems from "./RecentlyViewd";
+import RecentlyViewdItems from "./RecentlyViewed";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { colors, storages, sims, types } from "./data";
 import Overview from "./Overview";
@@ -97,7 +97,7 @@ const ShopDetails = () => {
                         </svg>
                       </button>
 
-                      {product.images[0] && (
+                      {product.images?.[0] && (
                         <Image
                           src={product.images[0].url}
                           alt="products-details"
@@ -149,7 +149,7 @@ const ShopDetails = () => {
 
                       <span>
                         {" "}
-                        ({product.reviews.length} {translate("review")}){" "}
+                        ({product.reviews?.length} {translate("review")}){" "}
                       </span>
                     </div>
 
@@ -188,8 +188,8 @@ const ShopDetails = () => {
                     </span>{" "}
                     <span className="line-through">
                       {" "}
-                      {product.discounts[0]?.value}{" "}
-                      {product.discounts[0]?.type === "FIXED" ? "TMT" : "%"}
+                      {product.discounts?.[0]?.value}{" "}
+                      {product.discounts?.[0]?.type === "FIXED" ? "TMT" : "%"}
                     </span>
                   </h3>
 

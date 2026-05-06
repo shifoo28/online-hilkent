@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CustomSelect from "./_CustomSelect";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
 import WishlistLink from "../Common/WishlistLink";
@@ -65,17 +64,6 @@ const Header = () => {
       window.removeEventListener("scroll", handleStickyMenu);
     };
   }, []);
-
-  const options = [
-    { label: translate("category.all"), value: "0" },
-    { label: translate("category.desktop"), value: "1" },
-    { label: translate("category.laptop"), value: "2" },
-    { label: translate("category.monitor"), value: "3" },
-    { label: translate("category.phone"), value: "4" },
-    { label: translate("category.watch"), value: "5" },
-    { label: translate("category.mouse"), value: "6" },
-    { label: translate("category.tablet"), value: "7" },
-  ];
 
   return (
     <header
@@ -141,14 +129,19 @@ const Header = () => {
           {/* <!-- header top right --> */}
           <div className="flex w-full lg:w-auto items-center gap-7.5">
             <div className="flex items-center gap-3.5">
-              <PhoneIcon width={24} height={24} />
+              <PhoneIcon width={24} height={24} fill="#3C50E0" />
 
               <div>
                 <span className="block text-2xs text-dark-4 uppercase">
                   {translate("support")}
                 </span>
                 <p className="min-w-max font-medium text-custom-sm text-dark">
-                  62 86-30-12
+                  <Link
+                    href="tel:+99362863012"
+                    className="hover:text-blue ease-out duration-200"
+                  >
+                    62 86-30-12
+                  </Link>
                 </p>
               </div>
             </div>
@@ -162,7 +155,7 @@ const Header = () => {
                   href={phoneNumber ? "/my-account" : "/signin"}
                   className="flex items-center gap-2.5"
                 >
-                  <UserIcon width={24} height={24} />
+                  <UserIcon width={24} height={24} fill="#3C50E0" />
 
                   <div>
                     <span className="block text-2xs text-dark-4 uppercase">
@@ -184,7 +177,7 @@ const Header = () => {
                   className="flex items-center gap-2.5"
                 >
                   <span className="inline-block relative">
-                    <CartIcon width={24} height={24} />
+                    <CartIcon width={24} height={24} fill="#3C50E0" />
 
                     <span className="flex items-center justify-center font-medium text-2xs absolute -right-2 -top-2.5 bg-blue w-4.5 h-4.5 rounded-full text-white">
                       {product.length}
@@ -293,7 +286,7 @@ const Header = () => {
                                 : menuItem.title}
                         </Link>
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </nav>

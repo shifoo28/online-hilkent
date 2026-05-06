@@ -1,12 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { useTranslations } from "next-intl";
 
 const CounDown = () => {
+  const breakpoint = useBreakpoint();
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const translate = useTranslations("Home.countdown");
 
   const deadline = "December, 31, 2024";
 
@@ -32,11 +36,11 @@ const CounDown = () => {
         <div className="relative overflow-hidden z-1 rounded-lg bg-[#D0E9F3] p-4 sm:p-7.5 lg:p-10 xl:p-15">
           <div className="max-w-[422px] w-full">
             <span className="block font-medium text-custom-1 text-blue mb-2.5">
-              Don’t Miss!!
+              {translate("title")}
             </span>
 
-            <h2 className="font-bold text-dark text-xl lg:text-heading-4 xl:text-heading-3 mb-3">
-              Enhance Your Music Experience
+            <h2 className="font-bold text-dark text-xl lg:text-heading-4 xl:text-heading-3 mb-3 min-w-max">
+              {translate("highlight")}
             </h2>
 
             <p>The Havit H206d is a wired PC headphone.</p>
@@ -57,7 +61,7 @@ const CounDown = () => {
                   {days < 10 ? "0" + days : days}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
-                  Days
+                  {translate("days")}
                 </span>
               </div>
 
@@ -71,7 +75,7 @@ const CounDown = () => {
                   {hours < 10 ? "0" + hours : hours}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
-                  Hours
+                  {translate("hours")}
                 </span>
               </div>
 
@@ -84,7 +88,7 @@ const CounDown = () => {
                   {minutes < 10 ? "0" + minutes : minutes}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
-                  Minutes
+                  {translate("minutes")}
                 </span>
               </div>
 
@@ -97,7 +101,7 @@ const CounDown = () => {
                   {seconds < 10 ? "0" + seconds : seconds}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
-                  Seconds
+                  {translate("seconds")}
                 </span>
               </div>
             </div>
@@ -107,7 +111,7 @@ const CounDown = () => {
               href="#"
               className="inline-flex font-medium text-custom-sm text-white bg-blue py-3 px-9.5 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
             >
-              Check it Out!
+              {translate("button")}
             </a>
           </div>
 
@@ -115,15 +119,20 @@ const CounDown = () => {
           <Image
             src="/images/countdown/countdown-bg.png"
             alt="bg shapes"
-            className="hidden sm:block absolute right-0 bottom-0 -z-1"
-            width={737}
-            height={482}
+            className="block absolute right-0 bottom-0 -z-1"
+            fill
           />
           <Image
             src="/images/countdown/countdown-01.png"
             alt="product"
-            className="hidden lg:block absolute right-4 xl:right-33 bottom-4 xl:bottom-10 -z-1"
-            width={411}
+            className="block absolute right-4 xl:right-33 bottom-4 xl:bottom-10 -z-1"
+            width={
+              breakpoint === "desktop"
+                ? 411
+                : breakpoint === "tablet"
+                  ? 342
+                  : 196
+            }
             height={376}
           />
         </div>

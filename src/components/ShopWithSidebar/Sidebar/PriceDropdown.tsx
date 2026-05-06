@@ -3,6 +3,7 @@ import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 
 type PriceDropdownProps = {
+  title: string;
   minPrice: number;
   maxPrice: number;
   setMinPrice: (price: number) => void;
@@ -10,6 +11,7 @@ type PriceDropdownProps = {
 };
 
 const PriceDropdown = ({
+  title,
   setMinPrice,
   setMaxPrice,
   minPrice,
@@ -23,7 +25,7 @@ const PriceDropdown = ({
         onClick={() => setToggleDropdown(!toggleDropdown)}
         className="cursor-pointer flex items-center justify-between py-3 pl-6 pr-5.5"
       >
-        <p className="text-dark">Price</p>
+        <p className="text-dark">{title}</p>
         <button
           onClick={() => setToggleDropdown(!toggleDropdown)}
           id="price-dropdown-btn"
@@ -51,22 +53,10 @@ const PriceDropdown = ({
       </div>
 
       {/* // <!-- dropdown menu --> */}
-      <div className={`p-6 ${toggleDropdown ? "block" : "hidden"}`}>
+      <div className={`p-6 ${toggleDropdown ? "block" : "hidden"} pt-4`}>
         <div id="pricingOne">
           <div className="price-range">
-            <RangeSlider
-              id="range-slider-gradient"
-              className="margin-lg"
-              step={"any"}
-              defaultValue={[300, 700]}
-              max={999}
-              onInput={(e) => {
-                setMinPrice(Math.floor(e[0]));
-                setMaxPrice(Math.ceil(e[1]));
-              }}
-            />
-
-            <div className="price-amount flex items-center justify-between pt-4">
+            <div className="price-amount flex items-center justify-between">
               <div className="text-custom-xs flex rounded border border-gray-3/80">
                 <span className="block border-r text-dark-4 border-gray-3/80 px-2.5 py-1.5">
                   TMT
@@ -85,6 +75,17 @@ const PriceDropdown = ({
                 </span>
               </div>
             </div>
+            <RangeSlider
+              id="range-slider-gradient"
+              className="margin-lg mt-6"
+              step={"any"}
+              defaultValue={[300, 700]}
+              max={999}
+              onInput={(e) => {
+                setMinPrice(Math.floor(e[0]));
+                setMaxPrice(Math.ceil(e[1]));
+              }}
+            />
           </div>
         </div>
       </div>

@@ -1,7 +1,11 @@
 "use client";
 import React, { useState } from "react";
 
-const ColorsDropdwon = () => {
+interface ColorsDropdownProps {
+  title: string;
+}
+
+const ColorsDropdwon: React.FC<ColorsDropdownProps> = ({ title }) => {
   const [toggleDropdown, setToggleDropdown] = useState(true);
   const [activeColor, setActiveColor] = useState("blue");
 
@@ -15,7 +19,7 @@ const ColorsDropdwon = () => {
           toggleDropdown && "shadow-filter"
         }`}
       >
-        <p className="text-dark">Colors</p>
+        <p className="text-dark">{title}</p>
         <button
           aria-label="button for colors dropdown"
           className={`text-dark ease-out duration-200 ${

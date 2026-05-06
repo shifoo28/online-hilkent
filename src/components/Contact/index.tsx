@@ -7,7 +7,10 @@ const Contact = () => {
 
   return (
     <>
-      <Breadcrumb title={"Contact"} pages={["contact"]} />
+      <Breadcrumb
+        title={translate("breadcrumb.title")}
+        pages={[translate("breadcrumb.path")]}
+      />
 
       <section className="overflow-hidden py-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
@@ -109,7 +112,8 @@ const Contact = () => {
 
                   <div className="w-full">
                     <label htmlFor="lastName" className="block mb-2.5">
-                      {translate("message.last.name")}<span className="text-red">*</span>
+                      {translate("message.last.name")}
+                      <span className="text-red">*</span>
                     </label>
 
                     <input

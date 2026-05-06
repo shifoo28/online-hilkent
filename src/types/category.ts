@@ -6,3 +6,9 @@ export type Category = {
   image: string;
   products?: Product[];
 };
+
+export type CategoryOption = {
+  id: number;
+  name: string;
+  products: number;
+};

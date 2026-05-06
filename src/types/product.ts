@@ -12,6 +12,7 @@ export type Product = {
   categoryId: number;
   inStock: boolean;
   rating: number;
+  salesCount?: number;
   reviews: Review[];
   properties: ProductProperty[];
   translations: ProductTranslation[];

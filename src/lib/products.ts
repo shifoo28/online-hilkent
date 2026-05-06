@@ -9,6 +9,7 @@ export function mapPrismaProduct(product: any): Product {
     categoryId: product.categoryId,
     inStock: product.inStock,
     rating: product.rating,
+    salesCount: product.salesCount ?? 0,
     reviews: product.Reviews || [],
     discounts: product.Discounts || [],
     properties: product.Properties || [],

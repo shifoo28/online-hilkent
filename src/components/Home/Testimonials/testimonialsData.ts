@@ -2,46 +2,43 @@ import { Testimonial } from "@/types/testimonial";
 
 const testimonialsData: Testimonial[] = [
   {
-    review: `Lorem ipsum dolor sit amet, adipiscing elit. Donec
-    malesuada justo vitaeaugue suscipit beautiful vehicula`,
-    authorName: "Davis Dorwart",
-    authorImg: "/images/users/user-01.jpg",
-    authorRole: "Serial Entrepreneur",
+    review:
+      "Hyzmatyňyz gaty çalt we amatly. Sargyt eden harydym wagtynda geldi, örän kanagatlandym.",
+    authorName: " Aýgül M.",
+    authorImg: "/images/users/default.webp",
+    authorRole: "",
+    rating: 5,
   },
   {
-    review: `Lorem ipsum dolor sit amet, adipiscing elit. Donec
-    malesuada justo vitaeaugue suscipit beautiful vehicula`,
-    authorName: "Wilson Dias",
-    authorImg: "/images/users/user-02.jpg",
-    authorRole: "Backend Developer",
+    review:
+      "Sizden sargyt eden harydym gaty gowy ýagdaýda geldi we hilini begenç bilen kabul etdim. Müşderi hyzmatyňyz hem örän gowy.",
+    authorName: "Serdar G.",
+    authorImg: "/images/users/default.webp",
+    authorRole: "",
+    rating: 4,
   },
   {
-    review: `Lorem ipsum dolor sit amet, adipiscing elit. Donec
-    malesuada justo vitaeaugue suscipit beautiful vehicula`,
-    authorName: "Miracle Exterm",
-    authorImg: "/images/users/user-03.jpg",
-    authorRole: "Serial Entrepreneur",
+    review:
+      "Заказывал у вас на сайте, доставка была быстрой, а качество товара отличное. Очень доволен покупкой!",
+    authorName: "Елена П.",
+    authorImg: "/images/users/default.webp",
+    authorRole: "",
+    rating: 5,
   },
   {
-    review: `Lorem ipsum dolor sit amet, adipiscing elit. Donec
-    malesuada justo vitaeaugue suscipit beautiful vehicula`,
-    authorName: "Thomas Frank",
-    authorImg: "/images/users/user-01.jpg",
-    authorRole: "Entrepreneur",
+    review:
+      "Очень доволен покупкой! Заказал на сайте, доставка была быстрой, а качество товара отличное. Рекомендую всем!",
+    authorName: "Иван С.",
+    authorImg: "/images/users/default.webp",
+    authorRole: "",
+    rating: 3,
   },
   {
-    review: `Lorem ipsum dolor sit amet, adipiscing elit. Donec
-    malesuada justo vitaeaugue suscipit beautiful vehicula`,
-    authorName: "Dave Smith",
-    authorImg: "/images/users/user-02.jpg",
-    authorRole: "Serial Entrepreneur",
-  },
-  {
-    review: `Lorem ipsum dolor sit amet, adipiscing elit. Donec
-    malesuada justo vitaeaugue suscipit beautiful vehicula`,
-    authorName: "Davis Dorwart",
-    authorImg: "/images/users/user-03.jpg",
-    authorRole: "Serial Entrepreneur",
+    review: "Web sahypaňyz amatly, gözleg tiz işleýär. Harytlaryň görnüşi kän.",
+    authorName: "Gülşat R.",
+    authorImg: "/images/users/default.webp",
+    authorRole: "",
+    rating: 5,
   },
 ];
 

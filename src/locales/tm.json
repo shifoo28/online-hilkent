@@ -83,9 +83,9 @@
       }
     },
     "bestSeller": {
-      "title": "Iň gowy satylýanlar",
+      "title": "Bazarda öňdebaryjylar",
       "description": "Iň köp satyn alnan harytlar",
-      "viewAll": "Ählisini Gör"
+      "badge": "Öňdebaryjy"
     },
     "sectionCategory": {
       "title": "Kategoriýalar",
@@ -95,6 +95,15 @@
       "title": "Şu hepdäniň",
       "description": "Täze Harytlary",
       "button": "Ählisi"
+    },
+    "countdown": {
+      "title": "Sypdyrmaň!!",
+      "highlight": "Saz tejribäňizi kämilleşdiriň",
+      "days": "Gün",
+      "hours": "Sagat",
+      "minutes": "Minut",
+      "seconds": "Sekunt",
+      "button": "Göz aýlaň!"
     },
     "testimonials": {
       "title": "Minnetdarlyklar",
@@ -121,7 +130,8 @@
       "addToCart": "Sebede goş",
       "addToWishlist": "Haladym sanawyna goş",
       "rating": "Reýting",
-      "reviews": "Teswirler"
+      "reviews": "Teswir",
+      "noReviews": "Heniz teswir ýok"
     },
     "cartSidebarModal": {
       "viewCart": "Sebedi Gör",
@@ -323,15 +333,50 @@
     }
   },
   "Shop": {
-    "pageTitleAll": "Ähli Harytlary Gözden Geçir",
-    "pageTitleCategory": "{category} Harytlary Gözden Geçir",
-    "filters": "Filtrler:",
-    "clearAll": "Arassala",
+    "title": {
+      "trend": "Trenddäki Harytlara Göz Aýlaň",
+      "category": "{category} Harytlary Gözden Geçiriň"
+    },
+    "page": {
+      "shop": "Dükan",
+      "withoutSidebar": "Trend (Filtr ýok)"
+    },
+    "pagination": {
+      "previous": "Öňki",
+      "next": "Indiki"
+    },
+    "all": "Ähli",
+    "filter": {
+      "title": "Filtrler:",
+      "clearAll": "Arassala",
+      "applyFilter": "Filtri Ulanmak",
+      "price": "Baha aralygy",
+      "brand": {
+        "title": "Brend",
+        "all": "Ähli brendler",
+        "hilkent": "Hilkent",
+        "nova": "Nova",
+        "aurora": "Aurora",
+        "terra": "Terra"
+      },
+      "rating": {
+        "title": "Reýtiň",
+        "all": "Ähli reýtiňler",
+        "1star": "1 ýyldyz we köp",
+        "2stars": "2 ýyldyz we köp",
+        "3stars": "3 ýyldyz we köp",
+        "4stars": "4 ýyldyz we köp",
+        "5stars": "5 ýyldyz"
+      },
+      "category": "Kategoriýa",
+      "size": "Ölçeg",
+      "color": "Reňk"
+    },
     "searchPlaceholder": "Haryt gözläň...",
     "searchButton": "Gözle",
     "loading": "Harytlar ýüklenilýär...",
     "error": "Harytlar ýüklenip bilmedi.",
-    "summary": "{pages} sahypada {count} / {total} haryt görkezilýär",
+    "summary": "{page}/{pages} sahypada {count}/{total} haryt görkezilýär",
     "noProducts": "Haryt tapylmady."
   },
   "ShopDetails": {
@@ -378,10 +423,41 @@
       }
     }
   },
+  "Cart": {
+    "title": "Sebet",
+    "page": "Sebet",
+    "empty": "Sebediňiz häzirki wagtda boş.",
+    "continueShopping": "Söwda etmäge dowam ediň",
+    "table": {
+      "title": "Sebediňizdäki harytlar",
+      "clearCart": "Sebedi arassala",
+      "product": "Önüm",
+      "price": "Birlik bahasy",
+      "quantity": "Mukdar",
+      "subtotal": "Jemi",
+      "actions": "Amal"
+    },
+    "discount": {
+      "title": "Arzanladyş kody barmy?",
+      "placeholder": "Kupon kodyny giriziň",
+      "button": "Kody ulan"
+    },
+    "orderSummary": {
+      "title": "Sargyt gysgaça mazmuny",
+      "product": "Önüm",
+      "subtotal": "Jemi",
+      "total": "Umumy",
+      "button": "Töleg geçmek"
+    }
+  },
   "Contact": {
+    "breadcrumb": {
+      "title": "Aragatnaşyk",
+      "path": "Aragatnaşyk"
+    },
     "info": {
       "title": "Gerekli Maglumatlar",
-      "name": "Doly Ady: Huşnudbek RAHIMOw",
+      "name": "Doly Ady: Huşnudbek RAHIMOW",
       "phone": "Telefon: +993 62 863012",
       "address": "Salgy: Daşoguz şäher, A.Nyýazow köçe, 61-nji jaý"
     },
@@ -411,6 +487,7 @@
   },
   "Wishlist": {
     "title": "Halanlarym",
+    "page": "Halananlar",
     "label": "Siziň Halan Harytlaryňyz",
     "clear": "Sanawy arassala",
     "table": {
@@ -419,11 +496,41 @@
       "stock": "Nagt ýagdaýy",
       "action": "Amaly"
     },
-    "empty": "Siziň halan harytlar sanawyňyz şu wagt boş.",
+    "empty": "Halan harytlar sanawy şu wagt boş",
     "stock": {
       "inStock": "Satuwda",
       "outOfStock": "Satuwda ýok"
     },
     "addToCart": "Sebede goş"
+  },
+  "Footer": {
+    "help&support": {
+      "title": "Kömek we Goldaw",
+      "address": "Daşoguz şäher, A.Nyýazow köçe, 61-nji jaý."
+    },
+    "account": {
+      "title": "Hasapnama",
+      "myAccount": "Meniň hasabym",
+      "loginRegister": "Giriş / Hasap aç",
+      "cart": "Sebet",
+      "wishlist": "Halanlar sanawy",
+      "shop": "Dükan"
+    },
+    "links": {
+      "title": "Peýdaly salgylar",
+      "privacy": "Gizlinlik düzgüni",
+      "refund": "Gaýtarmak düzgüni",
+      "terms": "Hyzmat şertleri",
+      "faq": "Sorag-jogap",
+      "contact": "Habarlaşmak"
+    },
+    "download": {
+      "title": "Programmany ýükläň",
+      "description": "Täze ulanyjymy? Programmamyzda {discount} arzanladyşdan peýdalanyň.",
+      "appStore": "",
+      "googlePlay": ""
+    },
+    "copyright": "© {year} Online Hilkent. Ähli hukuklar goragly.",
+    "acceptedPayments": "Töleg usullary:"
   }
 }

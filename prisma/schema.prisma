@@ -96,6 +96,8 @@ model OrderItem {
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
 }
 
 model Category {
@@ -114,6 +116,7 @@ model Product {
   categoryId Int
   inStock    Boolean  @default(true)
   rating     Float    @default(0)
+  salesCount Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -123,9 +126,11 @@ model Product {
   Discounts    Discount[]
   Images       ProductImage[]
   OrderItems   OrderItem[]
-  heroProduct   HeroProduct? // one-to-one relation to HeroProduct (optional)
+  heroProduct  HeroProduct? // one-to-one relation to HeroProduct (optional)
 
   Category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([salesCount])
 }
 
 model HeroProduct {
@@ -177,6 +182,10 @@ model ProductTranslation {
   description String?
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([locale])
+  @@index([name])
+  @@index([description])
 }
 
 enum Locale {

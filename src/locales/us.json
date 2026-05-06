@@ -85,7 +85,7 @@
     "bestSeller": {
       "title": "Best Sellers",
       "description": "Products that are purchased most frequently",
-      "viewAll": "View All"
+      "badge": "Top Choice"
     },
     "sectionCategory": {
       "title": "Categories",
@@ -95,6 +95,15 @@
       "title": "This week's",
       "description": "New Arrivals",
       "button": "View All"
+    },
+    "countdown": {
+      "title": "Don’t Miss!!",
+      "highlight": "Enhance Your Music Experience",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "button": "Check it Out!"
     },
     "testimonials": {
       "title": "Testimonials",
@@ -121,7 +130,8 @@
       "addToCart": "Add to cart",
       "addToWishlist": "Add to wishlist",
       "rating": "Rating",
-      "reviews": "Reviews"
+      "reviews": "Reviews",
+      "noReviews": "No reviews yet"
     },
     "cartSidebarModal": {
       "viewCart": "View Cart",
@@ -325,10 +335,45 @@
     }
   },
   "Shop": {
-    "pageTitleAll": "Explore All Products",
-    "pageTitleCategory": "Explore {category} Products",
-    "filters": "Filters:",
-    "clearAll": "Clear All",
+    "title": {
+      "trend": "Explore Trending Products",
+      "category": "Explore {category} Products"
+    },
+    "page": {
+      "shop": "Shop",
+      "withoutSidebar": "Popular (No Filter)"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "all": "All",
+    "filter": {
+      "title": "Filters:",
+      "clearAll": "Clear All",
+      "applyFilter": "Apply Filter",
+      "price": "Price Range",
+      "brand": {
+        "title": "Brand",
+        "all": "All Brands",
+        "hilkent": "Hilkent",
+        "nova": "Nova",
+        "aurora": "Aurora",
+        "terra": "Terra"
+      },
+      "rating": {
+        "title": "Rating",
+        "all": "All Ratings",
+        "1star": "1 Star & Up",
+        "2stars": "2 Stars & Up",
+        "3stars": "3 Stars & Up",
+        "4stars": "4 Stars & Up",
+        "5stars": "5 Stars"
+      },
+      "category": "Category",
+      "size": "Size",
+      "color": "Color"
+    },
     "searchPlaceholder": "Search products...",
     "searchButton": "Search",
     "loading": "Loading products...",
@@ -380,7 +425,38 @@
       }
     }
   },
+  "Cart": {
+    "title": "Cart",
+    "page": "Cart",
+    "empty": "Your cart is currently empty.",
+    "continueShopping": "Continue Shopping",
+    "table": {
+      "title": "Your Cart Items",
+      "clearCart": "Clear Shopping Cart",
+      "product": "Product",
+      "price": "Unit Price",
+      "quantity": "Quantity",
+      "subtotal": "Subtotal",
+      "actions": "Actions"
+    },
+    "discount": {
+      "title": "Have any discount code?",
+      "placeholder": "Enter coupon code",
+      "button": "Apply code"
+    },
+    "orderSummary": {
+      "title": "Order Summary",
+      "product": "Product",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "button": "Press to Checkout"
+    }
+  },
   "Contact": {
+    "breadcrumb": {
+      "title": "Contact",
+      "path": "Contact"
+    },
     "info": {
       "title": "Contact Information",
       "name": "Fullname: Hushnudbek RAHIMOV",
@@ -413,6 +489,7 @@
   },
   "Wishlist": {
     "title": "Wishlist",
+    "page":"Wishlist",
     "label": "Your Wishlist",
     "clear": "Clear Wishlist",
     "table": {
@@ -421,11 +498,41 @@
       "stock": "Stock Status",
       "action": "Action"
     },
-    "empty": "Your wishlist is currently empty.",
+    "empty": "Your wishlist is currently empty",
     "stock": {
       "inStock": "In Stock",
       "outOfStock": "Out of Stock"
     },
     "addToCart": "Add to cart"
+  },
+  "Footer": {
+    "help&support": {
+      "title": "Help & Support",
+      "address": "Dashoguz city, A.Nyyazov street, N61"
+    },
+    "account": {
+      "title": "Account",
+      "myAccount": "My Account",
+      "loginRegister": "Login / Register",
+      "cart": "Cart",
+      "wishlist": "Wishlist",
+      "shop": "Shop"
+    },
+    "links": {
+      "title": "Quick Links",
+      "privacy": "Privacy Policy",
+      "refund": "Refund Policy",
+      "terms": "Terms of Service",
+      "faq": "FAQ's",
+      "contact": "Contact"
+    },
+    "download": {
+      "title": "Download App",
+      "description": "Save {discount} With App & New User only",
+      "appStore": "Download on the",
+      "googlePlay": "Get it on"
+    },
+    "copyright": "© {year} Online Hilkent. All rights reserved.",
+    "acceptedPayments": "We Accept:"
   }
 }

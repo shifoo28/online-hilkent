@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from "react";
 
-const SizeDropdown = () => {
+interface SizeDropdownProps {
+  title: string;
+}
+const SizeDropdown: React.FC<SizeDropdownProps> = ({ title }) => {
   const [toggleDropdown, setToggleDropdown] = useState(true);
   return (
     <div className="bg-white shadow-1 rounded-lg">
@@ -11,7 +14,7 @@ const SizeDropdown = () => {
           toggleDropdown && "shadow-filter"
         }`}
       >
-        <p className="text-dark">Size</p>
+        <p className="text-dark">{title}</p>
         <button
           onClick={() => setToggleDropdown(!toggleDropdown)}
           aria-label="button for size dropdown"

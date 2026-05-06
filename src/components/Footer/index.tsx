@@ -1,8 +1,11 @@
 import React from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 const Footer = () => {
   const year = new Date().getFullYear();
+  const translate = useTranslations("Footer");
 
   return (
     <footer className="overflow-hidden">
@@ -11,7 +14,7 @@ const Footer = () => {
         <div className="flex flex-wrap xl:flex-nowrap gap-10 xl:gap-19 xl:justify-between pt-17.5 xl:pt-22.5 pb-10 xl:pb-15">
           <div className="max-w-[330px] w-full">
             <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
-              Help & Support
+              {translate("help&support.title")}
             </h2>
 
             <ul className="flex flex-col gap-3">
@@ -32,11 +35,11 @@ const Footer = () => {
                     />
                   </svg>
                 </span>
-                685 Market Street,Las Vegas, LA 95820,United States.
+                {translate("help&support.address")}
               </li>
 
               <li>
-                <a href="#" className="flex items-center gap-4.5">
+                <div className="flex items-center gap-4.5">
                   <svg
                     width="24"
                     height="24"
@@ -61,12 +64,25 @@ const Footer = () => {
                       fill="#3C50E0"
                     />
                   </svg>
-                  (+099) 532-786-9843
-                </a>
+                  <div className="flex flex-col">
+                    <Link
+                      href="tel:+99332273993"
+                      className="hover:text-blue ease-out duration-200"
+                    >
+                      (+993) 32 27 39 93
+                    </Link>
+                    <Link
+                      href="tel:+99365277393"
+                      className="hover:text-blue ease-out duration-200"
+                    >
+                      (+993) 65 27 73 93
+                    </Link>
+                  </div>
+                </div>
               </li>
 
               <li>
-                <a href="#" className="flex items-center gap-4.5">
+                <div className="flex items-center gap-4.5">
                   <svg
                     width="24"
                     height="24"
@@ -81,8 +97,13 @@ const Footer = () => {
                       fill="#3C50E0"
                     />
                   </svg>
-                  support@example.com
-                </a>
+                  <Link
+                    href="mailto:tobymarshal2802@gmail.com"
+                    className="hover:text-blue ease-out duration-200"
+                  >
+                    tobymarshal2802@gmail.com
+                  </Link>
+                </div>
               </li>
             </ul>
 
@@ -197,68 +218,68 @@ const Footer = () => {
           </div>
 
           <div className="w-full sm:w-auto">
-            <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
-              Account
+            <h2 className="mb-7.5 text-custom-1 font-medium text-dark min-w-max">
+              {translate("account.title")}
             </h2>
 
             <ul className="flex flex-col gap-3.5">
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  My Account
+                  {translate("account.myAccount")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Login / Register
+                  {translate("account.loginRegister")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Cart
+                  {translate("account.cart")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Wishlist
+                  {translate("account.wishlist")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Shop
+                  {translate("account.shop")}
                 </a>
               </li>
             </ul>
           </div>
 
           <div className="w-full sm:w-auto">
-            <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
-              Quick Link
+            <h2 className="mb-7.5 text-custom-1 font-medium text-dark min-w-max">
+              {translate("links.title")}
             </h2>
 
             <ul className="flex flex-col gap-3">
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Privacy Policy
+                  {translate("links.privacy")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Refund Policy
+                  {translate("links.refund")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Terms of Use
+                  {translate("links.terms")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  FAQ’s
+                  {translate("links.faq")}
                 </a>
               </li>
               <li>
                 <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Contact
+                  {translate("links.contact")}
                 </a>
               </li>
             </ul>
@@ -266,11 +287,11 @@ const Footer = () => {
 
           <div className="w-full sm:w-auto">
             <h2 className="mb-7.5 text-custom-1 font-medium text-dark lg:text-right">
-              Download App
+              {translate("download.title")}
             </h2>
 
             <p className="lg:text-right text-custom-sm mb-4">
-              Save 3 TMT With App & New User only
+              {translate("download.description", { discount: "5%" })}
             </p>
 
             <ul className="flex flex-col lg:items-end gap-3">
@@ -295,7 +316,7 @@ const Footer = () => {
 
                   <div>
                     <span className="block text-custom-xs">
-                      Download on the
+                      {translate("download.appStore")}
                     </span>
                     <p className="font-medium">App Store</p>
                   </div>
@@ -322,7 +343,9 @@ const Footer = () => {
                   </svg>
 
                   <div>
-                    <span className="block text-custom-xs"> Get in On </span>
+                    <span className="block text-custom-xs">
+                      {translate("download.googlePlay")}
+                    </span>
                     <p className="font-medium">Google Play</p>
                   </div>
                 </a>
@@ -338,11 +361,11 @@ const Footer = () => {
         <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-5 flex-wrap items-center justify-between">
             <p className="text-dark font-medium">
-              &copy; {year}. All rights reserved by PimjoLabs.
+              {translate("copyright", { year })}
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <p className="font-medium">We Accept:</p>
+              <p className="font-medium">{translate("acceptedPayments")}</p>
 
               <div className="flex flex-wrap items-center gap-6">
                 <a href="#" aria-label="payment system with visa card">

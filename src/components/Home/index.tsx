@@ -4,7 +4,7 @@ import Categories from "./Categories";
 import NewArrival from "./NewArrivals";
 import PromoBanner from "./PromoBanner";
 import BestSeller from "./BestSeller";
-import CounDown from "./Countdown";
+import CountDown from "./Countdown";
 import Testimonials from "./Testimonials";
 import Newsletter from "../Common/Newsletter";
 import { getHeroProducts } from "@/lib/products";
@@ -19,7 +19,7 @@ const Home = async () => {
       <NewArrival />
       <PromoBanner />
       <BestSeller />
-      <CounDown />
+      <CountDown />
       <Testimonials />
       <Newsletter />
     </main>

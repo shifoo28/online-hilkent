@@ -24,14 +24,14 @@ const SingleItem = ({ item }) => {
   };
 
   return (
-    <div className="flex items-center border-t border-gray-3 py-5 px-2 md:px-10">
+    <div className="flex items-center gap-2 border-t border-gray-3 py-5 px-2 md:px-10">
       <div className="min-w-[40px] md:min-w-[83px]">
         <button
           onClick={() => handleRemoveFromWishlist()}
           aria-label="button for remove product from wishlist"
           className="flex items-center justify-center rounded-lg max-w-[38px] w-full h-9.5 bg-gray-2 border border-gray-3 ease-out duration-200 hover:bg-red-light-6 hover:border-red-light-4 hover:text-red"
         >
-          <RemoveIcon width={22} height={22} fill="" />
+          <RemoveIcon width={22} height={22} />
         </button>
       </div>
 
@@ -72,7 +72,7 @@ const SingleItem = ({ item }) => {
             )}
 
             <span
-              className={`text-sm font-medium ${item.inStock ? "text-green" : "text-red"}`}
+              className={`text-sm font-medium min-w-max ${item.inStock ? "text-green" : "text-red"}`}
             >
               {translate(`stock.${item.inStock ? "inStock" : "outOfStock"}`)}
             </span>

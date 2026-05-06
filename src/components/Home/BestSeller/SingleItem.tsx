@@ -9,10 +9,11 @@ import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
 import Link from "next/link";
 import { useWishlist } from "@/hooks/useWishlist";
+import GenerateStars from "@/components/Review/generateStars";
 
-const SingleItem = ({ item }: { item: Product }) => {
-  const { openModal } = useModalContext();
+const SingleItem = ({ item, badge }: { item: Product; badge: string }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { openModal } = useModalContext();
   const { addItem } = useWishlist();
   const { addItemToCart } = useCart();
 
@@ -42,63 +43,46 @@ const SingleItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden rounded-lg bg-[#F6F7FB] min-h-[403px]">
+        <div className="absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-blue px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-lg">
+          <span className="inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+          {badge}
+        </div>
+
         <div className="text-center px-4 py-7.5">
           <div className="flex items-center justify-center gap-2.5 mb-2">
             <div className="flex items-center gap-1">
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
+              <GenerateStars rating={item.rating} size={14} />
             </div>
 
-            <p className="text-custom-sm">({item.reviews.length})</p>
+            <p className="text-custom-sm">({item.rating})</p>
           </div>
 
           <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
             <Link href={`/shop-details/${item.id}`}>
-              {" "}
-              {item.translations?.[0]?.name}{" "}
+              {item.translations?.[0]?.name}
             </Link>
           </h3>
 
           <span className="flex items-center justify-center gap-2 font-medium text-lg">
             <span className="text-dark">
-              {item.discounts[0]?.value}{" "}
-              {item.discounts[0]?.type === "FIXED" ? "TMT" : "%"}
+              {item.discounts[0]?.value || item.price}{" "}
+              {item.discounts[0]?.type === "PERCENTAGE" ? "%" : "TMT"}
             </span>
-            <span className="text-dark-4 line-through">{item.price} TMT</span>
+            {item.discounts[0] && (
+              <span className="text-dark-4 line-through">{item.price} TMT</span>
+            )}
           </span>
         </div>
 
         <div className="flex justify-center items-center">
           {item.images[0] && (
-            <Image src={item.images[0].url} alt="" width={280} height={280} />
+            <Image
+              key={item.id}
+              src={item.images[0].url}
+              alt={item.images[0].altText || "Product Image"}
+              width={250}
+              height={250}
+            />
           )}
         </div>
 

@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
 
     const page = Math.max(parseInt(searchParams.get("page") || "1", 10), 1);
     const limit = Math.max(parseInt(searchParams.get("limit") || "9", 10), 1);
+    const categoryId = searchParams.get("categoryId")?.trim();
     const category = searchParams.get("category")?.trim();
     const brand = searchParams.get("brand")?.trim();
     const search = searchParams.get("search")?.trim();
@@ -49,8 +50,15 @@ export async function GET(request: NextRequest) {
 
     const where: any = {};
 
-    if (category) {
-      where.category = category;
+    if (categoryId && !Number.isNaN(Number(categoryId))) {
+      where.categoryId = Number(categoryId);
+    } else if (category) {
+      where.Category = {
+        name: {
+          equals: category,
+          mode: "insensitive",
+        },
+      };
     }
 
     if (!Number.isNaN(minPrice) && minPrice > 0) {
@@ -76,9 +84,17 @@ export async function GET(request: NextRequest) {
 
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-        { category: { contains: search, mode: "insensitive" } },
+        {
+          Translations: {
+            some: { name: { contains: search, mode: "insensitive" } },
+          },
+        },
+        {
+          Translations: {
+            some: { description: { contains: search, mode: "insensitive" } },
+          },
+        },
+        { Category: { name: { contains: search, mode: "insensitive" } } },
       ];
     }
 

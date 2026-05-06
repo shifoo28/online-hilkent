@@ -8,6 +8,7 @@ type UseProductsOptions = {
   productId?: number;
   page?: number;
   limit?: number;
+  categoryId?: string;
   category?: string;
   brand?: string;
   search?: string;
@@ -21,6 +22,7 @@ export function useProducts({
   productId,
   page = 1,
   limit = 9,
+  categoryId,
   category,
   brand,
   minPrice,
@@ -41,7 +43,8 @@ export function useProducts({
     params.set("page", String(page));
     params.set("limit", String(limit));
 
-    if (category) params.set("category", category);
+    if (categoryId) params.set("categoryId", categoryId);
+    else if (category) params.set("category", category);
     if (brand) params.set("brand", brand);
     if (minPrice !== undefined) params.set("minPrice", String(minPrice));
     if (maxPrice !== undefined) params.set("maxPrice", String(maxPrice));
@@ -53,6 +56,7 @@ export function useProducts({
     productId,
     page,
     limit,
+    categoryId,
     category,
     brand,
     minPrice,
@@ -70,14 +74,14 @@ export function useProducts({
 
       try {
         const res = await fetch(url);
-                
+
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
           throw new Error(body?.error || "Failed to fetch products");
         }
 
         const data = await res.json();
-        
+
         if (!cancelled) {
           if (Array.isArray(data)) {
             setProducts(data);
