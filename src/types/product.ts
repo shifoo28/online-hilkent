@@ -9,6 +9,7 @@ import {
 export type Product = {
   id: string;
   price: number;
+  discountedPrice: number;
   categoryId: number;
   inStock: boolean;
   rating: number;

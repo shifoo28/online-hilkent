@@ -1,19 +1,32 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import Login from "./Login";
 import Shipping from "./Shipping";
 import ShippingMethod from "./ShippingMethod";
 import PaymentMethod from "./PaymentMethod";
 import Coupon from "./Coupon";
 import Billing from "./Billing";
 import { useCheckoutForm } from "@/hooks/useCheckoutForm";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import { getDatabaseLocale } from "@/locales/map";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+import OrderSummary from "./OrderSummary";
+import Notes from "./Notes";
 
 const Checkout = () => {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("Checkout");
   const { items: cartItems, totalPrice: cartTotal } = useCart();
+  const cartItemsWithTitle = cartItems.map((item) => ({
+    ...item,
+    title:
+      item.translations.find((t) => t.locale === getDatabaseLocale(locale))
+        ?.name || "Product",
+  }));
+
   const {
     formData,
     errors,
@@ -39,6 +52,12 @@ const Checkout = () => {
       case "dhl":
         setShippingFee(15.99);
         break;
+      case "passengerCar":
+        setShippingFee(20.99);
+        break;
+      case "lightTruck":
+        setShippingFee(30.99);
+        break;
       default:
         setShippingFee(0);
     }
@@ -62,10 +81,10 @@ const Checkout = () => {
         const discount = data.coupon.discountAmount || 0;
         setCouponDiscount(discount);
       } else {
-        setOrderError(data.error || "Invalid coupon");
+        setOrderError(data.error || t("errors.couponInvalid"));
       }
     } catch (error) {
-      setOrderError("Failed to validate coupon");
+      setOrderError(t("errors.couponFailed"));
       console.error("Coupon validation error:", error);
     }
   };
@@ -74,12 +93,12 @@ const Checkout = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      setOrderError("Please fill in all required fields");
+      setOrderError(t("errors.fillRequired"));
       return;
     }
 
-    if (cartItems.length === 0) {
-      setOrderError("Your cart is empty");
+    if (cartItemsWithTitle.length === 0) {
+      setOrderError(t("errors.cartEmpty"));
       return;
     }
 
@@ -89,7 +108,7 @@ const Checkout = () => {
     try {
       // Prepare order data
       const orderData = {
-        items: cartItems.map((item) => ({
+        items: cartItemsWithTitle.map((item) => ({
           productId: item.id,
           quantity: item.quantity,
           price: item.discountedPrice || item.price,
@@ -138,10 +157,10 @@ const Checkout = () => {
           router.push("/order-success");
         }, 2000);
       } else {
-        setOrderError(result.error || "Failed to create order");
+        setOrderError(result.error || t("errors.orderFailed"));
       }
     } catch (error) {
-      setOrderError("An error occurred while processing your order");
+      setOrderError(t("errors.orderError"));
       console.error("Order submission error:", error);
     } finally {
       setIsSubmitting(false);
@@ -150,7 +169,7 @@ const Checkout = () => {
 
   return (
     <>
-      <Breadcrumb title={"Checkout"} pages={["checkout"]} />
+      <Breadcrumb title={t("title")} pages={[t("page")]} />
       <section className="overflow-hidden py-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           {orderError && (
@@ -161,7 +180,7 @@ const Checkout = () => {
 
           {orderSuccess && (
             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-              Order created successfully! Redirecting...
+              {t("errors.orderSuccess")}
             </div>
           )}
 
@@ -170,12 +189,12 @@ const Checkout = () => {
               {/* <!-- checkout left --> */}
               <div className="lg:max-w-[670px] w-full">
                 {/* <!-- login box --> */}
-                <Login
+                {/* <Login
                   emails={formData.loginEmail}
                   password={formData.loginPassword}
                   onEmailChange={(val) => updateField("loginEmail", val)}
                   onPasswordChange={(val) => updateField("loginPassword", val)}
-                />
+                /> */}
 
                 {/* <!-- billing details --> */}
                 <Billing
@@ -194,129 +213,22 @@ const Checkout = () => {
                   }
                 />
 
-                {/* <!-- others note box --> */}
-                <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5 mt-7.5">
-                  <div>
-                    <label htmlFor="notes" className="block mb-2.5">
-                      Other Notes (optional)
-                    </label>
-
-                    <textarea
-                      name="notes"
-                      id="notes"
-                      rows={5}
-                      placeholder="Notes about your order, e.g. special notes for delivery."
-                      value={formData.notes}
-                      onChange={(e) => updateField("notes", e.target.value)}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-                    ></textarea>
-                  </div>
-                </div>
+                <Notes
+                  value={formData.notes}
+                  onChange={(val) => updateField("notes", val)}
+                />
               </div>
 
               {/* // <!-- checkout right --> */}
               <div className="max-w-[455px] w-full">
                 {/* <!-- order list box --> */}
-                <div className="bg-white shadow-1 rounded-[10px]">
-                  <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
-                    <h3 className="font-medium text-xl text-dark">
-                      Your Order
-                    </h3>
-                  </div>
-
-                  <div className="pt-2.5 pb-8.5 px-4 sm:px-8.5">
-                    {/* <!-- title --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <h4 className="font-medium text-dark">Product</h4>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-dark text-right">
-                          Subtotal
-                        </h4>
-                      </div>
-                    </div>
-
-                    {/* <!-- cart items --> */}
-                    {cartItems.length > 0 ? (
-                      cartItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex items-center justify-between py-5 border-b border-gray-3"
-                        >
-                          <div>
-                            <p className="text-dark">
-                              {item.title} x {item.quantity}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-dark text-right">
-                              {(
-                                (item.discountedPrice || item.price) *
-                                item.quantity
-                              ).toFixed(2)}{" "}
-                              TMT
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="flex items-center justify-center py-5 border-b border-gray-3">
-                        <p className="text-dark">Your cart is empty</p>
-                      </div>
-                    )}
-
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">Subtotal</p>
-                      </div>
-                      <div>
-                        <p className="text-dark text-right">
-                          {subtotal.toFixed(2)} TMT
-                        </p>
-                      </div>
-                    </div>
-
-                    {couponDiscount > 0 && (
-                      <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                        <div>
-                          <p className="text-dark">Discount</p>
-                        </div>
-                        <div>
-                          <p className="text-dark text-right text-green-600">
-                            -{couponDiscount.toFixed(2)} TMT
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {shippingFee > 0 && (
-                      <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                        <div>
-                          <p className="text-dark">Shipping Fee</p>
-                        </div>
-                        <div>
-                          <p className="text-dark text-right">
-                            {shippingFee.toFixed(2)} TMT
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* <!-- total --> */}
-                    <div className="flex items-center justify-between pt-5">
-                      <div>
-                        <p className="font-medium text-lg text-dark">Total</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-lg text-dark text-right">
-                          {total.toFixed(2)} TMT
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <OrderSummary
+                  cartItemsWithTitle={cartItemsWithTitle}
+                  subtotal={subtotal}
+                  couponDiscount={couponDiscount}
+                  shippingFee={shippingFee}
+                  total={total}
+                />
 
                 {/* <!-- coupon box --> */}
                 <Coupon
@@ -343,10 +255,12 @@ const Checkout = () => {
                 {/* <!-- checkout button --> */}
                 <button
                   type="submit"
-                  disabled={isSubmitting || cartItems.length === 0}
+                  disabled={isSubmitting || cartItemsWithTitle.length === 0}
                   className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "Processing..." : "Process to Checkout"}
+                  {isSubmitting
+                    ? t("buttons.processing")
+                    : t("buttons.placeOrder")}
                 </button>
               </div>
             </div>

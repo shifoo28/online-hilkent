@@ -1,5 +1,6 @@
 import { hashPassword } from "@/lib/bcrypt";
 import { PrismaClient } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
@@ -427,31 +428,72 @@ async function main() {
     ],
   });
 
+  async function createShippingMethods() {
+    const methods = [
+      { name: "Passenger Car", cost: 5, vehicle: "PASSENGER_CAR" },
+      { name: "Light Truck", cost: 15, vehicle: "LIGHT_TRUCK" },
+      { name: "Free Shipping", cost: 0, vehicle: null },
+    ];
+
+    for (const method of methods) {
+      await prisma.shippingMethod.upsert({
+        where: { name: method.name },
+        update: {},
+        create: {
+          name: method.name,
+          cost: new Decimal(method.cost),
+          vehicle: method.vehicle as "PASSENGER_CAR" | "LIGHT_TRUCK" | null,
+          isActive: true,
+        },
+      });
+    }
+  }
+
+  await createShippingMethods();
+
   // Create orders for users
-  const order1 = await prisma.order.create({
-    data: {
+  const order1 = await prisma.order.upsert({
+    where: { orderId: "ORD-2024-001" },
+    update: {},
+    create: {
       orderId: "ORD-2024-001",
       userId: user1.id,
       status: "DELIVERED",
       total: 150,
+      subtotal: 120,
+      shippingCost: 20,
+      shippingMethodId: 1,
+      discountAmount: 10,
     },
   });
 
-  const order2 = await prisma.order.create({
-    data: {
+  const order2 = await prisma.order.upsert({
+    where: { orderId: "ORD-2024-002" },
+    update: {},
+    create: {
       orderId: "ORD-2024-002",
       userId: user1.id,
       status: "PROCESSING",
       total: 89,
+      subtotal: 79,
+      shippingCost: 10,
+      shippingMethodId: 2,
+      discountAmount: 0,
     },
   });
 
-  const order3 = await prisma.order.create({
-    data: {
+  const order3 = await prisma.order.upsert({
+    where: { orderId: "ORD-2024-003" },
+    update: {},
+    create: {
       orderId: "ORD-2024-003",
       userId: user2.id,
       status: "SHIPPED",
       total: 45,
+      subtotal: 45,
+      shippingCost: 0,
+      shippingMethodId: 3,
+      discountAmount: 0,
     },
   });
 

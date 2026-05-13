@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface LoginProps {
   emails?: string;
@@ -13,6 +14,7 @@ const Login: React.FC<LoginProps> = ({
   onEmailChange,
   onPasswordChange,
 }) => {
+  const t = useTranslations("Checkout");
   const [dropdown, setDropdown] = useState(false);
 
   return (
@@ -25,7 +27,7 @@ const Login: React.FC<LoginProps> = ({
       >
         Returning customer?
         <span className="flex items-center gap-2.5 pl-1 font-medium text-dark">
-          Click here to login
+          {t("login.clickToLogin")}
           <svg
             className={`${
               dropdown && "rotate-180"
@@ -49,13 +51,11 @@ const Login: React.FC<LoginProps> = ({
       {/* <!-- dropdown menu --> */}
       {dropdown && (
         <div className="pt-7.5 pb-8.5 px-4 sm:px-8.5">
-          <p className="text-custom-sm mb-6">
-            If you didn&apos;t login, Please log in first.
-          </p>
+          <p className="text-custom-sm mb-6">{t("login.loginMessage")}</p>
 
           <div className="mb-5">
             <label htmlFor="loginEmail" className="block mb-2.5">
-              Username or Email
+              {t("login.usernameOrEmail")}
             </label>
 
             <input
@@ -70,7 +70,7 @@ const Login: React.FC<LoginProps> = ({
 
           <div className="mb-5">
             <label htmlFor="loginPassword" className="block mb-2.5">
-              Password
+              {t("login.password")}
             </label>
 
             <input
@@ -88,7 +88,7 @@ const Login: React.FC<LoginProps> = ({
             type="button"
             className="inline-flex font-medium text-white bg-blue py-3 px-10.5 rounded-md ease-out duration-200 hover:bg-blue-dark"
           >
-            Login
+            {t("login.loginButton")}
           </button>
         </div>
       )}

@@ -1,5 +1,7 @@
 import React from "react";
+import { useTranslations } from "next-intl";
 import { CheckoutFormData } from "@/hooks/useCheckoutForm";
+import AddressSelection from "../Common/AddressSelection";
 
 interface BillingProps {
   formData: CheckoutFormData;
@@ -8,24 +10,33 @@ interface BillingProps {
 }
 
 const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
-  return (
-    <div className="mt-9">
-      <h2 className="font-medium text-dark text-xl sm:text-2xl mb-5.5">
-        Billing details
-      </h2>
+  const t = useTranslations("Checkout");
 
-      <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5">
+  return (
+    <div className="bg-white shadow-1 rounded-[10px]">
+      <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
+        <h2 className="font-medium text-dark text-xl">{t("billing.title")}</h2>
+      </div>
+      <div className="p-4 sm:p-8.5">
+        {/* Saved Addresses Section */}
+        <AddressSelection
+          formData={formData}
+          onChange={onChange}
+          addressType="billing"
+        />
+
+        {/* Manual Entry Form */}
         <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
           <div className="w-full">
             <label htmlFor="firstName" className="block mb-2.5">
-              First Name <span className="text-red">*</span>
+              {t("billing.firstName")} <span className="text-red">*</span>
             </label>
 
             <input
               type="text"
               name="firstName"
               id="firstName"
-              placeholder="Jhon"
+              placeholder="Aman"
               value={formData.firstName}
               onChange={(e) => onChange("firstName", e.target.value)}
               className={`rounded-md border bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20 ${
@@ -39,14 +50,14 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
 
           <div className="w-full">
             <label htmlFor="lastName" className="block mb-2.5">
-              Last Name <span className="text-red">*</span>
+              {t("billing.lastName")}
             </label>
 
             <input
               type="text"
               name="lastName"
               id="lastName"
-              placeholder="Deo"
+              placeholder="Amanow"
               value={formData.lastName}
               onChange={(e) => onChange("lastName", e.target.value)}
               className={`rounded-md border bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20 ${
@@ -61,7 +72,7 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
 
         <div className="mb-5">
           <label htmlFor="companyName" className="block mb-2.5">
-            Company Name
+            {t("billing.companyName")}
           </label>
 
           <input
@@ -74,9 +85,9 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
           />
         </div>
 
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <label htmlFor="countryName" className="block mb-2.5">
-            Country/ Region
+            {t("billing.country")}
             <span className="text-red">*</span>
           </label>
 
@@ -88,7 +99,7 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
                 errors.billingCountry ? "border-red" : "border-gray-3"
               }`}
             >
-              <option value="">Select a country</option>
+              <option value="">{t("billing.selectCountry")}</option>
               <option value="Turkmenistan">Turkmenistan</option>
               <option value="Australia">Australia</option>
               <option value="America">America</option>
@@ -116,11 +127,11 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
           {errors.billingCountry && (
             <p className="text-red text-sm mt-1">{errors.billingCountry}</p>
           )}
-        </div>
+        </div> */}
 
         <div className="mb-5">
           <label htmlFor="address" className="block mb-2.5">
-            Street Address
+            {t("billing.streetAddress")}
             <span className="text-red">*</span>
           </label>
 
@@ -128,7 +139,7 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
             type="text"
             name="address"
             id="address"
-            placeholder="House number and street name"
+            placeholder={t("billing.housePlaceholder")}
             value={formData.billingAddress}
             onChange={(e) => onChange("billingAddress", e.target.value)}
             className={`rounded-md border bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20 ${
@@ -138,23 +149,11 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
           {errors.billingAddress && (
             <p className="text-red text-sm mt-1">{errors.billingAddress}</p>
           )}
-
-          <div className="mt-5">
-            <input
-              type="text"
-              name="addressTwo"
-              id="addressTwo"
-              placeholder="Apartment, suite, unit, etc. (optional)"
-              value={formData.billingAddressTwo}
-              onChange={(e) => onChange("billingAddressTwo", e.target.value)}
-              className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-            />
-          </div>
         </div>
 
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <label htmlFor="town" className="block mb-2.5">
-            Town/ City <span className="text-red">*</span>
+            {t("billing.town")} <span className="text-red">*</span>
           </label>
 
           <input
@@ -170,11 +169,11 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
           {errors.billingTown && (
             <p className="text-red text-sm mt-1">{errors.billingTown}</p>
           )}
-        </div>
+        </div> */}
 
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <label htmlFor="postCode" className="block mb-2.5">
-            Postal Code (optional)
+            {t("billing.postalCode")}
           </label>
 
           <input
@@ -185,11 +184,11 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
             onChange={(e) => onChange("billingPostCode", e.target.value)}
             className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
           />
-        </div>
+        </div> */}
 
         <div className="mb-5">
           <label htmlFor="phone" className="block mb-2.5">
-            Phone <span className="text-red">*</span>
+            {t("billing.phone")} <span className="text-red">*</span>
           </label>
 
           <input
@@ -209,7 +208,7 @@ const Billing: React.FC<BillingProps> = ({ formData, errors, onChange }) => {
 
         <div className="mb-5.5">
           <label htmlFor="email" className="block mb-2.5">
-            Email Address <span className="text-red">*</span>
+            {t("billing.email")}
           </label>
 
           <input

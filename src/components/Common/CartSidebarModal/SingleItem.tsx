@@ -1,10 +1,17 @@
 import React from "react";
 import { CartItem, useCart } from "@/hooks/useCart";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { RemoveIcon } from "@/components/Icons";
+import { getDatabaseLocale } from "@/locales/map";
 
 const SingleItem = ({ item }: { item: CartItem }) => {
+  const locale = useLocale();
+  const title =
+    item.translations.find((t) => t.locale === getDatabaseLocale(locale))
+      ?.name ||
+    item.translations[0]?.name ||
+    "Product";
   const translate = useTranslations("Common.cartSidebarModal");
   const { removeItemFromCart } = useCart();
 
@@ -28,7 +35,7 @@ const SingleItem = ({ item }: { item: CartItem }) => {
 
         <div>
           <h3 className="font-medium text-dark mb-1 ease-out duration-200 hover:text-blue">
-            <a href="#"> {item.title} </a>
+            <a href="#"> {title} </a>
           </h3>
           <p className="text-custom-sm">
             {translate("price")}: {item.discountedPrice} TMT

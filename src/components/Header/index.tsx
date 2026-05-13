@@ -6,7 +6,7 @@ import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
 import WishlistLink from "../Common/WishlistLink";
 import { useCart } from "@/hooks/useCart";
-import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
+import { useCartModalContext } from "@/context/CartSidebarModalContext";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
@@ -98,7 +98,7 @@ const Header = () => {
                 <div className="flex items-center">
                   <LanguageSwitcher />
 
-                  <div className="relative max-w-[333px] sm:min-w-[333px] w-full h-full">
+                  <div className="relative max-w-[333px] xl:min-w-[333px] w-full h-full">
                     {/* <!-- divider --> */}
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 inline-block w-px h-5.5 bg-gray-4"></span>
                     <input

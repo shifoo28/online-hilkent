@@ -2,10 +2,10 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCallback, useRef } from "react";
 import "swiper/css/navigation";
-import "swiper/css"; 
+import "swiper/css";
 import Image from "next/image";
 
-import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
+import { usePreviewSlider } from "@/context/PreviewSliderContext";
 
 const PreviewSliderModal = () => {
   const { closePreviewModal, isModalPreviewOpen } = usePreviewSlider();

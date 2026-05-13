@@ -4,14 +4,14 @@ import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import Newsletter from "../Common/Newsletter";
 import RecentlyViewdItems from "./RecentlyViewed";
-import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
+import { usePreviewSlider } from "@/context/PreviewSliderContext";
 import { colors, storages, sims, types } from "./data";
 import Overview from "./Overview";
 import { Product } from "@/types/product";
 import { useParams } from "next/navigation";
 import GenerateStars from "../Review/generateStars";
-import { useWishlist } from "@/context/WishlistContext";
 import { useTranslations } from "next-intl";
+import { useWishlist } from "@/hooks/useWishlist";
 
 interface ProductPageProps {
   params: { id: string };
@@ -54,11 +54,7 @@ const ShopDetails = () => {
   };
 
   const handleItemToWishList = () => {
-    addItem({
-      ...product,
-      status: "available",
-      quantity: 1,
-    });
+    addItem({ ...product });
   };
 
   return (

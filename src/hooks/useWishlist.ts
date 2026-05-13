@@ -1,1 +1,12 @@
-export { useWishlist, type WishlistItem } from "@/context/WishlistContext";
+import { WishlistContext } from "@/context/WishlistContext";
+import { useContext } from "react";
+
+export { type WishlistItem } from "@/context/WishlistContext";
+
+export const useWishlist = () => {
+  const context = useContext(WishlistContext);
+  if (!context) {
+    throw new Error("useWishlist must be used within a WishlistProvider");
+  }
+  return context;
+};

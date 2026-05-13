@@ -1,11 +1,39 @@
+// Provides helper functions and Prisma queries for the e-commerce app:
+// - calculateDiscountedPrice: applies percentage or fixed discounts safely
+// - mapPrismaProduct: converts raw Prisma product data into typed Product objects
+// - mapPrismaHeroProduct: maps hero product entries with linked product data
+// - getProducts / getHeroProducts / getProductById: fetch products with relations
+
 import prisma from "@/lib/prisma";
 import { Product } from "@/types/product";
-import { HeroProduct } from "@prisma/client";
+import { Discount, HeroProduct } from "@prisma/client";
+
+function calculateDiscountedPrice(
+  price: number,
+  discounts: Discount[] = [],
+): number {
+  const discount = discounts?.[0];
+  if (!discount) return price;
+
+  if (discount.type === "PERCENTAGE") {
+    return Math.max(0, Math.round(price * (1 - discount.value / 100)));
+  }
+
+  if (discount.type === "FIXED") {
+    return Math.max(0, price - discount.value);
+  }
+
+  return price;
+}
 
 export function mapPrismaProduct(product: any): Product {
   return {
     id: product.id,
     price: product.price,
+    discountedPrice: calculateDiscountedPrice(
+      product.price,
+      product.Discounts || [],
+    ),
     categoryId: product.categoryId,
     inStock: product.inStock,
     rating: product.rating,
@@ -35,24 +63,43 @@ export function mapPrismaHeroProduct(
   };
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const products = await prisma.product.findMany({
-    include: {
-      Reviews: {
-        include: {
-          user: true,
-        },
-      },
-      Images: true,
-      Discounts: true,
-      Properties: true,
-      Translations: true,
-    },
-    orderBy: { createdAt: "desc" },
-  });
+// export async function getProducts(): Promise<Product[]> {
+//   const products = await prisma.product.findMany({
+//     include: {
+//       Reviews: {
+//         include: {
+//           user: true,
+//         },
+//       },
+//       Images: true,
+//       Discounts: true,
+//       Properties: true,
+//       Translations: true,
+//     },
+//     orderBy: { createdAt: "desc" },
+//   });
 
-  return products.map(mapPrismaProduct);
-}
+//   return products.map(mapPrismaProduct);
+// }
+
+// export async function getProductById(id: string): Promise<Product | null> {
+//   const product = await prisma.product.findUnique({
+//     where: { id },
+//     include: {
+//       Reviews: {
+//         include: {
+//           user: true,
+//         },
+//       },
+//       Images: true,
+//       Discounts: true,
+//       Properties: true,
+//       Translations: true,
+//     },
+//   });
+//   if (!product) return null;
+//   return mapPrismaProduct(product);
+// }
 
 export async function getHeroProducts(): Promise<
   (HeroProduct & { product: Product | null })[]
@@ -68,25 +115,6 @@ export async function getHeroProducts(): Promise<
   });
 
   return heroProducts.map(mapPrismaHeroProduct);
-}
-
-export async function getProductById(id: string): Promise<Product | null> {
-  const product = await prisma.product.findUnique({
-    where: { id },
-    include: {
-      Reviews: {
-        include: {
-          user: true,
-        },
-      },
-      Images: true,
-      Discounts: true,
-      Properties: true,
-      Translations: true,
-    },
-  });
-  if (!product) return null;
-  return mapPrismaProduct(product);
 }
 
 export type { Product } from "@/types/product";

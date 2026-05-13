@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 
-import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
+import { useCartModalContext } from "@/context/CartSidebarModalContext";
 import { useCart } from "@/hooks/useCart";
 import SingleItem from "./SingleItem";
 import Link from "next/link";
@@ -89,6 +89,7 @@ const CartSidebarModal = () => {
               </Link>
 
               <Link
+                onClick={() => closeCartModal()}
                 href="/checkout"
                 className="w-full flex justify-center font-medium text-white bg-dark py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-opacity-95"
               >

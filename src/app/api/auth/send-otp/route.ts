@@ -24,7 +24,7 @@ function genOtp() {
 async function storeOtp(subject: string, info: string) {
   const client = await getRedis();
   const key = `otp:${subject}`;
-  await client.set(key, info, "EX", 330); // expires in 330 seconds (5 min, 30 sec)
+  await client.set(key, info, "EX", 3600); // expires in 1 hour
 }
 
 export async function POST(req: Request) {

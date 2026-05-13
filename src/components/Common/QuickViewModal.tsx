@@ -2,25 +2,37 @@
 import React, { useEffect, useState } from "react";
 import type { Review } from "@prisma/client";
 
-import { useModalContext } from "@/app/context/QuickViewModalContext";
+import { useModalContext } from "@/context/QuickViewModalContext";
 import { useAppSelector } from "@/redux/store";
 import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
-import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
-import { useTranslations } from "next-intl";
+import { usePreviewSlider } from "@/context/PreviewSliderContext";
+import { useTranslations, useLocale } from "next-intl";
 import { CheckIcon, ExclamationIcon, ThinCloseIcon } from "../Icons";
 import GenerateStars from "../Review/generateStars";
+import { getDatabaseLocale } from "@/locales/map";
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
   const { openPreviewModal } = usePreviewSlider();
   const [quantity, setQuantity] = useState(1);
   const translate = useTranslations("Common");
+  const locale = useLocale();
   const { addItemToCart } = useCart();
   const [activePreview, setActivePreview] = useState(0);
 
   // get the product data
   const product = useAppSelector((state) => state.quickViewReducer.value);
+  const title =
+    product?.translations.find((t) => t.locale === getDatabaseLocale(locale))
+      ?.name ||
+    product?.translations[0]?.name ||
+    "Product";
+  const description =
+    product?.translations.find((t) => t.locale === getDatabaseLocale(locale))
+      ?.description ||
+    product?.translations[0]?.description ||
+    "No description available.";
   const [reviews, setReviews] = useState<Review[]>(product?.reviews || []);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewsError, setReviewsError] = useState<string | null>(null);
@@ -80,8 +92,6 @@ const QuickViewModal = () => {
     addItemToCart({
       ...product,
       quantity,
-      title: product.translations[0].name,
-      discountedPrice: product.discounts[0]?.value || product.price,
     });
 
     closeModal();
@@ -192,7 +202,7 @@ const QuickViewModal = () => {
               )}
 
               <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
-                {product?.translations?.[0]?.name}
+                {title}
               </h3>
 
               <div className="flex flex-wrap items-center gap-5 mb-6">
@@ -233,10 +243,7 @@ const QuickViewModal = () => {
                 </div>
               </div>
 
-              <p>
-                {product?.translations[0]?.description ||
-                  "No description available."}
-              </p>
+              <p>{description}</p>
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
                 <div>
@@ -246,12 +253,9 @@ const QuickViewModal = () => {
 
                   <span className="flex items-center gap-2">
                     <span className="font-semibold text-dark text-xl xl:text-heading-4">
-                      {product?.discounts[0]?.value || product?.price}{" "}
-                      {product?.discounts[0]?.type === "PERCENTAGE"
-                        ? "%"
-                        : "TMT"}
+                      {product?.discountedPrice ?? product?.price} TMT
                     </span>
-                    {product?.discounts[0] && (
+                    {product?.discountedPrice !== product?.price && (
                       <span className="font-medium text-dark-4 text-lg xl:text-2xl line-through">
                         {product?.price} TMT
                       </span>

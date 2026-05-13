@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Product } from "@/types/product";
-import { useModalContext } from "@/app/context/QuickViewModalContext";
+import { useModalContext } from "@/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
@@ -11,12 +11,21 @@ import Link from "next/link";
 import Image from "next/image";
 import GenerateStars from "../Review/generateStars";
 import { EyeIcon, HeartIcon } from "@/components/Icons";
+import { useLocale } from "next-intl";
+import { getDatabaseLocale } from "@/locales/map";
 
 const SingleGridItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const dispatch = useDispatch<AppDispatch>();
   const { addItem } = useWishlist();
   const { addItemToCart } = useCart();
+  const locale = useLocale();
+
+  const title =
+    item.translations.find((t) => t.locale === getDatabaseLocale(locale))
+      ?.name ||
+    item.translations[0]?.name ||
+    "Product";
 
   // update the QuickView state
   const handleQuickViewUpdate = () => {
@@ -27,18 +36,12 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   const handleAddToCart = () => {
     addItemToCart({
       ...item,
-      title: item.translations?.[0]?.name,
-      discountedPrice: item.discounts[0]?.value,
       quantity: 1,
     });
   };
 
   const handleItemToWishList = () => {
-    addItem({
-      ...item,
-      status: "available",
-      quantity: 1,
-    });
+    addItem({ ...item });
   };
 
   return (
@@ -100,18 +103,12 @@ const SingleGridItem = ({ item }: { item: Product }) => {
       </div>
 
       <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-        <Link href={`/shop-details/${item.id}`}>
-          {" "}
-          {item.translations?.[0]?.name}{" "}
-        </Link>
+        <Link href={`/shop-details/${item.id}`}> {title} </Link>
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">
-          {item.discounts[0]?.value || item.price}{" "}
-          {item.discounts[0]?.type === "PERCENTAGE" ? "%" : "TMT"}
-        </span>
-        {item.discounts[0] && (
+        <span className="text-dark">{item.discountedPrice} TMT</span>
+        {item.discountedPrice !== item.price && (
           <span className="text-dark-4 line-through">{item.price} TMT</span>
         )}
       </span>

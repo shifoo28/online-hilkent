@@ -12,9 +12,11 @@ export interface CheckoutFormData {
   billingPostCode: string;
   billingPhone: string;
   email: string;
+  selectedBillingAddressId: string;
 
   // Shipping details
   shippingAddressSame: boolean;
+  selectedShippingAddressId: string;
   shippingCountry: string;
   shippingAddress: string;
   shippingAddressTwo: string;
@@ -22,10 +24,10 @@ export interface CheckoutFormData {
   shippingPostCode: string;
 
   // Shipping method
-  shippingMethod: "free" | "fedex" | "dhl";
+  shippingMethod: "free" | "fedex" | "dhl" | "passengerCar" | "lightTruck";
 
   // Payment method
-  paymentMethod: "bank" | "cash" | "paypal";
+  paymentMethod: "bank" | "cash";
 
   // Coupon
   couponCode: string;
@@ -54,13 +56,15 @@ const INITIAL_STATE: CheckoutFormData = {
   billingPostCode: "",
   billingPhone: "",
   email: "",
+  selectedBillingAddressId: "",
   shippingAddressSame: true,
+  selectedShippingAddressId: "",
   shippingCountry: "",
   shippingAddress: "",
   shippingAddressTwo: "",
   shippingTown: "",
   shippingPostCode: "",
-  shippingMethod: "free",
+  shippingMethod: "passengerCar",
   paymentMethod: "bank",
   couponCode: "",
   notes: "",
@@ -107,7 +111,7 @@ export const useCheckoutForm = () => {
     // Required billing fields
     if (!formData.firstName.trim())
       newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    // if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
     if (!formData.billingCountry)
       newErrors.billingCountry = "Country is required";
     if (!formData.billingAddress.trim())
@@ -116,7 +120,7 @@ export const useCheckoutForm = () => {
       newErrors.billingTown = "Town/City is required";
     if (!formData.billingPhone.trim())
       newErrors.billingPhone = "Phone is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
+    // if (!formData.email.trim()) newErrors.email = "Email is required";
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

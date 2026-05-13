@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Product } from "@/types/product";
-import { useModalContext } from "@/app/context/QuickViewModalContext";
+import { useModalContext } from "@/context/QuickViewModalContext";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateQuickView } from "@/redux/features/quickView-slice";
@@ -10,12 +10,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { useWishlist } from "@/hooks/useWishlist";
 import GenerateStars from "@/components/Review/generateStars";
+import { useLocale } from "next-intl";
+import { getDatabaseLocale } from "@/locales/map";
 
 const SingleItem = ({ item, badge }: { item: Product; badge: string }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { openModal } = useModalContext();
   const { addItem } = useWishlist();
   const { addItemToCart } = useCart();
+  const locale = useLocale();
+
+  const title =
+    item.translations.find((t) => t.locale === getDatabaseLocale(locale))
+      ?.name ||
+    item.translations[0]?.name ||
+    "Product";
 
   // update the QuickView state
   const handleQuickViewUpdate = () => {
@@ -26,18 +35,12 @@ const SingleItem = ({ item, badge }: { item: Product; badge: string }) => {
   const handleAddToCart = () => {
     addItemToCart({
       ...item,
-      title: item.translations?.[0]?.name,
-      discountedPrice: item.discounts[0]?.value,
       quantity: 1,
     });
   };
 
   const handleItemToWishList = () => {
-    addItem({
-      ...item,
-      status: "available",
-      quantity: 1,
-    });
+    addItem({ ...item });
   };
 
   return (
@@ -58,17 +61,12 @@ const SingleItem = ({ item, badge }: { item: Product; badge: string }) => {
           </div>
 
           <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-            <Link href={`/shop-details/${item.id}`}>
-              {item.translations?.[0]?.name}
-            </Link>
+            <Link href={`/shop-details/${item.id}`}>{title}</Link>
           </h3>
 
           <span className="flex items-center justify-center gap-2 font-medium text-lg">
-            <span className="text-dark">
-              {item.discounts[0]?.value || item.price}{" "}
-              {item.discounts[0]?.type === "PERCENTAGE" ? "%" : "TMT"}
-            </span>
-            {item.discounts[0] && (
+            <span className="text-dark">{item.discountedPrice} TMT</span>
+            {item.discountedPrice !== item.price && (
               <span className="text-dark-4 line-through">{item.price} TMT</span>
             )}
           </span>

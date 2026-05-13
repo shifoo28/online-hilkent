@@ -1,5 +1,5 @@
 "use client";
-import { ProductImage } from "@prisma/client";
+import { Product } from "@/types/product";
 import React, {
   createContext,
   useContext,
@@ -9,13 +9,8 @@ import React, {
   useMemo,
 } from "react";
 
-export type CartItem = {
-  id: string;
-  title: string;
-  price: number;
-  discountedPrice: number;
+export type CartItem = Product & {
   quantity: number;
-  images: ProductImage[];
 };
 
 const STORAGE_KEY = "cart";

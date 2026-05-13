@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { ReviewList, ReviewForm } from "../../Review";
 import { tabs } from "../data";
-import { useAuth } from "@/context/AuthContext";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/useAuth";
 
 const Overview = ({ id }: { id: string }) => {
   const translate = useTranslations("ShopDetails.overview");

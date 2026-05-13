@@ -489,15 +489,9 @@
   },
   "Wishlist": {
     "title": "Wishlist",
-    "page":"Wishlist",
+    "page": "Wishlist",
     "label": "Your Wishlist",
     "clear": "Clear Wishlist",
-    "table": {
-      "product": "Product",
-      "price": "Unit Price",
-      "stock": "Stock Status",
-      "action": "Action"
-    },
     "empty": "Your wishlist is currently empty",
     "stock": {
       "inStock": "In Stock",
@@ -534,5 +528,92 @@
     },
     "copyright": "© {year} Online Hilkent. All rights reserved.",
     "acceptedPayments": "We Accept:"
+  },
+  "Checkout": {
+    "title": "Checkout",
+    "page": "Checkout",
+    "errors": {
+      "fillRequired": "Please fill in all required fields",
+      "cartEmpty": "Your cart is empty",
+      "couponInvalid": "Invalid coupon",
+      "couponFailed": "Failed to validate coupon",
+      "orderFailed": "Failed to create order",
+      "orderError": "An error occurred while processing your order",
+      "orderSuccess": "Order created successfully! Redirecting..."
+    },
+    "buttons": {
+      "processing": "Processing...",
+      "placeOrder": "Place Order"
+    },
+    "billing": {
+      "title": "Billing details",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "companyName": "Company Name",
+      "country": "Country/ Region",
+      "selectCountry": "Select a country",
+      "streetAddress": "Street Address",
+      "housePlaceholder": "House number and street name",
+      "apartmentPlaceholder": "Apartment, suite, unit, etc. (optional)",
+      "town": "Town/ City",
+      "postalCode": "Postal Code (optional)",
+      "phone": "Phone",
+      "email": "Email Address",
+      "selectSavedAddress": "Select Saved Address",
+      "selectAddress": "Choose a saved address",
+      "addNewAddress": "Add New Address",
+      "editAddress": "Edit Address"
+    },
+    "shipping": {
+      "differentAddress": "Ship to a different address?",
+      "sameAsBilling": "Same as billing address",
+      "selectSavedAddress": "Select Saved Address",
+      "selectAddress": "Choose a saved address",
+      "addNewAddress": "Add New Address",
+      "editAddress": "Edit Address"
+    },
+    "login": {
+      "returningCustomer": "Returning customer?",
+      "clickToLogin": "Click here to login",
+      "loginMessage": "If you didn't login, Please log in first.",
+      "usernameOrEmail": "Username or Email",
+      "password": "Password",
+      "loginButton": "Login"
+    },
+    "payment": {
+      "title": "Payment Method",
+      "bank": "Direct bank transfer",
+      "cash": "Cash on delivery",
+      "paypal": "Paypal"
+    },
+    "shippingMethod": {
+      "title": "Shipping Method",
+      "loading": "Loading shipping options...",
+      "free": "Free Shipping",
+      "passengerCar": "Passenger Car Delivery",
+      "lightTruck": "Light Truck Delivery",
+      "standard": "Standard Shipping",
+      "express": "Express Shipping"
+    },
+    "coupon": {
+      "title": "Have any Coupon Code?",
+      "placeholder": "Enter coupon code",
+      "validating": "Validating...",
+      "apply": "Apply",
+      "applied": "Coupon code \"{code}\" applied successfully!"
+    },
+    "orderSummary": {
+      "title": "Your Order",
+      "product": "Product",
+      "subtotal": "Subtotal",
+      "cartEmpty": "Your cart is empty",
+      "discount": "Discount",
+      "shippingFee": "Shipping Fee",
+      "total": "Total"
+    },
+    "notes": {
+      "label": "Other Notes (optional)",
+      "placeholder": "Notes about your order, e.g. special notes for delivery."
+    }
   }
 }

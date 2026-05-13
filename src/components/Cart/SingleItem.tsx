@@ -3,9 +3,15 @@ import { CartItem, useCart } from "@/hooks/useCart";
 import { RemoveIcon } from "@/components/Icons";
 
 import Image from "next/image";
+import { getDatabaseLocale } from "@/locales/map";
+import { useLocale } from "next-intl";
 
 const SingleItem = ({ item }: { item: CartItem }) => {
+  const locale = useLocale();
   const [quantity, setQuantity] = useState(item.quantity);
+  const title =
+    item.translations.find((t) => t.locale === getDatabaseLocale(locale))
+      ?.name || "Product";
 
   const { removeItemFromCart, updateCartItemQuantity } = useCart();
 
@@ -43,7 +49,7 @@ const SingleItem = ({ item }: { item: CartItem }) => {
 
             <div>
               <h3 className="text-dark ease-out duration-200 hover:text-blue">
-                <a href="#"> {item.title} </a>
+                <a href="#"> {title} </a>
               </h3>
             </div>
           </div>
@@ -52,7 +58,7 @@ const SingleItem = ({ item }: { item: CartItem }) => {
 
       <div className="min-w-[180px]">
         <p className="text-dark">
-          {item.discountedPrice ? "discounted" : item.price} TMT
+          {item.discountedPrice ? item.discountedPrice : item.price} TMT
         </p>
       </div>
 

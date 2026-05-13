@@ -1,10 +1,18 @@
 import { useCart } from "@/hooks/useCart";
-import { useTranslations } from "next-intl";
+import { getDatabaseLocale } from "@/locales/map";
+import { useLocale, useTranslations } from "next-intl";
 import React from "react";
 
 const OrderSummary = () => {
   const { items, totalPrice } = useCart();
+  const locale = useLocale();
   const translate = useTranslations("Cart.orderSummary");
+  const titles =
+    items.map(
+      (item) =>
+        item.translations.find((t) => t.locale === getDatabaseLocale(locale))
+          ?.name || "Product",
+    ) || [];
 
   return (
     <div className="lg:max-w-[455px] w-full">
@@ -36,12 +44,12 @@ const OrderSummary = () => {
               className="flex items-center justify-between py-5 border-b border-gray-3"
             >
               <div>
-                <p className="text-dark">{item.title}</p>
+                <p className="text-dark">{titles[key]}</p>
               </div>
               <div>
                 <p className="text-dark text-right">
                   {item.discountedPrice
-                    ? "discounted"
+                    ? item.discountedPrice * item.quantity
                     : item.price * item.quantity}{" "}
                   TMT
                 </p>

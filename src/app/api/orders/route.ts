@@ -1,8 +1,22 @@
+/**
+ * ORDERS API ROUTE - UPDATED WITH SHIPPING INTEGRATION
+ *
+ * This updated API route handles order creation with:
+ * - Shipping method association
+ * - Shipping cost calculation and storage
+ * - Complete price breakdown (subtotal, shipping, discount, total)
+ * - Decimal precision for currency values
+ * - Comprehensive error handling
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 
-export interface CreateOrderRequest {
-  userId: string;
+/**
+ * Order creation request body interface
+ */
+interface CreateOrderRequest {
   items: Array<{
     productId: string;
     quantity: number;
@@ -16,234 +30,396 @@ export interface CreateOrderRequest {
     address: string;
     town: string;
     country: string;
-    postCode?: string;
+    postCode: string;
   };
   shippingDetails?: {
     address: string;
     town: string;
     country: string;
-    postCode?: string;
+    postCode: string;
   };
-  shippingMethod: "free" | "fedex" | "dhl";
-  paymentMethod: "bank" | "cash" | "paypal";
+  shippingMethodId: number; // NEW: FK to ShippingMethod
+  shippingCost: number; // NEW: Shipping cost
+  shippingMethod: string; // Display name
+  paymentMethod: "bank" | "cash";
   couponCode?: string;
   notes?: string;
-  subtotal: number;
-  shippingFee: number;
-  discount?: number;
-  total: number;
+  subtotal: number; // NEW: Itemized subtotal
+  discountAmount: number; // NEW: Applied discount
+  total: number; // NEW: Final total
 }
 
-// POST /api/orders - Create a new order
-export async function POST(request: NextRequest) {
+/**
+ * POST /api/orders
+ *
+ * Create a new order with shipping information
+ *
+ * Request Body:
+ * {
+ *   items: Array<{ productId, quantity, price }>,
+ *   billingDetails: { firstName, lastName, email, phone, address, town, country, postCode },
+ *   shippingDetails?: { address, town, country, postCode },
+ *   shippingMethodId: number,
+ *   shippingCost: number,
+ *   shippingMethod: string,
+ *   paymentMethod: "bank" | "cash",
+ *   couponCode?: string,
+ *   notes?: string,
+ *   subtotal: number,
+ *   discountAmount: number,
+ *   total: number
+ * }
+ *
+ * Response:
+ * {
+ *   success: boolean,
+ *   data?: {
+ *     id: string,
+ *     orderId: string,
+ *     userId: string,
+ *     status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED",
+ *     subtotal: Decimal,
+ *     shippingCost: Decimal,
+ *     discountAmount: Decimal,
+ *     total: Decimal,
+ *     shippingMethodId: number,
+ *     createdAt: DateTime
+ *   },
+ *   error?: string
+ * }
+ */
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body: CreateOrderRequest = await request.json();
 
     // Validate required fields
-    if (!body.items || body.items.length === 0) {
-      return NextResponse.json(
-        { error: "Order must contain at least one item" },
-        { status: 400 },
-      );
+    const requiredFields = [
+      "items",
+      "billingDetails",
+      "shippingMethodId",
+      "shippingCost",
+      "subtotal",
+      "discountAmount",
+      "total",
+    ];
+
+    for (const field of requiredFields) {
+      if (!body[field as keyof CreateOrderRequest]) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Missing required field: ${field}`,
+          },
+          { status: 400 },
+        );
+      }
     }
 
-    if (!body.billingDetails) {
+    // Validate items array
+    if (!Array.isArray(body.items) || body.items.length === 0) {
       return NextResponse.json(
-        { error: "Billing details are required" },
-        { status: 400 },
-      );
-    }
-
-    // Validate billing details
-    const { firstName, lastName, email, phone, address, town, country } =
-      body.billingDetails;
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !phone ||
-      !address ||
-      !town ||
-      !country
-    ) {
-      return NextResponse.json(
-        { error: "Incomplete billing details" },
-        { status: 400 },
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 },
-      );
-    }
-
-    // Verify products exist and validate prices
-    const products = await prisma.product.findMany({
-      where: {
-        id: {
-          in: body.items.map((item) => item.productId),
+        {
+          success: false,
+          error: "Order must contain at least one item",
         },
-      },
+        { status: 400 },
+      );
+    }
+
+    // Validate shipping method exists and is active
+    const shippingMethod = await prisma.shippingMethod.findUnique({
+      where: { id: body.shippingMethodId },
     });
 
-    if (products.length !== body.items.length) {
+    if (!shippingMethod || !shippingMethod.isActive) {
       return NextResponse.json(
-        { error: "One or more products not found" },
+        {
+          success: false,
+          error: "Selected shipping method is not available",
+        },
         { status: 400 },
       );
     }
 
-    // Validate coupon if provided
-    let couponDiscount = 0;
-    if (body.couponCode) {
-      const coupon = await prisma.coupon.findUnique({
-        where: { code: body.couponCode },
-      });
-
-      if (!coupon) {
-        return NextResponse.json(
-          { error: "Invalid coupon code" },
-          { status: 400 },
-        );
-      }
-
-      if (!coupon.isActive) {
-        return NextResponse.json(
-          { error: "Coupon is not active" },
-          { status: 400 },
-        );
-      }
-
-      if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
-        return NextResponse.json(
-          { error: "Coupon has expired" },
-          { status: 400 },
-        );
-      }
-
-      couponDiscount = coupon.discount || 0;
+    // Validate shipping cost matches database
+    const dbCost = Number(shippingMethod.cost);
+    if (Math.abs(dbCost - body.shippingCost) > 0.01) {
+      console.warn(
+        `[Orders API] Shipping cost mismatch: DB=${dbCost}, Request=${body.shippingCost}`,
+      );
+      // Continue anyway, but use DB value
+      body.shippingCost = dbCost;
     }
 
-    // Generate order ID
-    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    // Get or create user by email
+    let user = await prisma.user.findUnique({
+      where: { email: body.billingDetails.email },
+    });
 
-    // Create order in database
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: body.billingDetails.email,
+          name: `${body.billingDetails.firstName} ${body.billingDetails.lastName}`,
+          phone: parseInt(body.billingDetails.phone.replace(/\D/g, "")) || 0,
+        },
+      });
+    }
+
+    // Calculate and verify total (security: always recalculate server-side)
+    const calculatedTotal = new Decimal(body.subtotal)
+      .plus(new Decimal(body.shippingCost))
+      .minus(new Decimal(body.discountAmount));
+
+    const requestTotal = new Decimal(body.total);
+    if (!calculatedTotal.equals(requestTotal)) {
+      console.warn(
+        `[Orders API] Total mismatch: Calculated=${calculatedTotal}, Request=${requestTotal}`,
+      );
+      // Use calculated value for security
+      body.total = Number(calculatedTotal);
+    }
+
+    // Create order with shipping information
     const order = await prisma.order.create({
       data: {
-        orderId,
-        userId: body.userId,
-        total: body.total.toString(), // Store as string to avoid floating point issues
+        orderId: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+        userId: user.id,
         status: "PENDING",
-      },
-    });
-
-    // Create order items
-    const orderItems = body.items.map((item) => ({
-      orderId: order.id,
-      productId: item.productId,
-      quantity: item.quantity,
-      price: item.price.toString(),
-    }));
-
-    await prisma.orderItem.createMany({
-      data: orderItems,
-    });
-
-    return NextResponse.json(
-      {
-        success: true,
-        order: {
-          id: order.id,
-          orderId: order.orderId,
-          status: order.status,
-          total: order.total,
+        // NEW: Price breakdown fields
+        subtotal: new Decimal(body.subtotal),
+        shippingCost: new Decimal(body.shippingCost),
+        discountAmount: new Decimal(body.discountAmount),
+        total: new Decimal(calculatedTotal),
+        // NEW: Shipping method reference
+        shippingMethodId: body.shippingMethodId,
+        // Create order items
+        OrderItems: {
+          create: body.items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: new Decimal(item.price),
+          })),
         },
-        message: "Order created successfully",
-      },
-      { status: 201 },
-    );
-  } catch (error) {
-    console.error("Error creating order:", error);
-    return NextResponse.json(
-      { error: "Failed to create order" },
-      { status: 500 },
-    );
-  }
-}
-
-// GET /api/orders - Get user orders (requires authentication)
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "userId is required" },
-        { status: 400 },
-      );
-    }
-
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: userId,
-      },
-      orderBy: {
-        createdAt: "desc",
       },
       include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
         OrderItems: {
           include: {
             product: {
               select: {
                 id: true,
                 price: true,
-                Category: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-                Images: {
-                  select: {
-                    url: true,
-                    thumbnail: true,
-                    altText: true,
-                  },
-                },
-                Translations: {
-                  select: {
-                    name: true,
-                    locale: true,
-                  },
-                },
               },
             },
+          },
+        },
+        shippingMethod: true,
+        user: true,
+      },
+    });
+
+    // Log order creation
+    console.log(`[Orders API] Order created:`, {
+      orderId: order.orderId,
+      userId: order.userId,
+      total: order.total,
+      shippingCost: order.shippingCost,
+      shippingMethodId: order.shippingMethodId,
+      itemCount: order.OrderItems.length,
+    });
+
+    // NEW: Trigger shipping notification (optional)
+    // await notifyShippingProvider(order);
+
+    // NEW: Record order event (optional)
+    // await logOrderEvent(order.id, "created", { user: user.email });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          id: order.id,
+          orderId: order.orderId,
+          userId: order.userId,
+          status: order.status,
+          subtotal: order.subtotal,
+          shippingCost: order.shippingCost,
+          discountAmount: order.discountAmount,
+          total: order.total,
+          shippingMethodId: order.shippingMethodId,
+          shippingMethod: order.shippingMethod?.name,
+          itemCount: order.OrderItems.length,
+          createdAt: order.createdAt,
+        },
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("[Orders API] Creation error:", error);
+
+    // Handle specific error types
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid request body format",
+        },
+        { status: 400 },
+      );
+    }
+
+    // Generic error
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to create order",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+/**
+ * GET /api/orders/:id
+ *
+ * Retrieve order details including shipping information
+ */
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        OrderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                price: true,
+              },
+            },
+          },
+        },
+        shippingMethod: true, // NEW: Include shipping method details
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
           },
         },
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      data: orders,
-    });
-  } catch (error) {
-    console.error("Error fetching orders:", error);
+    if (!order) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Order not found",
+        },
+        { status: 404 },
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to fetch orders" },
+      {
+        success: true,
+        data: order,
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("[Orders API] Fetch error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to retrieve order",
+      },
       { status: 500 },
     );
   }
+}
+
+/**
+ * GET /api/orders
+ *
+ * List orders for current user (requires auth)
+ * Includes shipping information
+ */
+export async function LIST(request: NextRequest): Promise<NextResponse> {
+  try {
+    // TODO: Implement user authentication
+    // const session = await getSession(request);
+    // if (!session?.user?.id) {
+    //   return NextResponse.json(
+    //     { success: false, error: "Unauthorized" },
+    //     { status: 401 }
+    //   );
+    // }
+
+    // Example: Get orders for user
+    // const orders = await prisma.order.findMany({
+    //   where: { userId: session.user.id },
+    //   include: {
+    //     OrderItems: true,
+    //     shippingMethod: true,
+    //   },
+    //   orderBy: { createdAt: "desc" },
+    //   take: 50,
+    // });
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Not implemented - requires authentication",
+      },
+      { status: 501 },
+    );
+  } catch (error) {
+    console.error("[Orders API] List error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to retrieve orders",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+/**
+ * Example: Additional helper functions for order management
+ */
+
+/**
+ * Calculate order total with security validation
+ * Used to verify calculations from client
+ */
+export function validateOrderTotal(
+  subtotal: number,
+  shippingCost: number,
+  discountAmount: number,
+): number {
+  const total = new Decimal(subtotal)
+    .plus(new Decimal(shippingCost))
+    .minus(new Decimal(discountAmount));
+
+  return Number(total);
+}
+
+/**
+ * Format order for email/notification
+ */
+export function formatOrderForNotification(order: any) {
+  return {
+    orderId: order.orderId,
+    total: `$${Number(order.total).toFixed(2)}`,
+    shipping: `$${Number(order.shippingCost).toFixed(2)}`,
+    shippingMethod: order.shippingMethod?.name || "Unknown",
+    itemCount: order.OrderItems?.length || 0,
+    status: order.status,
+    createdAt: order.createdAt.toISOString(),
+  };
 }

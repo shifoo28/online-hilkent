@@ -1,7 +1,6 @@
 "use client";
 import React, {
   createContext,
-  useContext,
   useCallback,
   useEffect,
   useState,
@@ -9,10 +8,7 @@ import React, {
 } from "react";
 import { Product } from "@/types/product";
 
-export type WishlistItem = Product & {
-  quantity: number;
-  status?: string;
-};
+export type WishlistItem = Product;
 
 const STORAGE_KEY = "wishlist";
 
@@ -47,7 +43,7 @@ type WishlistContextType = {
   isInWishlist: (id: string) => boolean;
 };
 
-const WishlistContext = createContext<WishlistContextType | undefined>(
+export const WishlistContext = createContext<WishlistContextType | undefined>(
   undefined,
 );
 
@@ -73,11 +69,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
-        return prev.map((i) =>
-          i.id === item.id
-            ? { ...i, quantity: (i.quantity || 0) + (item.quantity || 0) }
-            : i,
-        );
+        return prev.map((i) => (i.id === item.id ? item : i));
       }
       return [...prev, item];
     });
@@ -103,12 +95,4 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
       {children}
     </WishlistContext.Provider>
   );
-};
-
-export const useWishlist = () => {
-  const context = useContext(WishlistContext);
-  if (!context) {
-    throw new Error("useWishlist must be used within a WishlistProvider");
-  }
-  return context;
 };

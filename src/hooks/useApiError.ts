@@ -89,7 +89,7 @@ export function useApiError() {
    * Get validation errors
    */
   const getValidationErrors = useCallback(
-    (error: unknown): Record<string, string> | null => {
+    (error: ValidationError): Record<string, string> | null => {
       if (isValidationError(error)) {
         return error.fieldErrors.reduce(
           (acc, fieldError) => ({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useWishlist } from "@/context/WishlistContext";
+import { useWishlist } from "@/hooks/useWishlist";
 import { UserProfile } from "@/types/profile";
 import { useTranslations } from "next-intl";
 

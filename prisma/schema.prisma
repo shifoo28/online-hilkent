@@ -74,17 +74,41 @@ enum OrderStatus {
   CANCELLED
 }
 
-model Order {
-  id        String      @id @default(uuid())
-  orderId   String      @unique
-  userId    String
-  status    OrderStatus @default(PENDING)
-  total     Decimal // use Decimal for money
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+enum ShippingVehicle {
+  PASSENGER_CAR
+  LIGHT_TRUCK
+}
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  OrderItems OrderItem[] // one-to-many relation
+model ShippingMethod {
+  id        Int              @id @default(autoincrement())
+  name      String           @unique // e.g., "Passenger Car", "Light Truck", "Free Shipping"
+  cost      Decimal // base cost of shipping method
+  vehicle   ShippingVehicle? // optional: vehicle type if applicable
+  isActive  Boolean          @default(true)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  orders Order[] // one-to-many relation
+}
+
+model Order {
+  id               String      @id @default(uuid())
+  orderId          String      @unique
+  userId           String
+  status           OrderStatus @default(PENDING)
+  subtotal         Decimal // subtotal before shipping and discount
+  shippingCost     Decimal     @default(0)
+  discountAmount   Decimal     @default(0)
+  total            Decimal // subtotal + shippingCost - discountAmount
+  shippingMethodId Int
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  OrderItems     OrderItem[] // one-to-many relation
+  shippingMethod ShippingMethod @relation(fields: [shippingMethodId], references: [id])
+
+  @@index([shippingMethodId])
 }
 
 model OrderItem {

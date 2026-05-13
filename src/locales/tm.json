@@ -490,12 +490,6 @@
     "page": "Halananlar",
     "label": "Siziň Halan Harytlaryňyz",
     "clear": "Sanawy arassala",
-    "table": {
-      "product": "Haryt ady",
-      "price": "Baha birligi",
-      "stock": "Nagt ýagdaýy",
-      "action": "Amaly"
-    },
     "empty": "Halan harytlar sanawy şu wagt boş",
     "stock": {
       "inStock": "Satuwda",
@@ -532,5 +526,93 @@
     },
     "copyright": "© {year} Online Hilkent. Ähli hukuklar goragly.",
     "acceptedPayments": "Töleg usullary:"
+  },
+  "Checkout": {
+    "title": "Sargyt etmek",
+    "page": "Sargyt",
+    "errors": {
+      "fillRequired": "Ähli zerur meýdanlary dolduryň",
+      "cartEmpty": "Sebediňiz boş",
+      "couponInvalid": "Ýalňyş arzanladyş kody",
+      "couponFailed": "Arzanladyş kodyny barlamak başa barmady",
+      "orderFailed": "Sargyt döretmek başa barmady",
+      "orderError": "Sargydyňyzy işlemekde ýalňyşlyk ýüze çykdy",
+      "orderSuccess": "Sargyt üstünlikli döredildi! Ugratmak..."
+    },
+    "buttons": {
+      "processing": "Işlenýär...",
+      "placeOrder": "Sargyt etmek",
+      "cancel": "Bes etmek"
+    },
+    "billing": {
+      "title": "Töleg maglumatlary",
+      "firstName": "Ady",
+      "lastName": "Familiýasy",
+      "companyName": "Kompaniýanyň ady",
+      "country": "Ýurt / Sebit",
+      "selectCountry": "Ýurdy saýlaň",
+      "streetAddress": "Köçe salgysy",
+      "housePlaceholder": "Jaý belgisi we köçe ady",
+      "apartmentPlaceholder": "Kwartira, ofis, blok we ş.m. (hökmany däl)",
+      "town": "Şäher / Obalary",
+      "postalCode": "Poçta indeksi (hökmany däl)",
+      "phone": "Telefon",
+      "email": "Email salgysy",
+      "selectSavedAddress": "Ýatda saklanan salgyny saýlaň",
+      "selectAddress": "Ýatda saklanan salgyny saýlaň",
+      "addNewAddress": "Täze salgy goşuň",
+      "editAddress": "Salgyny redaktirläň"
+    },
+    "shipping": {
+      "differentAddress": "Başga salga iberilsinmi?",
+      "sameAsBilling": "Töleg salgysy ýaly",
+      "selectSavedAddress": "Ýatda saklanan salgyny saýlaň",
+      "selectAddress": "Ýatda saklanan salgyny saýlaň",
+      "addNewAddress": "Täze salgy goşuň",
+      "editAddress": "Salgyny redaktirläň"
+    },
+    "login": {
+      "returningCustomer": "Gaýdyp gelen müşderimi?",
+      "clickToLogin": "Giriş etmek üçin şu ýere basyň",
+      "loginMessage": "Giriş etmedik bolsaňyz, ilki giriň.",
+      "usernameOrEmail": "Ulanyjy ady ýa-da Email",
+      "password": "Açar sözi",
+      "loginButton": "Giriň"
+    },
+    "payment": {
+      "title": "Töleg usuly",
+      "bank": "Göni bank geçirmesi",
+      "cash": "Eltip bermekde nagt",
+      "paypal": "Paypal"
+    },
+    "shippingMethod": {
+      "title": "Eltip berme usuly",
+      "loading": "Ýüklenýär...",
+      "free": "Mugt eltip bermek",
+      "passengerCar": "Ýolagçy awtoulag",
+      "lightTruck": "Ýeňil ýük maşyny",
+      "standard": "Adaty eltip bermek",
+      "express": "Çalt eltip bermek"
+    },
+    "coupon": {
+      "title": "Arzanladyş kody barmy?",
+      "placeholder": "Arzanladyş kodyny giriziň",
+      "validating": "Barlanýar...",
+      "apply": "Ulanmak",
+      "applied": "Arzanladyş kody \"{code}\" üstünlikli ulanyldy!"
+    },
+    "orderSummary": {
+      "title": "Siziň sargydyňyz",
+      "product": "Önüm",
+      "subtotal": "Jemi",
+      "cartEmpty": "Sebediňiz boş",
+      "discount": "Arzanladyş",
+      "shippingFee": "Eltip berme tölegi",
+      "total": "Umumy"
+    },
+    "notes": {
+      "label": "Başga bellikler (hökmany däl)",
+      "placeholder": "Sargydyňyz barada bellikler, mysal üçin eltip bermek üçin ýörite görkezmeler."
+    }
   }
 }
