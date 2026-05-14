@@ -39,7 +39,7 @@ interface CreateOrderRequest {
     postCode: string;
   };
   shippingMethodId: number; // NEW: FK to ShippingMethod
-  shippingCost: number; // NEW: Shipping cost
+  shippingFee: number; // NEW: Shipping cost
   shippingMethod: string; // Display name
   paymentMethod: "bank" | "cash";
   couponCode?: string;
@@ -60,7 +60,7 @@ interface CreateOrderRequest {
  *   billingDetails: { firstName, lastName, email, phone, address, town, country, postCode },
  *   shippingDetails?: { address, town, country, postCode },
  *   shippingMethodId: number,
- *   shippingCost: number,
+ *   shippingFee: number,
  *   shippingMethod: string,
  *   paymentMethod: "bank" | "cash",
  *   couponCode?: string,
@@ -79,7 +79,7 @@ interface CreateOrderRequest {
  *     userId: string,
  *     status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED",
  *     subtotal: Decimal,
- *     shippingCost: Decimal,
+ *     shippingFee: Decimal,
  *     discountAmount: Decimal,
  *     total: Decimal,
  *     shippingMethodId: number,
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       "items",
       "billingDetails",
       "shippingMethodId",
-      "shippingCost",
+      "shippingFee",
       "subtotal",
       "discountAmount",
       "total",
@@ -143,12 +143,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate shipping cost matches database
     const dbCost = Number(shippingMethod.cost);
-    if (Math.abs(dbCost - body.shippingCost) > 0.01) {
+    if (Math.abs(dbCost - body.shippingFee) > 0.01) {
       console.warn(
-        `[Orders API] Shipping cost mismatch: DB=${dbCost}, Request=${body.shippingCost}`,
+        `[Orders API] Shipping cost mismatch: DB=${dbCost}, Request=${body.shippingFee}`,
       );
       // Continue anyway, but use DB value
-      body.shippingCost = dbCost;
+      body.shippingFee = dbCost;
     }
 
     // Get or create user by email
@@ -168,7 +168,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Calculate and verify total (security: always recalculate server-side)
     const calculatedTotal = new Decimal(body.subtotal)
-      .plus(new Decimal(body.shippingCost))
+      .plus(new Decimal(body.shippingFee))
       .minus(new Decimal(body.discountAmount));
 
     const requestTotal = new Decimal(body.total);
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         status: "PENDING",
         // NEW: Price breakdown fields
         subtotal: new Decimal(body.subtotal),
-        shippingCost: new Decimal(body.shippingCost),
+        shippingFee: new Decimal(body.shippingFee),
         discountAmount: new Decimal(body.discountAmount),
         total: new Decimal(calculatedTotal),
         // NEW: Shipping method reference
@@ -223,7 +223,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       orderId: order.orderId,
       userId: order.userId,
       total: order.total,
-      shippingCost: order.shippingCost,
+      shippingFee: order.shippingFee,
       shippingMethodId: order.shippingMethodId,
       itemCount: order.OrderItems.length,
     });
@@ -243,7 +243,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           userId: order.userId,
           status: order.status,
           subtotal: order.subtotal,
-          shippingCost: order.shippingCost,
+          shippingFee: order.shippingFee,
           discountAmount: order.discountAmount,
           total: order.total,
           shippingMethodId: order.shippingMethodId,
@@ -399,11 +399,11 @@ export async function LIST(request: NextRequest): Promise<NextResponse> {
  */
 export function validateOrderTotal(
   subtotal: number,
-  shippingCost: number,
+  shippingFee: number,
   discountAmount: number,
 ): number {
   const total = new Decimal(subtotal)
-    .plus(new Decimal(shippingCost))
+    .plus(new Decimal(shippingFee))
     .minus(new Decimal(discountAmount));
 
   return Number(total);
@@ -416,7 +416,7 @@ export function formatOrderForNotification(order: any) {
   return {
     orderId: order.orderId,
     total: `$${Number(order.total).toFixed(2)}`,
-    shipping: `$${Number(order.shippingCost).toFixed(2)}`,
+    shipping: `$${Number(order.shippingFee).toFixed(2)}`,
     shippingMethod: order.shippingMethod?.name || "Unknown",
     itemCount: order.OrderItems?.length || 0,
     status: order.status,

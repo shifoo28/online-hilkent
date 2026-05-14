@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
           connect: { id: body.userId },
         },
         subtotal: body.subtotal.toString(),
-        shippingCost: body.shippingFee.toString(),
+        shippingFee: body.shippingFee.toString(),
         discountAmount: couponDiscount.toString(),
         shippingMethod: {
           connect: { name: body.shippingMethod },
