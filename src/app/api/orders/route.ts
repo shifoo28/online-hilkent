@@ -151,9 +151,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       body.shippingFee = dbCost;
     }
 
-    // Get or create user by email
+    // Get or create user by phone
     let user = await prisma.user.findUnique({
-      where: { email: body.billingDetails.email },
+      where: { phone: parseInt(body.billingDetails.phone.replace(/\D/g, "")) || 0 },
     });
 
     if (!user) {

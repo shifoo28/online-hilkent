@@ -84,7 +84,8 @@ export interface CreateOrderRequest {
   shippingAddressId?: string;
   billingAddressId?: string;
   couponCode?: string;
-  shippingMethod?: string;
+  shippingMethodId?: number;
+  shippingCost?: number;
 }
 
 export interface UpdateOrderRequest {
