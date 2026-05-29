@@ -5,14 +5,16 @@ import SingleOrder from "./SingleOrder";
 import { useApiData } from "@/hooks/useApiCall";
 import { useApiError } from "@/hooks/useApiError";
 import { ordersService } from "@/services/api";
-import type { OrderResponse } from "@/types/api";
 import { UserProfile } from "@/types/profile";
+import { OrderResponse } from "@/types/api/responses";
+import { useTranslations } from "next-intl";
 
 /**
  * Orders Component
  * Displays user's orders with type-safe API integration
  */
 const Orders = ({ user }: { user: UserProfile }) => {
+  const translate = useTranslations("Account.details.orders");
   const { handleError } = useApiError();
 
   // Fetch orders with full type safety
@@ -77,20 +79,28 @@ const Orders = ({ user }: { user: UserProfile }) => {
           <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex">
             <div className="min-w-[111px]">
               <p className="text-custom-sm text-dark font-medium">
-                Order Number
+                {translate("tableheader.order")}
               </p>
             </div>
             <div className="min-w-[175px]">
-              <p className="text-custom-sm text-dark font-medium">Date</p>
+              <p className="text-custom-sm text-dark font-medium">
+                {translate("tableheader.date")}
+              </p>
             </div>
             <div className="min-w-[128px]">
-              <p className="text-custom-sm text-dark font-medium">Status</p>
+              <p className="text-custom-sm text-dark font-medium">
+                {translate("tableheader.status")}
+              </p>
             </div>
             <div className="min-w-[113px]">
-              <p className="text-custom-sm text-dark font-medium">Total</p>
+              <p className="text-custom-sm text-dark font-medium">
+                {translate("tableheader.total")}
+              </p>
             </div>
             <div className="min-w-[86px]">
-              <p className="text-custom-sm text-dark font-medium">Action</p>
+              <p className="text-custom-sm text-dark font-medium">
+                {translate("tableheader.actions")}
+              </p>
             </div>
           </div>
         )}

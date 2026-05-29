@@ -1,4 +1,5 @@
 import { hashPassword } from "@/lib/bcrypt";
+import { generateOrderId } from "@/lib/generateId";
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -30,7 +31,7 @@ async function main() {
   const hashedPassword = await hashPassword("123");
 
   const user1 = await prisma.user.upsert({
-    where: { email: "tobymarshal2802@gmail.com" },
+    where: { phone: 62863012 },
     update: {},
     create: {
       name: "Hushnudbek Rahimov",
@@ -43,7 +44,7 @@ async function main() {
   });
 
   const user2 = await prisma.user.upsert({
-    where: { email: "anna@example.com" },
+    where: { phone: 71234567 },
     update: {},
     create: {
       name: "Anna Smith",
@@ -441,7 +442,7 @@ async function main() {
         update: {},
         create: {
           name: method.name,
-          cost: new Decimal(method.cost),
+          fee: new Decimal(method.cost),
           vehicle: method.vehicle as "PASSENGER_CAR" | "LIGHT_TRUCK" | null,
           isActive: true,
         },
@@ -453,7 +454,7 @@ async function main() {
 
   // Create orders for users
   const order1 = await prisma.order.upsert({
-    where: { orderId: "ORD-2024-001" },
+    where: { orderId: generateOrderId(36, 6) },
     update: {},
     create: {
       orderId: "ORD-2024-001",
@@ -468,7 +469,7 @@ async function main() {
   });
 
   const order2 = await prisma.order.upsert({
-    where: { orderId: "ORD-2024-002" },
+    where: { orderId: generateOrderId(36, 6) },
     update: {},
     create: {
       orderId: "ORD-2024-002",
@@ -483,7 +484,7 @@ async function main() {
   });
 
   const order3 = await prisma.order.upsert({
-    where: { orderId: "ORD-2024-003" },
+    where: { orderId: generateOrderId(36, 6) },
     update: {},
     create: {
       orderId: "ORD-2024-003",

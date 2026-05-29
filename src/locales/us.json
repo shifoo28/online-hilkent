@@ -144,7 +144,8 @@
     },
     "productItem": {
       "button": "Add to cart"
-    }
+    },
+    "loading": "Loading..."
   },
   "Header": {
     "category": {
@@ -232,7 +233,13 @@
           "total": "Total",
           "actions": "Actions"
         },
-        "tablebody": {}
+        "tablebody": {
+          "pending": "Pending",
+          "processing": "Processing",
+          "shipped": "Shipped",
+          "delivered": "Delivered",
+          "cancelled": "Cancelled"
+        }
       },
       "downloads": {
         "info": "You have no downloads available yet."
@@ -539,7 +546,8 @@
       "couponFailed": "Failed to validate coupon",
       "orderFailed": "Failed to create order",
       "orderError": "An error occurred while processing your order",
-      "orderSuccess": "Order created successfully! Redirecting..."
+      "orderSuccess": "Order created successfully! Redirecting...",
+      "selectShippingMethod": "Please select a shipping method"
     },
     "buttons": {
       "processing": "Processing...",
@@ -582,9 +590,7 @@
     },
     "payment": {
       "title": "Payment Method",
-      "bank": "Direct bank transfer",
-      "cash": "Cash on delivery",
-      "paypal": "Paypal"
+      "cash": "Cash on delivery"
     },
     "shippingMethod": {
       "title": "Shipping Method",
@@ -593,7 +599,8 @@
       "passengerCar": "Passenger Car Delivery",
       "lightTruck": "Light Truck Delivery",
       "standard": "Standard Shipping",
-      "express": "Express Shipping"
+      "express": "Express Shipping",
+      "noMethodsAvailable": "No shipping methods available"
     },
     "coupon": {
       "title": "Have any Coupon Code?",
@@ -615,5 +622,17 @@
       "label": "Other Notes (optional)",
       "placeholder": "Notes about your order, e.g. special notes for delivery."
     }
+  },
+  "OrderSuccess": {
+    "breadcrumb": {
+      "title": "Order Success",
+      "path": "Order Success"
+    },
+    "heading": "Order Confirmed!",
+    "subheading": "Your order has been successfully placed",
+    "description": "Thank you for your purchase! We will process your order and send you a confirmation email shortly with tracking information.",
+    "emailInfo": "You will receive an email confirmation including order details and payment information.",
+    "viewOrders": "View My Orders",
+    "backHome": "Back to Home"
   }
 }

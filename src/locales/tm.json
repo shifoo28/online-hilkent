@@ -144,7 +144,8 @@
     },
     "productItem": {
       "button": "Sebede goş"
-    }
+    },
+    "loading": "Ýüklenýär..."
   },
   "Header": {
     "category": {
@@ -233,7 +234,13 @@
           "total": "Jemi",
           "actions": "Amallar"
         },
-        "tablebody": {}
+        "tablebody": {
+          "pending": "Nobatda",
+          "processing": "Işlenýär",
+          "shipped": "Iberildi",
+          "delivered": "Eltip berildi",
+          "cancelled": "Bes edildi"
+        }
       },
       "downloads": {
         "info": "Sizde häli ýüklemeler ýok."
@@ -537,7 +544,8 @@
       "couponFailed": "Arzanladyş kodyny barlamak başa barmady",
       "orderFailed": "Sargyt döretmek başa barmady",
       "orderError": "Sargydyňyzy işlemekde ýalňyşlyk ýüze çykdy",
-      "orderSuccess": "Sargyt üstünlikli döredildi! Ugratmak..."
+      "orderSuccess": "Sargyt üstünlikli döredildi! Ugratmak...",
+      "selectShippingMethod": "Eltip berme uslubyny saýlaň"
     },
     "buttons": {
       "processing": "Işlenýär...",
@@ -581,9 +589,7 @@
     },
     "payment": {
       "title": "Töleg usuly",
-      "bank": "Göni bank geçirmesi",
-      "cash": "Eltip bermekde nagt",
-      "paypal": "Paypal"
+      "cash": "Eltip bermekde nagt"
     },
     "shippingMethod": {
       "title": "Eltip berme usuly",
@@ -592,7 +598,8 @@
       "passengerCar": "Ýolagçy awtoulag",
       "lightTruck": "Ýeňil ýük maşyny",
       "standard": "Adaty eltip bermek",
-      "express": "Çalt eltip bermek"
+      "express": "Çalt eltip bermek",
+      "noMethodsAvailable": "Eltip bermäniň usuly ýokary"
     },
     "coupon": {
       "title": "Arzanladyş kody barmy?",
@@ -614,5 +621,16 @@
       "label": "Başga bellikler (hökmany däl)",
       "placeholder": "Sargydyňyz barada bellikler, mysal üçin eltip bermek üçin ýörite görkezmeler."
     }
+  },
+  "OrderSuccess": {
+    "breadcrumb": {
+      "title": "Sargyt Edildi",
+      "path": "Sargyt hasabaty"
+    },
+    "heading": "Sargydyňyz Kabul edildi!",
+    "subheading": "Siziň sargydyňyz üstünlikli kabul edildi we işlenýär.",
+    "description": "Sargydyňyz barada maglumatlary öz içine alýan tassyklama emailini alarsyňyz. Sargydyňyzy gözegçilik etmek we hasap maglumatlaryňyzy görmek üçin \"Meniň sargytlarym\" bölümine geçiň.",
+    "emailInfo": "Eger emailiňizi almadyk bolsaňyz, spam ýa-da junk folderiňizi barlaň ýa-da müşderi hyzmatlarymyz bilen habarlaşyň.",
+    "button": { "viewOrders": "Meniň sargytlarym", "backHome": "Esasy sahypa" }
   }
 }

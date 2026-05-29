@@ -39,6 +39,7 @@ export default function ScrollToTop() {
           }`}
         >
           <ArrowUpIcon
+            fill="#fff"
             className="fill-white w-5 h-5"
             aria-label="Scroll to top"
           />

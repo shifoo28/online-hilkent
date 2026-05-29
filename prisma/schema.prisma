@@ -12,13 +12,13 @@ model User {
   id              String    @id @default(uuid())
   phone           Int       @unique
   name            String
-  email           String?   @unique
+  email           String?
   // authentication fields
-  passwordHash    String?
   isActive        Boolean   @default(true)
+  passwordHash    String?
   emailVerifiedAt DateTime?
   // profile fields
-  avatar          String?   @default("/images/users/default-avatar.jpg")
+  avatar          String?   @default("/images/users/default.webp")
   bio             String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -82,7 +82,7 @@ enum ShippingVehicle {
 model ShippingMethod {
   id        Int              @id @default(autoincrement())
   name      String           @unique // e.g., "Passenger Car", "Light Truck", "Free Shipping"
-  cost      Decimal // base cost of shipping method
+  fee       Decimal // base fee of shipping method
   vehicle   ShippingVehicle? // optional: vehicle type if applicable
   isActive  Boolean          @default(true)
   createdAt DateTime         @default(now())
@@ -96,11 +96,11 @@ model Order {
   orderId          String      @unique
   userId           String
   status           OrderStatus @default(PENDING)
-  subtotal         Decimal // subtotal before shipping and discount
-  shippingCost     Decimal     @default(0)
-  discountAmount   Decimal     @default(0)
-  total            Decimal // subtotal + shippingCost - discountAmount
+  shippingFee      Decimal     @default(0)
   shippingMethodId Int
+  discountAmount   Decimal     @default(0)
+  subtotal         Decimal // subtotal before shipping and discount
+  total            Decimal // subtotal + shippingFee - discountAmount
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 

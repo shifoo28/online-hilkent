@@ -1,17 +1,8 @@
-/**
- * ORDERS API ROUTE - UPDATED WITH SHIPPING INTEGRATION
- *
- * This updated API route handles order creation with:
- * - Shipping method association
- * - Shipping cost calculation and storage
- * - Complete price breakdown (subtotal, shipping, discount, total)
- * - Decimal precision for currency values
- * - Comprehensive error handling
- */
-
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
+import { CheckoutFormData } from "@/hooks/useCheckoutForm";
+import { generateOrderId } from "@/lib/generateId";
 
 /**
  * Order creation request body interface
@@ -39,9 +30,9 @@ interface CreateOrderRequest {
     postCode: string;
   };
   shippingMethodId: number; // NEW: FK to ShippingMethod
-  shippingFee: number; // NEW: Shipping cost
+  shippingFee: number; // NEW: Shipping fee
   shippingMethod: string; // Display name
-  paymentMethod: "bank" | "cash";
+  paymentMethod: CheckoutFormData["paymentMethod"];
   couponCode?: string;
   notes?: string;
   subtotal: number; // NEW: Itemized subtotal
@@ -49,45 +40,6 @@ interface CreateOrderRequest {
   total: number; // NEW: Final total
 }
 
-/**
- * POST /api/orders
- *
- * Create a new order with shipping information
- *
- * Request Body:
- * {
- *   items: Array<{ productId, quantity, price }>,
- *   billingDetails: { firstName, lastName, email, phone, address, town, country, postCode },
- *   shippingDetails?: { address, town, country, postCode },
- *   shippingMethodId: number,
- *   shippingFee: number,
- *   shippingMethod: string,
- *   paymentMethod: "bank" | "cash",
- *   couponCode?: string,
- *   notes?: string,
- *   subtotal: number,
- *   discountAmount: number,
- *   total: number
- * }
- *
- * Response:
- * {
- *   success: boolean,
- *   data?: {
- *     id: string,
- *     orderId: string,
- *     userId: string,
- *     status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED",
- *     subtotal: Decimal,
- *     shippingFee: Decimal,
- *     discountAmount: Decimal,
- *     total: Decimal,
- *     shippingMethodId: number,
- *     createdAt: DateTime
- *   },
- *   error?: string
- * }
- */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body: CreateOrderRequest = await request.json();
@@ -99,7 +51,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       "shippingMethodId",
       "shippingFee",
       "subtotal",
-      "discountAmount",
       "total",
     ];
 
@@ -126,6 +77,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
+    // Check ordered items which are not in the database and return all missing product IDs
+    const missingProductIds: string[] = [];
+    for (const item of body.items) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+      });
+      if (!product) {
+        missingProductIds.push(item.productId);
+      }
+    }
+
+    if (missingProductIds.length > 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `The following products were not found: ${missingProductIds.join(", ")}`,
+        },
+        { status: 404 },
+      );
+    }
+
     // Validate shipping method exists and is active
     const shippingMethod = await prisma.shippingMethod.findUnique({
       where: { id: body.shippingMethodId },
@@ -141,19 +113,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Validate shipping cost matches database
-    const dbCost = Number(shippingMethod.cost);
-    if (Math.abs(dbCost - body.shippingFee) > 0.01) {
+    // Validate shipping fee matches database
+    const dbShippingFee = Number(shippingMethod.fee);
+    if (Math.abs(dbShippingFee - body.shippingFee) > 0.01) {
       console.warn(
-        `[Orders API] Shipping cost mismatch: DB=${dbCost}, Request=${body.shippingFee}`,
+        `[Orders API] Shipping fee mismatch: DB=${dbShippingFee}, Request=${body.shippingFee}`,
       );
       // Continue anyway, but use DB value
-      body.shippingFee = dbCost;
+      body.shippingFee = dbShippingFee;
     }
 
     // Get or create user by phone
     let user = await prisma.user.findUnique({
-      where: { phone: parseInt(body.billingDetails.phone.replace(/\D/g, "")) || 0 },
+      where: {
+        phone: parseInt(body.billingDetails.phone.replace(/\D/g, "")) || 0,
+      },
     });
 
     if (!user) {
@@ -183,7 +157,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Create order with shipping information
     const order = await prisma.order.create({
       data: {
-        orderId: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+        // .toString(36) → converts that number into a base‑36 string (digits 0–9 + letters a–z).
+        // .substr(2, 6) → chops off the leading "0." and takes the next 6 characters.
+        orderId: generateOrderId(36, 6),
         userId: user.id,
         status: "PENDING",
         // NEW: Price breakdown fields
@@ -280,17 +256,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 }
 
 /**
- * GET /api/orders/:id
+ * GET /api/orders/:userId - Get order details by userId
  *
  * Retrieve order details including shipping information
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+    const userId = searchParams.get("userId");
 
-    const order = await prisma.order.findUnique({
-      where: { id },
+    const orders = await prisma.order.findMany({
+      where: { userId },
       include: {
         OrderItems: {
           include: {
@@ -308,12 +284,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             id: true,
             email: true,
             name: true,
+            phone: true,
           },
         },
       },
     });
 
-    if (!order) {
+    if (!orders || orders.length === 0) {
       return NextResponse.json(
         {
           success: false,
@@ -326,7 +303,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: true,
-        data: order,
+        data: orders,
       },
       { status: 200 },
     );
@@ -350,26 +327,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  */
 export async function LIST(request: NextRequest): Promise<NextResponse> {
   try {
-    // TODO: Implement user authentication
-    // const session = await getSession(request);
-    // if (!session?.user?.id) {
-    //   return NextResponse.json(
-    //     { success: false, error: "Unauthorized" },
-    //     { status: 401 }
-    //   );
-    // }
-
-    // Example: Get orders for user
-    // const orders = await prisma.order.findMany({
-    //   where: { userId: session.user.id },
-    //   include: {
-    //     OrderItems: true,
-    //     shippingMethod: true,
-    //   },
-    //   orderBy: { createdAt: "desc" },
-    //   take: 50,
-    // });
-
     return NextResponse.json(
       {
         success: false,

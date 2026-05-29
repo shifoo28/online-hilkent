@@ -14,12 +14,19 @@ import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import OrderSummary from "./OrderSummary";
 import Notes from "./Notes";
+import { useShippingMethods } from "@/hooks/useShippingMethods";
 
 const Checkout = () => {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("Checkout");
-  const { items: cartItems, totalPrice: cartTotal } = useCart();
+  const {
+    items: cartItems,
+    totalPrice: cartTotal,
+    removeAllItemsFromCart,
+  } = useCart();
+  const { shippingMethods, getMethodFee } = useShippingMethods();
+
   const cartItemsWithTitle = cartItems.map((item) => ({
     ...item,
     title:
@@ -43,25 +50,20 @@ const Checkout = () => {
   const [orderError, setOrderError] = useState<string | null>(null);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
-  // Calculate shipping fee based on method
+  // Set default shipping method from first available method
   useEffect(() => {
-    switch (formData.shippingMethod) {
-      case "fedex":
-        setShippingFee(10.99);
-        break;
-      case "dhl":
-        setShippingFee(15.99);
-        break;
-      case "passengerCar":
-        setShippingFee(20.99);
-        break;
-      case "lightTruck":
-        setShippingFee(30.99);
-        break;
-      default:
-        setShippingFee(0);
+    if (shippingMethods.length > 0 && formData.shippingMethodId === null) {
+      updateField("shippingMethodId", shippingMethods[0].id);
     }
-  }, [formData.shippingMethod]);
+  }, [shippingMethods, formData.shippingMethodId, updateField]);
+
+  // Calculate shipping fee based on selected method
+  useEffect(() => {
+    if (formData.shippingMethodId !== null) {
+      const fee = getMethodFee(formData.shippingMethodId);
+      setShippingFee(fee || 0);
+    }
+  }, [formData.shippingMethodId, getMethodFee]);
 
   const subtotal = cartTotal;
   const total = subtotal - couponDiscount + shippingFee;
@@ -102,11 +104,18 @@ const Checkout = () => {
       return;
     }
 
+    if (formData.shippingMethodId === null) {
+      setOrderError(
+        t("errors.selectShippingMethod") || "Please select a shipping method",
+      );
+      return;
+    }
+
     setOrderError(null);
     setIsSubmitting(true);
 
     try {
-      // Prepare order data
+      // Prepare order data with shippingMethodId
       const orderData = {
         items: cartItemsWithTitle.map((item) => ({
           productId: item.id,
@@ -116,28 +125,21 @@ const Checkout = () => {
         billingDetails: {
           firstName: formData.firstName,
           lastName: formData.lastName,
+          companyName: formData.companyName,
           email: formData.email,
           phone: formData.billingPhone,
           address: formData.billingAddress,
-          town: formData.billingTown,
-          country: formData.billingCountry,
-          postCode: formData.billingPostCode,
         },
         shippingDetails: !formData.shippingAddressSame
-          ? {
-              address: formData.shippingAddress,
-              town: formData.shippingTown,
-              country: formData.shippingCountry,
-              postCode: formData.shippingPostCode,
-            }
+          ? { address: formData.shippingAddress }
           : undefined,
-        shippingMethod: formData.shippingMethod,
+        shippingMethodId: formData.shippingMethodId,
+        shippingFee,
         paymentMethod: formData.paymentMethod,
         couponCode: formData.couponCode || undefined,
         notes: formData.notes || undefined,
         subtotal,
-        shippingFee,
-        discount: couponDiscount,
+        discountAmount: couponDiscount,
         total,
       };
 
@@ -151,6 +153,7 @@ const Checkout = () => {
 
       if (result.success) {
         setOrderSuccess(true);
+        removeAllItemsFromCart();
         resetForm();
         // Redirect to success page or show success message
         setTimeout(() => {
@@ -238,9 +241,9 @@ const Checkout = () => {
 
                 {/* <!-- shipping box --> */}
                 <ShippingMethod
-                  selectedMethod={formData.shippingMethod}
-                  onMethodChange={(method) =>
-                    updateField("shippingMethod", method)
+                  selectedMethodId={formData.shippingMethodId}
+                  onMethodChange={(methodId) =>
+                    updateField("shippingMethodId", methodId)
                   }
                 />
 

@@ -3,6 +3,10 @@
  * All API responses should follow these envelope types for consistency
  */
 
+import { ShippingMethod } from "@/hooks/useShippingMethods";
+import { Locale, OrderStatus } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/binary";
+
 /**
  * Standard API Response Envelope
  * Wraps all successful API responses with consistent structure
@@ -83,7 +87,7 @@ export interface ProductResponse {
   isFeatured: boolean;
   isNew: boolean;
   Translations: Array<{
-    locale: string;
+    locale: Locale;
     name: string;
     description: string | null;
     slug: string;
@@ -109,7 +113,7 @@ export interface ReviewResponse {
   productId: string;
   rating: number;
   comment: string | null;
-//   isVerified: boolean;
+  //   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
   user: {
@@ -121,7 +125,7 @@ export interface ReviewResponse {
     id: string;
     Translations: Array<{
       name: string;
-      locale: string;
+      locale: Locale;
     }>;
   };
 }
@@ -131,36 +135,37 @@ export interface ReviewResponse {
  */
 export interface OrderResponse {
   id: string;
+  orderId: string;
   userId: string;
-  orderNumber: string;
-  status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-  total: number;
+  status: OrderStatus;
   subtotal: number;
-  tax: number;
-  shippingCost: number;
-  discount?: number;
+  total: number;
+  shippingFee: number;
+  shippingMethodId: number;
+  shippingMethod: ShippingMethod;
+  discountAmount?: number;
   items: Array<{
     id: string;
+    orderId: string;
     productId: string;
     quantity: number;
-    price: number;
+    price: Decimal;
     product: {
       id: string;
       Translations: Array<{
         name: string;
-        locale: string;
+        locale: Locale;
       }>;
     };
   }>;
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    phone: number;
   };
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**

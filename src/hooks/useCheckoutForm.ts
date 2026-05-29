@@ -5,11 +5,7 @@ export interface CheckoutFormData {
   firstName: string;
   lastName: string;
   companyName: string;
-  billingCountry: string;
   billingAddress: string;
-  billingAddressTwo: string;
-  billingTown: string;
-  billingPostCode: string;
   billingPhone: string;
   email: string;
   selectedBillingAddressId: string;
@@ -17,17 +13,14 @@ export interface CheckoutFormData {
   // Shipping details
   shippingAddressSame: boolean;
   selectedShippingAddressId: string;
-  shippingCountry: string;
   shippingAddress: string;
   shippingAddressTwo: string;
-  shippingTown: string;
-  shippingPostCode: string;
 
   // Shipping method
-  shippingMethod: "free" | "fedex" | "dhl" | "passengerCar" | "lightTruck";
+  shippingMethodId: number | null;
 
   // Payment method
-  paymentMethod: "bank" | "cash";
+  paymentMethod: "cash" | "rysgalbank" | "halkbank" | "senagatbank";
 
   // Coupon
   couponCode: string;
@@ -36,9 +29,9 @@ export interface CheckoutFormData {
   notes: string;
 
   // Is logged in
-  isLoggedIn: boolean;
-  loginEmail?: string;
-  loginPassword?: string;
+  // isLoggedIn: boolean;
+  // loginEmail?: string;
+  // loginPassword?: string;
 }
 
 interface FormErrors {
@@ -49,28 +42,18 @@ const INITIAL_STATE: CheckoutFormData = {
   firstName: "",
   lastName: "",
   companyName: "",
-  billingCountry: "",
   billingAddress: "",
-  billingAddressTwo: "",
-  billingTown: "",
-  billingPostCode: "",
   billingPhone: "",
   email: "",
   selectedBillingAddressId: "",
   shippingAddressSame: true,
   selectedShippingAddressId: "",
-  shippingCountry: "",
   shippingAddress: "",
   shippingAddressTwo: "",
-  shippingTown: "",
-  shippingPostCode: "",
-  shippingMethod: "passengerCar",
-  paymentMethod: "bank",
+  shippingMethodId: null,
+  paymentMethod: "cash",
   couponCode: "",
   notes: "",
-  isLoggedIn: false,
-  loginEmail: "",
-  loginPassword: "",
 };
 
 export const useCheckoutForm = () => {
@@ -111,16 +94,10 @@ export const useCheckoutForm = () => {
     // Required billing fields
     if (!formData.firstName.trim())
       newErrors.firstName = "First name is required";
-    // if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!formData.billingCountry)
-      newErrors.billingCountry = "Country is required";
     if (!formData.billingAddress.trim())
       newErrors.billingAddress = "Street address is required";
-    if (!formData.billingTown.trim())
-      newErrors.billingTown = "Town/City is required";
     if (!formData.billingPhone.trim())
       newErrors.billingPhone = "Phone is required";
-    // if (!formData.email.trim()) newErrors.email = "Email is required";
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -130,13 +107,10 @@ export const useCheckoutForm = () => {
 
     // Shipping fields if different address
     if (!formData.shippingAddressSame) {
-      if (!formData.shippingCountry)
-        newErrors.shippingCountry = "Shipping country is required";
       if (!formData.shippingAddress.trim())
         newErrors.shippingAddress = "Shipping address is required";
-      if (!formData.shippingTown.trim())
-        newErrors.shippingTown = "Shipping town/city is required";
     }
+console.log(formData);
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

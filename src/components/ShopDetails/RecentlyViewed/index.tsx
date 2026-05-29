@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useCallback, useRef } from "react";
 import "swiper/css/navigation";
 import "swiper/css";
+import { STORAGE_KEY_RECENTLY_VIEWED } from "..";
 
 const RecentlyViewedItems = () => {
   const sliderRef = useRef(null);
@@ -15,7 +16,9 @@ const RecentlyViewedItems = () => {
 
   useEffect(() => {
     // Load recently viewed products from localStorage
-    const viewed = JSON.parse(localStorage.getItem("recentlyViewed") || "[]");
+    const viewed = JSON.parse(
+      localStorage.getItem(STORAGE_KEY_RECENTLY_VIEWED) || "[]",
+    );
     setRecentlyViewed(viewed);
   }, []);
 

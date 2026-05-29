@@ -18,8 +18,13 @@ export async function GET(request: NextRequest) {
         where: { id: productId },
         include: {
           _count: {
-            select: { Reviews: true },
+            select: {
+              Reviews: true,
+            },
           },
+          Discounts: true,
+          Images: true,
+          Translations: true,
         },
       });
 
@@ -105,7 +110,12 @@ export async function GET(request: NextRequest) {
       where,
       include: {
         _count: {
-          select: { Reviews: true },
+          select: {
+            Reviews: true,
+            Images: true,
+            Discounts: true,
+            Translations: true,
+          },
         },
         Discounts: true,
         Images: true,

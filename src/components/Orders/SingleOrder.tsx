@@ -1,8 +1,17 @@
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import OrderActions from "./OrderActions";
 import OrderModal from "./OrderModal";
+import type { OrderResponse } from "@/types/api/responses";
 
-const SingleOrder = ({ orderItem, smallView }: any) => {
+const SingleOrder = ({
+  orderItem,
+  smallView,
+}: {
+  orderItem: OrderResponse;
+  smallView: boolean;
+}) => {
+  const translate = useTranslations("Account.details.orders");
   const [showDetails, setShowDetails] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -25,11 +34,13 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
         <div className="items-center justify-between border-t border-gray-3 py-5 px-7.5 hidden md:flex">
           <div className="min-w-[111px]">
             <p className="text-custom-sm text-red">
-              #{orderItem.orderId.slice(-8)}
+              #{orderItem.orderId}
             </p>
           </div>
           <div className="min-w-[175px]">
-            <p className="text-custom-sm text-dark">{orderItem.createdAt}</p>
+            <p className="text-custom-sm text-dark">
+              {new Date(orderItem.createdAt).toLocaleDateString()}
+            </p>
           </div>
 
           <div className="min-w-[128px]">
@@ -40,13 +51,13 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
                   : orderItem.status === "CANCELLED"
                     ? "text-red bg-red-light-6"
                     : orderItem.status === "PROCESSING"
-                      ? "text-yellow bg-yellow-light-4"
+                      ? "text-yellow bg-yellow-light-2"
                       : orderItem.status === "SHIPPED"
                         ? "text-blue bg-blue-light-6"
-                        : "text-gray bg-gray-light-6"
+                        : "text-gray-7 bg-gray-3"
               }`}
             >
-              {orderItem.status.toLowerCase()}
+              {translate(`tablebody.${orderItem.status.toLowerCase()}`)}
             </p>
           </div>
 
@@ -68,20 +79,26 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
           <div className="py-4.5 px-7.5">
             <div>
               <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2"> Order:</span> #
-                {orderItem.orderId.slice(-8)}
+                <span className="font-bold pr-2">
+                  {translate("tableheader.order")}:
+                </span>{" "}
+                #{orderItem.orderId.slice(-8)}
               </p>
             </div>
             <div>
               <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2">Date:</span>{" "}
-                {orderItem.createdAt}
+                <span className="font-bold pr-2">
+                  {translate("tableheader.date")}:
+                </span>{" "}
+                {new Date(orderItem.createdAt).toLocaleDateString()}
               </p>
             </div>
 
             <div>
               <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2">Status:</span>{" "}
+                <span className="font-bold pr-2">
+                  {translate("tableheader.status")}:
+                </span>{" "}
                 <span
                   className={`inline-block text-custom-sm  py-0.5 px-2.5 rounded-[30px] capitalize ${
                     orderItem.status === "DELIVERED"
@@ -89,27 +106,31 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
                       : orderItem.status === "CANCELLED"
                         ? "text-red bg-red-light-6"
                         : orderItem.status === "PROCESSING"
-                          ? "text-yellow bg-yellow-light-4"
+                          ? "text-yellow bg-yellow-light-2"
                           : orderItem.status === "SHIPPED"
                             ? "text-blue bg-blue-light-6"
                             : "text-gray bg-gray-light-6"
                   }`}
                 >
-                  {orderItem.status.toLowerCase()}
+                  {translate(`tablebody.${orderItem.status.toLowerCase()}`)}
                 </span>
               </p>
             </div>
 
             <div>
               <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2">Total: </span>
+                <span className="font-bold pr-2">
+                  {translate("tableheader.total")}:
+                </span>
                 {orderItem.total} TMT
               </p>
             </div>
 
             <div>
               <p className="text-custom-sm text-dark flex items-center">
-                <span className="font-bold pr-2">Actions:</span>{" "}
+                <span className="font-bold pr-2">
+                  {translate("tableheader.actions")}:
+                </span>{" "}
                 <OrderActions
                   toggleDetails={toggleDetails}
                   toggleEdit={toggleEdit}

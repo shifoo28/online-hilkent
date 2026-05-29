@@ -15,7 +15,7 @@ const OrderRow = ({ label, value, highlight, valueClass }: OrderRowProps) => (
     </p>
     {value !== undefined && (
       <p
-        className={`text-dark text-right ${highlight ? "font-medium text-lg" : ""} ${valueClass || ""}`}
+        className={`text-dark w-full max-w-max text-right ${highlight ? "font-medium text-lg" : ""} ${valueClass || ""}`}
       >
         {value}
       </p>
@@ -54,7 +54,7 @@ export default function OrderSummary({
           cartItemsWithTitle.map((item) => (
             <OrderRow
               key={item.id}
-              label={`${item.title} x ${item.quantity}`}
+              label={`${item.quantity} x ${item.title}`}
               value={`${(
                 (item.discountedPrice || item.price) * item.quantity
               ).toFixed(2)} TMT`}

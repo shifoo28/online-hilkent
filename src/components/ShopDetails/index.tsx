@@ -17,7 +17,7 @@ interface ProductPageProps {
   params: { id: string };
 }
 
-const STORAGE_KEY = "recentlyViewed";
+export const STORAGE_KEY_RECENTLY_VIEWED = "recentlyViewed";
 
 const ShopDetails = () => {
   const { addItem } = useWishlist();
@@ -40,12 +40,17 @@ const ShopDetails = () => {
       .then((data) => {
         setProduct(data);
       });
-    const viewed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const viewed = JSON.parse(
+      localStorage.getItem(STORAGE_KEY_RECENTLY_VIEWED) || "[]",
+    );
 
     // Remove if already exists to avoid duplicates
     const filtered = viewed.filter((item) => item.id !== product.id);
     product.id && filtered.unshift(product); // Add to front
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered.slice(0, 10))); // Keep last 10
+    localStorage.setItem(
+      STORAGE_KEY_RECENTLY_VIEWED,
+      JSON.stringify(filtered.slice(0, 10)),
+    ); // Keep last 10
   }, [params.id, product.id]);
 
   // pass the product here when you get the real data.

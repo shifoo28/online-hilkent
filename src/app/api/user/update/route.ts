@@ -34,7 +34,7 @@ export async function PUT(request: NextRequest) {
 
     // Check if email is already taken by another user
     if (email) {
-      const existingEmail = await prisma.user.findUnique({
+      const existingEmail = await prisma.user.findFirst({
         where: { email },
         select: { id: true },
       });
