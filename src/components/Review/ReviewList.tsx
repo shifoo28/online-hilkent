@@ -40,7 +40,7 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
       onError: (error) => {
         handleError(error, {
           showToast: true,
-          userMessage: translate("loadError") || "Failed to load reviews",
+          userMessage: translate("loadError"),
         });
       },
     },

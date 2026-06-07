@@ -21,36 +21,36 @@ export const menuData: Menu[] = [
   },
   {
     id: 4,
-    title: "pages",
+    title: "Checkout",
     newTab: false,
-    path: "/",
-    submenu: [
-      {
-        id: 1,
-        title: "Checkout",
-        newTab: false,
-        path: "/checkout",
-      },
-      {
-        id: 2,
-        title: "Cart",
-        newTab: false,
-        path: "/cart",
-      },
-      {
-        id: 3,
-        title: "Error",
-        newTab: false,
-        path: "/error",
-      },
-      {
-        id: 4,
-        title: "Mail Success",
-        newTab: false,
-        path: "/mail-success",
-      },
-    ],
+    path: "/checkout",
   },
+  {
+    id: 5,
+    title: "Cart",
+    newTab: false,
+    path: "/cart",
+  },
+  // {
+  //   id: 6,
+  //   title: "pages",
+  //   newTab: false,
+  //   path: "/",
+  //   submenu: [
+  //     {
+  //       id: 3,
+  //       title: "Error",
+  //       newTab: false,
+  //       path: "/error",
+  //     },
+  //     {
+  //       id: 4,
+  //       title: "Mail Success",
+  //       newTab: false,
+  //       path: "/mail-success",
+  //     },
+  //   ],
+  // },
   // {
   //   id: 5,
   //   title: "blogs",

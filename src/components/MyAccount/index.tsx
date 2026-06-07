@@ -25,8 +25,10 @@ const MyAccount = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -151,6 +153,7 @@ const MyAccount = () => {
     try {
       setUpdateLoading(true);
       setError(null);
+      setPasswordError(null);
 
       const response = await fetch("/api/user/update", {
         method: "PUT",
@@ -178,6 +181,44 @@ const MyAccount = () => {
       setError(translate("message.updateError"));
     } finally {
       setUpdateLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      setPasswordLoading(true);
+      setPasswordError(null);
+      setError(null);
+
+      const response = await fetch("/api/user/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          oldPassword: formData.oldPassword,
+          newPassword: formData.newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to update password");
+      }
+
+      const updatedUser = await response.json();
+      setUser(updatedUser);
+      setFormData((prev) => ({
+        ...prev,
+        oldPassword: "",
+        newPassword: "",
+      }));
+      alert(translate("message.updateSuccess") + formData.newPassword);
+    } catch (err) {
+      console.error("Error changing password:", err);
+      setPasswordError(translate("message.updateError"));
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -212,7 +253,7 @@ const MyAccount = () => {
           title={translate("breadcrumb.loading")}
           pages={[translate("breadcrumb.link")]}
         />
-        <section className="overflow-hidden py-20 bg-gray-2">
+        <section className="overflow-hidden py-10 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="bg-white rounded-xl shadow-1 p-6 sm:p-8">
               <div className="flex items-center justify-center py-20">
@@ -235,7 +276,7 @@ const MyAccount = () => {
           title={translate("breadcrumb.error")}
           pages={[translate("breadcrumb.link")]}
         />
-        <section className="overflow-hidden py-20 bg-gray-2">
+        <section className="overflow-hidden py-10 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="bg-white rounded-xl shadow-1 p-6 sm:p-8">
               <div className="text-center py-20">
@@ -255,8 +296,6 @@ const MyAccount = () => {
 
   const shippingAddresses = getAddressesByType("shipping");
   const billingAddresses = getAddressesByType("billing");
-  const defaultShippingAddress = getDefaultAddress("shipping");
-  const defaultBillingAddress = getDefaultAddress("billing");
 
   return (
     <>
@@ -265,7 +304,7 @@ const MyAccount = () => {
         pages={[translate("breadcrumb.link")]}
       />
 
-      <section className="overflow-hidden py-20 bg-gray-2">
+      <section className="overflow-hidden py-10 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex flex-col xl:flex-row gap-7.5">
             {/* <!--== user dashboard menu start ==--> */}
@@ -619,10 +658,13 @@ const MyAccount = () => {
             >
               <AccountDetailsTab
                 formData={formData}
+                error={error}
+                passwordError={passwordError}
                 updateLoading={updateLoading}
+                passwordLoading={passwordLoading}
                 handleInputChange={handleInputChange}
                 handleSaveProfile={handleSaveProfile}
-                error={error}
+                handleChangePassword={handleChangePassword}
               />
             </div>
             {/* <!-- details tab content end -->

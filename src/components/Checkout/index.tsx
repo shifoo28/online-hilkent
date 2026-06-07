@@ -8,6 +8,8 @@ import Coupon from "./Coupon";
 import Billing from "./Billing";
 import { useCheckoutForm } from "@/hooks/useCheckoutForm";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/hooks/useAuth";
+import { useAddresses } from "@/hooks/useAddresses";
 import { useRouter } from "next/navigation";
 import { getDatabaseLocale } from "@/locales/map";
 import { useLocale } from "next-intl";
@@ -20,6 +22,8 @@ const Checkout = () => {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("Checkout");
+  const { user, loading: authLoading } = useAuth();
+  const { getDefaultAddress, loading: addressesLoading } = useAddresses();
   const {
     items: cartItems,
     totalPrice: cartTotal,
@@ -49,6 +53,7 @@ const Checkout = () => {
   const [shippingFee, setShippingFee] = useState(0);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [autoFilled, setAutoFilled] = useState(false);
 
   // Set default shipping method from first available method
   useEffect(() => {
@@ -56,6 +61,53 @@ const Checkout = () => {
       updateField("shippingMethodId", shippingMethods[0].id);
     }
   }, [shippingMethods, formData.shippingMethodId, updateField]);
+
+  // Auto-fill billing form if user is authenticated
+  useEffect(() => {
+    // Wait until auth finished and addresses have been loaded
+    if (!authLoading && !addressesLoading && user && !autoFilled) {
+      const updates: Record<string, any> = {};
+
+      // Auto-fill name fields
+      if (user.name) {
+        const nameParts = user.name.trim().split(/\s+/);
+        updates.firstName = nameParts[0] || "";
+        updates.lastName = nameParts.slice(1).join(" ") || "";
+      }
+
+      // Auto-fill email
+      if (user.email) {
+        updates.email = user.email;
+      }
+
+      // Auto-fill phone
+      if (user.phone) {
+        updates.billingPhone = user.phone;
+      }
+
+      // Try to auto-fill from default billing address if available
+      const defaultBillingAddress = getDefaultAddress("billing");
+      console.log(defaultBillingAddress);
+
+      if (defaultBillingAddress) {
+        updates.billingAddress = defaultBillingAddress.address;
+        updates.selectedBillingAddressId = defaultBillingAddress.id;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        updateMultipleFields(updates);
+      }
+
+      setAutoFilled(true);
+    }
+  }, [
+    user,
+    authLoading,
+    autoFilled,
+    updateMultipleFields,
+    getDefaultAddress,
+    addressesLoading,
+  ]);
 
   // Calculate shipping fee based on selected method
   useEffect(() => {
@@ -130,14 +182,14 @@ const Checkout = () => {
           phone: formData.billingPhone,
           address: formData.billingAddress,
         },
-        shippingDetails: !formData.shippingAddressSame
-          ? { address: formData.shippingAddress }
+        shippingAddress: !formData.shippingAddressSame
+          ? formData.shippingAddress
           : undefined,
         shippingMethodId: formData.shippingMethodId,
         shippingFee,
         paymentMethod: formData.paymentMethod,
         couponCode: formData.couponCode || undefined,
-        notes: formData.notes || undefined,
+        note: formData.note || undefined,
         subtotal,
         discountAmount: couponDiscount,
         total,
@@ -173,7 +225,7 @@ const Checkout = () => {
   return (
     <>
       <Breadcrumb title={t("title")} pages={[t("page")]} />
-      <section className="overflow-hidden py-20 bg-gray-2">
+      <section className="overflow-hidden py-10 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           {orderError && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -187,7 +239,7 @@ const Checkout = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <div>
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
               {/* <!-- checkout left --> */}
               <div className="lg:max-w-[670px] w-full">
@@ -217,8 +269,8 @@ const Checkout = () => {
                 />
 
                 <Notes
-                  value={formData.notes}
-                  onChange={(val) => updateField("notes", val)}
+                  value={formData.note}
+                  onChange={(val) => updateField("note", val)}
                 />
               </div>
 
@@ -257,7 +309,12 @@ const Checkout = () => {
 
                 {/* <!-- checkout button --> */}
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={(e) =>
+                    handleSubmit(
+                      e as unknown as React.FormEvent<HTMLFormElement>,
+                    )
+                  }
                   disabled={isSubmitting || cartItemsWithTitle.length === 0}
                   className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -267,7 +324,7 @@ const Checkout = () => {
                 </button>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </section>
     </>

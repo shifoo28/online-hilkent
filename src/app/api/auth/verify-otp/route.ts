@@ -51,13 +51,33 @@ async function storeUserInDB({
   password?: string;
   name?: string;
 }) {
-  // In a real application, you would hash the password before storing it
   const passwordHash =
     password && password.length > 0 ? await hashPassword(password) : undefined;
-  await prisma.user.upsert({
-    where: { phone },
-    update: { name, passwordHash },
-    create: { phone, name, passwordHash, avatar: defaultAvatar },
+
+  const existingUser = await prisma.user.findUnique({ where: { phone } });
+  if (existingUser) {
+    const updateData: { name?: string; passwordHash?: string } = {};
+
+    if (name && name.length > 0) {
+      updateData.name = name;
+    }
+    if (passwordHash) {
+      updateData.passwordHash = passwordHash;
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      await prisma.user.update({ where: { phone }, data: updateData });
+    }
+    return;
+  }
+
+  await prisma.user.create({
+    data: {
+      phone,
+      name: name && name.length > 0 ? name : `Guest ${phone}`,
+      passwordHash,
+      avatar: defaultAvatar,
+    },
   });
 }
 

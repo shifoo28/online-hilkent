@@ -59,11 +59,17 @@ export async function PUT(request: NextRequest) {
         select: { passwordHash: true },
       });
 
-      if (!user || !verifyPassword(oldPassword, user.passwordHash)) {
-        return NextResponse.json(
-          { error: "Invalid old password" },
-          { status: 400 },
-        );
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+
+      if (user.passwordHash) {
+        if (!oldPassword || !(await verifyPassword(oldPassword, user.passwordHash))) {
+          return NextResponse.json(
+            { error: "Invalid old password" },
+            { status: 400 },
+          );
+        }
       }
     }
 

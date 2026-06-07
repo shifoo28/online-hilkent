@@ -11,8 +11,7 @@ const Coupon: React.FC<CouponProps> = ({ couponCode, onCouponApply }) => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleApply = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleApply = async () => {
     if (!inputValue.trim()) return;
 
     setIsLoading(true);
@@ -43,7 +42,7 @@ const Coupon: React.FC<CouponProps> = ({ couponCode, onCouponApply }) => {
           />
 
           <button
-            onClick={() => handleApply({} as React.FormEvent<HTMLFormElement>)}
+            onClick={() => handleApply()}
             disabled={isLoading || !inputValue.trim()}
             className="inline-flex font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
           >

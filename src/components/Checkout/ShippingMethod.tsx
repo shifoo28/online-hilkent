@@ -13,7 +13,7 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
   selectedMethodId,
   onMethodChange,
 }) => {
-  const t = useTranslations("Checkout");
+  const t = useTranslations("Checkout.shippingMethod");
   const { shippingMethods, loading, error } = useShippingMethods();
 
   // Provide fallback for first method if none selected
@@ -27,11 +27,11 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
       <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
         <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
           <h3 className="font-medium text-xl text-dark">
-            {t("shippingMethod.title")}
+            {t("title")}
           </h3>
         </div>
         <div className="p-4 sm:p-8.5">
-          <p className="text-gray-600 text-center">{t("common.loading")}</p>
+          <p className="text-gray-600 text-center">{t("loading")}</p>
         </div>
       </div>
     );
@@ -42,12 +42,12 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
       <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
         <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
           <h3 className="font-medium text-xl text-dark">
-            {t("shippingMethod.title")}
+            {t("title")}
           </h3>
         </div>
         <div className="p-4 sm:p-8.5">
           <p className="text-red-500 text-center">
-            {error || t("shippingMethod.noMethodsAvailable")}
+            {error || t("noMethodsAvailable")}
           </p>
         </div>
       </div>
@@ -58,7 +58,7 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
     <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
       <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
         <h3 className="font-medium text-xl text-dark">
-          {t("shippingMethod.title")}
+          {t("title")}
         </h3>
       </div>
 
@@ -92,7 +92,7 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
                 <span className="text-dark">{method.name}</span>
                 {/* <span className="text-dark font-semibold">
                   {parseFloat(method.cost) === 0
-                    ? t("shippingMethod.free")
+                    ? t("free")
                     : `${parseFloat(method.cost).toFixed(2)} TMT`}
                 </span> */}
               </div>

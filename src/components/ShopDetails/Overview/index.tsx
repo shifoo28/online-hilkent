@@ -11,7 +11,7 @@ const Overview = ({ id }: { id: string }) => {
   const { user } = useAuth();
 
   return (
-    <section className="overflow-hidden bg-gray-2 py-20">
+    <section className="overflow-hidden bg-gray-2 py-10">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
         {/* <!--== tab header start ==--> */}
         <div className="flex flex-wrap items-center bg-white rounded-[10px] shadow-1 gap-5 xl:gap-12.5 py-4.5 px-4 sm:px-6">

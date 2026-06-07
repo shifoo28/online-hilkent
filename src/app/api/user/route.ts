@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     const decoded = verify(token, SECRET) as { userId: string };
     const user = await prisma.user.findUnique({
-      where: { phone: parseInt(decoded.userId) },
+      where: { phone: parseInt(decoded.userId), isActive: true },
       select: {
         id: true,
         name: true,
@@ -94,8 +94,9 @@ export async function GET(request: NextRequest) {
     const profileData = {
       id: user.id.toString(),
       name: user.name || "Anonymous User",
+      phone: user.phone,
       email: user.email || "",
-      avatar: user.avatar || "/images/users/default-avatar.jpg",
+      avatar: user.avatar || "/images/users/default.webp",
       createdAt: user.createdAt.toISOString(),
       bio: user.bio || "No bio available",
       stats: {

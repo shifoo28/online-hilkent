@@ -8,12 +8,11 @@ import { useTranslations } from "next-intl";
 export const Wishlist = () => {
   const { items: wishlistItems, clearWishlist } = useWishlist();
   const translate = useTranslations("Wishlist");
-  console.log(wishlistItems);
 
   return (
     <>
       <Breadcrumb title={translate("title")} pages={[translate("page")]} />
-      <section className="overflow-hidden py-20 bg-gray-2">
+      <section className="overflow-hidden py-10 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex flex-wrap items-center justify-between gap-5 mb-7.5">
             <h2 className="font-medium text-dark text-2xl">
@@ -23,9 +22,9 @@ export const Wishlist = () => {
               {translate("clear")}
             </button>
           </div>
-          <div className="bg-white rounded-[10px] shadow-1">
-            <div className="w-full overflow-x-auto">
-              {wishlistItems.length !== 0 ? (
+          {wishlistItems.length !== 0 ? (
+            <div className="bg-white rounded-[10px] shadow-1">
+              <div className="w-full overflow-x-auto">
                 <div className="min-w-full">
                   {/* <!-- wish item --> */}
                   <div className="flex flex-col gap-4 md:block">
@@ -34,13 +33,13 @@ export const Wishlist = () => {
                     ))}
                   </div>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center gap-4 py-10">
-                  <p className="text-gray-500 text-lg">{translate("empty")}</p>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4 py-10">
+              <p className="text-gray-500 text-lg">{translate("empty")}</p>
+            </div>
+          )}
         </div>
       </section>
     </>

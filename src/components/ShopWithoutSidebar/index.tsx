@@ -36,7 +36,7 @@ const ShopWithoutSidebar = () => {
         title={t("title.trend")}
         pages={[t("page.shop"), "/", t("page.withoutSidebar")]}
       />
-      <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28 bg-[#f3f4f6]">
+      <section className="overflow-hidden relative pb-20 pt-5 lg:pt-10 bg-[#f3f4f6]">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-7.5">
             {/* // <!-- Content Start --> */}

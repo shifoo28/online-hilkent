@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { Decimal } from "@prisma/client/runtime/library";
+import { PaymentMethod } from "@prisma/client";
 import { CheckoutFormData } from "@/hooks/useCheckoutForm";
 import { generateOrderId } from "@/lib/generateId";
+import { Decimal } from "@prisma/client/runtime/library";
 
 /**
  * Order creation request body interface
@@ -19,25 +20,17 @@ interface CreateOrderRequest {
     email: string;
     phone: string;
     address: string;
-    town: string;
-    country: string;
-    postCode: string;
   };
-  shippingDetails?: {
-    address: string;
-    town: string;
-    country: string;
-    postCode: string;
-  };
-  shippingMethodId: number; // NEW: FK to ShippingMethod
-  shippingFee: number; // NEW: Shipping fee
+  shippingAddress?: string; // Optional: if differs from billing
+  shippingMethodId: number;
+  shippingFee: number;
   shippingMethod: string; // Display name
   paymentMethod: CheckoutFormData["paymentMethod"];
   couponCode?: string;
-  notes?: string;
-  subtotal: number; // NEW: Itemized subtotal
-  discountAmount: number; // NEW: Applied discount
-  total: number; // NEW: Final total
+  note?: string;
+  subtotal: number;
+  discountAmount: number;
+  total: number;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -52,6 +45,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       "shippingFee",
       "subtotal",
       "total",
+      "paymentMethod",
     ];
 
     for (const field of requiredFields) {
@@ -64,6 +58,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           { status: 400 },
         );
       }
+    }
+
+    const validPaymentMethods = Object.values(PaymentMethod);
+    if (!validPaymentMethods.includes(body.paymentMethod)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Selected payment method is not valid",
+        },
+        { status: 400 },
+      );
     }
 
     // Validate items array
@@ -160,15 +165,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         // .toString(36) → converts that number into a base‑36 string (digits 0–9 + letters a–z).
         // .substr(2, 6) → chops off the leading "0." and takes the next 6 characters.
         orderId: generateOrderId(36, 6),
-        userId: user.id,
         status: "PENDING",
-        // NEW: Price breakdown fields
         subtotal: new Decimal(body.subtotal),
+        billingAddress: body.billingDetails.address,
+        shippingAddress: body.shippingAddress ?? null,
+        // Store shipping fee and method for historical accuracy, even if they change later
         shippingFee: new Decimal(body.shippingFee),
         discountAmount: new Decimal(body.discountAmount),
         total: new Decimal(calculatedTotal),
-        // NEW: Shipping method reference
-        shippingMethodId: body.shippingMethodId,
+        note: { create: { content: body.note } },
+        paymentMethod: body.paymentMethod,
+        user: { connect: { id: user.id } },
+        shippingMethod: { connect: { id: body.shippingMethodId } },
         // Create order items
         OrderItems: {
           create: body.items.map((item) => ({
@@ -192,16 +200,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         shippingMethod: true,
         user: true,
       },
-    });
-
-    // Log order creation
-    console.log(`[Orders API] Order created:`, {
-      orderId: order.orderId,
-      userId: order.userId,
-      total: order.total,
-      shippingFee: order.shippingFee,
-      shippingMethodId: order.shippingMethodId,
-      itemCount: order.OrderItems.length,
     });
 
     // NEW: Trigger shipping notification (optional)
@@ -276,15 +274,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
                 price: true,
               },
             },
-          },
-        },
-        shippingMethod: true, // NEW: Include shipping method details
-        user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            phone: true,
           },
         },
       },

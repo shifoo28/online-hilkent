@@ -10,14 +10,16 @@ async function main() {
 
   // Create categories
   const categories = [
-    { name: "General", image: "/images/categories/categories-01.png" },
-    { name: "Gaming", image: "/images/categories/categories-02.png" },
-    { name: "Phones", image: "/images/categories/categories-03.png" },
-    { name: "Computers", image: "/images/categories/categories-04.png" },
-    { name: "Wearables", image: "/images/categories/categories-05.png" },
-    { name: "Accessories", image: "/images/categories/categories-06.png" },
-    { name: "Tablets", image: "/images/categories/categories-07.png" },
-    { name: "Networking", image: "/images/categories/categories-08.png" },
+    { name: "General", image: "/images/categories/general.png" },
+    { name: "Emulsions", image: "/images/categories/emulsions.png" },
+    { name: "Kalekums", image: "/images/categories/kalekums.png" },
+    // { name: "Gaming", image: "/images/categories/categories-02.png" },
+    // { name: "Phones", image: "/images/categories/categories-03.png" },
+    // { name: "Computers", image: "/images/categories/categories-04.png" },
+    // { name: "Wearables", image: "/images/categories/categories-05.png" },
+    // { name: "Accessories", image: "/images/categories/categories-06.png" },
+    // { name: "Tablets", image: "/images/categories/categories-07.png" },
+    // { name: "Networking", image: "/images/categories/categories-08.png" },
   ];
   for (const category of categories) {
     await prisma.category.upsert({
@@ -60,18 +62,18 @@ async function main() {
   const products = await Promise.all([
     prisma.product.create({
       data: {
-        price: 59,
+        price: 150,
         inStock: true,
-        rating: 5,
+        rating: 0,
         Category: {
-          connect: { name: "Gaming" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-1-bg-1.png",
-              thumbnail: "/images/products/product-1-sm-1.png",
-              altText: "Havit HV-G69 USB Gamepad",
+              url: "/images/products/elteks_dasky.png",
+              thumbnail: "/images/products/elteks_dasky.png",
+              altText: "Elteks Dasky Emulsion",
             },
           ],
         },
@@ -79,137 +81,213 @@ async function main() {
     }),
     prisma.product.create({
       data: {
-        price: 899,
+        price: 111,
         Category: {
-          connect: { name: "Phones" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-2-bg-1.png",
-              thumbnail: "/images/products/product-2-sm-1.png",
-              altText: "iPhone 14 Plus , 6/128GB",
+              url: "/images/products/elteks_icki.png",
+              thumbnail: "/images/products/elteks_icki.png",
+              altText: "Elteks Icki Emulsion",
             },
           ],
         },
 
         inStock: true,
-        rating: 5,
+        rating: 0,
       },
     }),
     prisma.product.create({
       data: {
-        price: 1299,
+        price: 127,
         Category: {
-          connect: { name: "Computers" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-3-bg-1.png",
-              thumbnail: "/images/products/product-3-sm-1.png",
-              altText: "Apple iMac M1 24-inch 2021",
+              url: "/images/products/elteks_icki_+.png",
+              thumbnail: "/images/products/elteks_icki_+.png",
+              altText: "Elteks Icki+ Emulsion",
             },
           ],
         },
 
         inStock: true,
-        rating: 5,
+        rating: 0,
       },
     }),
     prisma.product.create({
       data: {
-        price: 999,
+        price: 214,
         Category: {
-          connect: { name: "Computers" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-4-bg-1.png",
-              thumbnail: "/images/products/product-4-sm-1.png",
-              altText: "Dell XPS 13 Laptop",
+              url: "/images/products/ganat_icki.png",
+              thumbnail: "/images/products/ganat_icki.png",
+              altText: "Ganat Icki Emulsion",
             },
           ],
         },
         inStock: true,
-        rating: 5,
+        rating: 0,
       },
     }),
     prisma.product.create({
       data: {
-        price: 799,
+        price: 292,
         Category: {
-          connect: { name: "Wearables" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-5-bg-1.png",
-              thumbnail: "/images/products/product-5-sm-1.png",
-              altText: "Apple Watch Series 7",
+              url: "/images/products/ganat_dasky.png",
+              thumbnail: "/images/products/ganat_dasky.png",
+              altText: "Ganat Dasky Emulsion",
             },
           ],
         },
         inStock: true,
-        rating: 5,
+        rating: 0,
       },
     }),
     prisma.product.create({
       data: {
-        price: 99,
+        price: 312,
         Category: {
-          connect: { name: "Accessories" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-6-bg-1.png",
-              thumbnail: "/images/products/product-6-sm-1.png",
-              altText: "Wireless Headphones",
+              url: "/images/products/ganat_silicon.png",
+              thumbnail: "/images/products/ganat_silicon.png",
+              altText: "Ganat Silicon Emulsion",
             },
           ],
         },
         inStock: true,
-        rating: 5,
+        rating: 0,
       },
     }),
     prisma.product.create({
       data: {
-        price: 599,
+        price: 165,
         Category: {
-          connect: { name: "Tablets" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-7-bg-1.png",
-              thumbnail: "/images/products/product-7-sm-1.png",
-              altText: "iPad Pro 12.9-inch",
+              url: "/images/products/ganat_taban.png",
+              thumbnail: "/images/products/ganat_taban.png",
+              altText: "Ganat Taban Emulsion",
             },
           ],
         },
         inStock: true,
-        rating: 5,
+        rating: 0,
       },
     }),
     prisma.product.create({
       data: {
-        price: 120,
+        price: 156,
         Category: {
-          connect: { name: "Networking" },
+          connect: { name: "Emulsions" },
         },
         Images: {
           create: [
             {
-              url: "/images/products/product-8-bg-1.png",
-              thumbnail: "/images/products/product-8-sm-1.png",
-              altText: "Network Switch",
+              url: "/images/products/ganat_astar.png",
+              thumbnail: "/images/products/ganat_astar.png",
+              altText: "Ganat Astar Emulsion",
             },
           ],
         },
         inStock: true,
-        rating: 5,
+        rating: 0,
+      },
+    }),
+    prisma.product.create({
+      data: {
+        price: 45,
+        Category: {
+          connect: { name: "Kalekums" },
+        },
+        Images: {
+          create: [
+            {
+              url: "/images/products/kalekum_hilkent.png",
+              thumbnail: "/images/products/kalekum_hilkent.png",
+              altText: "Kalekum Hilkent ",
+            },
+          ],
+        },
+        inStock: true,
+        rating: 0,
+      },
+    }),
+    prisma.product.create({
+      data: {
+        price: 35,
+        Category: {
+          connect: { name: "Kalekums" },
+        },
+        Images: {
+          create: [
+            {
+              url: "/images/products/kalekum_erkfix_gold.png",
+              thumbnail: "/images/products/kalekum_erkfix_gold.png",
+              altText: "Kalekum Erkfix Gold",
+            },
+          ],
+        },
+        inStock: true,
+        rating: 0,
+      },
+    }),
+    prisma.product.create({
+      data: {
+        price: 27,
+        Category: {
+          connect: { name: "Kalekums" },
+        },
+        Images: {
+          create: [
+            {
+              url: "/images/products/kalekum_erkfix.png",
+              thumbnail: "/images/products/kalekum_erkfix.png",
+              altText: "Kalekum Erkfix",
+            },
+          ],
+        },
+        inStock: true,
+        rating: 0,
+      },
+    }),
+    prisma.product.create({
+      data: {
+        price: 24,
+        Category: {
+          connect: { name: "Kalekums" },
+        },
+        Images: {
+          create: [
+            {
+              url: "/images/products/kalekum_elteks.png",
+              thumbnail: "/images/products/kalekum_elteks.png",
+              altText: "Kalekum Elteks",
+            },
+          ],
+        },
+        inStock: true,
+        rating: 0,
       },
     }),
   ]);
@@ -221,169 +299,262 @@ async function main() {
       {
         productId: products[0].id,
         locale: "US",
-        name: "Havit HV-G69 USB Gamepad",
-        description: "Ergonomic gamepad with vibration and turbo modes.",
+        name: "Elteks Exterior Emulsion",
+        description:
+          "High-quality exterior paint designed to withstand harsh weather conditions.",
       },
       {
         productId: products[0].id,
         locale: "RU",
-        name: "Havit HV-G69 USB Геймпад",
-        description: "Эргономичный геймпад с вибрацией и турбо режимами.",
+        name: "Elteks Наружная Эмульсия",
+        description:
+          "Высококачественная наружная краска, разработанная для выдерживания суровых погодных условий.",
       },
       {
         productId: products[0].id,
         locale: "TM",
-        name: "Havit HV-G69 USB Oýun Dolandyryjy",
+        name: "Elteks Daşky Emulsiýa",
         description:
-          "Titröw we turbo režimleri bilen ergonomiki oýun dolandyryjy.",
+          "Kyn howa şertlerine garşy durmak üçin niýetlenen ýokary hilli daşky boýag.",
       },
       // Product 2 translations
       {
         productId: products[1].id,
         locale: "US",
-        name: "iPhone 14 Plus , 6/128GB",
+        name: "Elteks Interior Emulsion",
         description:
-          "Latest Apple iPhone with 6.7-inch display and powerful A-series chip.",
+          "Premium interior paint with smooth finish and excellent coverage.",
       },
       {
         productId: products[1].id,
         locale: "RU",
-        name: "iPhone 14 Plus , 6/128GB",
+        name: "Elteks Внутренняя Эмульсия",
         description:
-          "Последний iPhone от Apple с 6.7-дюймовым дисплеем и мощным чипом A-series.",
+          "Премиальная внутренняя краска с гладкой поверхностью и отличным покрытием.",
       },
       {
         productId: products[1].id,
         locale: "TM",
-        name: "iPhone 14 Plus , 6/128GB",
-        description:
-          "6.7-düýpli displeý we güýçli A-series çip bilen iň täze Apple iPhone.",
+        name: "Elteks Içki Emulsiýa",
+        description: "Içerki boýag, ýumşak örtük we ajaýyp örtügi bilen.",
       },
       // Product 3 translations
       {
         productId: products[2].id,
         locale: "US",
-        name: "Apple iMac M1 24-inch 2021",
+        name: "Elteks + Interior Emulsion",
         description:
-          "All-in-one desktop with Apple M1 chip and stunning Retina display.",
+          "Enhanced interior paint with added durability and stain resistance.",
       },
       {
         productId: products[2].id,
         locale: "RU",
-        name: "Apple iMac M1 24-дюймовый 2021",
-        description: "Моноблок с чипом Apple M1 и потрясающим Retina дисплеем.",
+        name: "Elteks + Внутренняя Эмульсия",
+        description:
+          "Премиальная внутренняя краска с гладкой поверхностью и отличным покрытием.",
       },
       {
         productId: products[2].id,
         locale: "TM",
-        name: "Apple iMac M1 24-düýpli 2021",
+        name: "Elteks + Içki Emulsiýa",
         description:
-          "Apple M1 çip we ajaýyp Retina displeý bilen hemmesi bir kompýuter.",
+          "Güýçlendirilen içki emulsiýa, goşmaça durnuklylyk we dogryga garşy duruş bilen.",
       },
       // Product 4 translations
       {
         productId: products[3].id,
         locale: "US",
-        name: "MacBook Air M1 chip, 8/256GB",
+        name: "Ganat Interior Emulsion",
         description:
-          "Ultra-thin laptop with long battery life and silent fanless design.",
+          "Premium interior paint with smooth finish and excellent coverage.",
       },
       {
         productId: products[3].id,
         locale: "RU",
-        name: "MacBook Air с чипом M1, 8/256GB",
+        name: "Ganat Внутренняя Эмульсия",
         description:
-          "Ультратонкий ноутбук с длительным временем работы и бесшумным дизайном без вентилятора.",
+          "Премиальная внутренняя краска с гладкой поверхностью и отличным покрытием.",
       },
       {
         productId: products[3].id,
         locale: "TM",
-        name: "MacBook Air M1 çip, 8/256GB",
-        description:
-          "Uzyn batareýa ömri we sessiz wentilyatorsyz dizaýn bilen ýuka noutbuk.",
+        name: "Ganat Içki Emulsiýa",
+        description: "Içerki boýag, ýumşak örtük we ajaýyp örtügi bilen.",
       },
       // Product 5 translations
       {
         productId: products[4].id,
         locale: "US",
-        name: "Apple Watch Ultra",
+        name: "Ganat Exterior Emulsion",
         description:
-          "Rugged watch for extreme sports with advanced health tracking.",
+          "High-quality exterior paint designed to withstand harsh weather conditions.",
       },
       {
         productId: products[4].id,
         locale: "RU",
-        name: "Apple Watch Ultra",
+        name: "Ganat Наружная Эмульсия",
         description:
-          "Прочные часы для экстремальных видов спорта с продвинутым отслеживанием здоровья.",
+          "Высококачественная наружная краска, разработанная для выдерживания суровых погодных условий.",
       },
       {
         productId: products[4].id,
         locale: "TM",
-        name: "Apple Watch Ultra",
+        name: "Ganat Daşky Emulsiýa",
         description:
-          "Öňdebaryjy saglyk yzarlaýyşy bilen ekstremal sport üçin çydamly sagat.",
+          "Kyn howa şertlerine garşy durmak üçin niýetlenen ýokary hilli daşky boýag.",
       },
       // Product 6 translations
       {
         productId: products[5].id,
         locale: "US",
-        name: "Logitech MX Master 3 Mouse",
-        description: "Precision wireless mouse with ergonomic sm rest.",
+        name: "Ganat Silicon Emulsion",
+        description:
+          "Premium silicon-based emulsion for superior durability and water resistance.",
       },
       {
         productId: products[5].id,
         locale: "RU",
-        name: "Logitech MX Master 3 Мышь",
+        name: "Ganat Силиконовая Эмульсия",
         description:
-          "Точная беспроводная мышь с эргономичной подставкой для большого пальца.",
+          "Премиальная силиконовая эмульсия для превосходной прочности и водонепроницаемости.",
       },
       {
         productId: products[5].id,
         locale: "TM",
-        name: "Logitech MX Master 3 Syçan",
-        description: "Ergonomiki baş barmak üçin ýer bilen takyk simsiz syçan.",
+        name: "Ganat Silikonly Emulsiýa",
+        description:
+          "Ýokary durnuklylyk we suw wärişligi üçin premiýal silikon tabaýyn emulsiýa.",
       },
       // Product 7 translations
       {
         productId: products[6].id,
         locale: "US",
-        name: "Apple iPad Air 5th Gen - 64GB",
+        name: "Ganat Taban Emulsion",
         description:
-          "Lightweight tablet with powerful processor and great display.",
+          "High-quality primer emulsion designed to improve adhesion and durability of topcoats.",
       },
       {
         productId: products[6].id,
         locale: "RU",
-        name: "Apple iPad Air 5-го поколения - 64GB",
-        description: "Легкий планшет с мощным процессором и отличным дисплеем.",
+        name: "Ganat Подложечная Эмульсия",
+        description:
+          "Высококачественная грунтовочная эмульсия, разработанная для улучшения адгезии и долговечности верхних покрытий.",
       },
       {
         productId: products[6].id,
         locale: "TM",
-        name: "Apple iPad Air 5-nji nesil - 64GB",
-        description: "Güýçli prosessor we ajaýyp displeý bilen ýeňil planşet.",
+        name: "Ganat Taban Emulsiýa",
+        description:
+          "Ýokary durnuklylyk we suw wärişligi üçin premiýal silikon tabaýyn emulsiýa.",
       },
       // Product 8 translations
       {
         productId: products[7].id,
         locale: "US",
-        name: "Asus RT Dual Band Router",
-        description: "High speed router with dual band support and smart QoS.",
+        name: "Ganat Primer Emulsion",
+        description:
+          "High-quality primer emulsion designed to improve adhesion and durability of topcoats.",
       },
       {
         productId: products[7].id,
         locale: "RU",
-        name: "Asus RT Двухдиапазонный роутер",
+        name: "Ganat Грунтовочная Эмульсия",
         description:
-          "Высокоскоростной роутер с поддержкой двух диапазонов и умным QoS.",
+          "Высококачественная грунтовочная эмульсия, разработанная для улучшения адгезии и долговечности верхних покрытий.",
       },
       {
         productId: products[7].id,
         locale: "TM",
-        name: "Asus RT Iki Zolakly Router",
+        name: "Ganat Astar Emulsiýa",
+        description: "Ýokary durnuklylyk we suw wärişligi üçin premiýal astar.",
+      },
+      // Product 9 translations
+      {
+        productId: products[8].id,
+        locale: "US",
+        name: "Kalekum Hilkent Universal Tile Adhesive",
         description:
-          "Iki zolak goldawy we smart QoS bilen ýokary tizlikli router.",
+          "High-performance tile adhesive suitable for various substrates, providing strong bonding and durability.",
+      },
+      {
+        productId: products[8].id,
+        locale: "RU",
+        name: "Kalekum Hilkent Универсальный Клей для Плитки",
+        description:
+          "Высокопроизводительный клей для плитки, подходящий для различных подложек, обеспечивающий прочное сцепление и долговечность.",
+      },
+      {
+        productId: products[8].id,
+        locale: "TM",
+        name: "Kalekum Hilkent Uniwersal Kafel ýelimi",
+        description:
+          "Dürli substratlar üçin amatly ýokary öndürijilikli kafel ýelimi, güýçli baglanyşyk we durnuklylyk üpjün edýär.",
+      },
+      // Product 10 translation
+      {
+        productId: products[8].id,
+        locale: "US",
+        name: "Kalekum Erkfix Gold Tile Adhesive",
+        description:
+          "High-performance tile adhesive suitable for various substrates, providing strong bonding and durability.",
+      },
+      {
+        productId: products[8].id,
+        locale: "RU",
+        name: "Kalekum Erkfix Gold Клей для Плитки",
+        description:
+          "Высокопроизводительный клей для плитки, подходящий для различных подложек, обеспечивающий прочное сцепление и долговечность.",
+      },
+      {
+        productId: products[8].id,
+        locale: "TM",
+        name: "Kalekum Erkfix Gold Kafel ýelimi",
+        description:
+          "Dürli substratlar üçin amatly ýokary öndürijilikli kafel ýelimi, güýçli baglanyşyk we durnuklylyk üpjün edýär.",
+      },
+      // Product 11 translation
+      {
+        productId: products[8].id,
+        locale: "US",
+        name: "Kalekum Erkfix Tile Adhesive",
+        description:
+          "High-performance tile adhesive suitable for various substrates, providing strong bonding and durability.",
+      },
+      {
+        productId: products[8].id,
+        locale: "RU",
+        name: "Kalekum Erkfix Клей для Плитки",
+        description:
+          "Высокопроизводительный клей для плитки, подходящий для различных подложек, обеспечивающий прочное сцепление и долговечность.",
+      },
+      {
+        productId: products[8].id,
+        locale: "TM",
+        name: "Kalekum Erkfix Kafel ýelimi",
+        description:
+          "Dürli substratlar üçin amatly ýokary öndürijilikli kafel ýelimi, güýçli baglanyşyk we durnuklylyk üpjün edýär.",
+      },
+      // Product 12 translation
+      {
+        productId: products[8].id,
+        locale: "US",
+        name: "Kalekum Elteks Tile Adhesive",
+        description:
+          "High-performance tile adhesive suitable for various substrates, providing strong bonding and durability.",
+      },
+      {
+        productId: products[8].id,
+        locale: "RU",
+        name: "Kalekum Elteks Клей для Плитки",
+        description:
+          "Высокопроизводительный клей для плитки, подходящий для различных подложек, обеспечивающий прочное сцепление и долговечность.",
+      },
+      {
+        productId: products[8].id,
+        locale: "TM",
+        name: "Kalekum Elteks Kafel ýelimi",
+        description:
+          "Dürli substratlar üçin amatly ýokary öndürijilikli kafel ýelimi, güýçli baglanyşyk we durnuklylyk üpjün edýär.",
       },
     ],
   });
@@ -433,7 +604,6 @@ async function main() {
     const methods = [
       { name: "Passenger Car", cost: 5, vehicle: "PASSENGER_CAR" },
       { name: "Light Truck", cost: 15, vehicle: "LIGHT_TRUCK" },
-      { name: "Free Shipping", cost: 0, vehicle: null },
     ];
 
     for (const method of methods) {
@@ -457,14 +627,16 @@ async function main() {
     where: { orderId: generateOrderId(36, 6) },
     update: {},
     create: {
-      orderId: "ORD-2024-001",
-      userId: user1.id,
+      orderId: generateOrderId(36, 6),
       status: "DELIVERED",
       total: 150,
       subtotal: 120,
       shippingFee: 20,
-      shippingMethodId: 1,
       discountAmount: 10,
+      paymentMethod: "CASH",
+      billingAddress: "123 Main St, Springfield, USA",
+      user: { connect: { id: user1.id } },
+      shippingMethod: { connect: { id: 1 } },
     },
   });
 
@@ -472,14 +644,16 @@ async function main() {
     where: { orderId: generateOrderId(36, 6) },
     update: {},
     create: {
-      orderId: "ORD-2024-002",
-      userId: user1.id,
+      orderId: generateOrderId(36, 6),
       status: "PROCESSING",
       total: 89,
       subtotal: 79,
       shippingFee: 10,
-      shippingMethodId: 2,
       discountAmount: 0,
+      paymentMethod: "HALKBANK",
+      billingAddress: "123 Main St, Springfield, USA",
+      user: { connect: { id: user1.id } },
+      shippingMethod: { connect: { id: 2 } },
     },
   });
 
@@ -487,14 +661,16 @@ async function main() {
     where: { orderId: generateOrderId(36, 6) },
     update: {},
     create: {
-      orderId: "ORD-2024-003",
-      userId: user2.id,
+      orderId: generateOrderId(36, 6),
       status: "SHIPPED",
       total: 45,
       subtotal: 45,
       shippingFee: 0,
-      shippingMethodId: 3,
       discountAmount: 0,
+      paymentMethod: "RYSGALBANK",
+      billingAddress: "123 Main St, Springfield, USA",
+      user: { connect: { id: user1.id } },
+      shippingMethod: { connect: { id: 2 } },
     },
   });
 

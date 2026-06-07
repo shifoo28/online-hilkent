@@ -20,7 +20,7 @@ const Cart = () => {
       </section>
       {/* <!-- ===== Breadcrumb Section End ===== --> */}
       {cartItems.length > 0 ? (
-        <section className="overflow-hidden py-20 bg-gray-2">
+        <section className="overflow-hidden py-10 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="flex flex-wrap items-center justify-between gap-5 mb-7.5">
               <h2 className="font-medium text-dark text-2xl">
@@ -76,7 +76,7 @@ const Cart = () => {
         </section>
       ) : (
         <>
-          <div className="text-center mt-8">
+          <div className="text-center my-17">
             <div className="mx-auto pb-7.5">
               <svg
                 className="mx-auto"

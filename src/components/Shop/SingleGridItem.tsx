@@ -51,6 +51,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
           <Image
             src={item.images[0].url}
             alt={item.images[0].altText || "Product image"}
+            quality={80}
             width={250}
             height={250}
           />

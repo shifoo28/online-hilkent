@@ -10,48 +10,60 @@ interface AccountDetailsTabProps {
     lastName: string;
     email: string;
     address: string;
+    oldPassword: string;
+    newPassword: string;
   };
   error: string | null;
+  passwordError: string | null;
   updateLoading: boolean;
+  passwordLoading: boolean;
   handleInputChange: (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
   handleSaveProfile: () => void;
+  handleChangePassword: () => void;
 }
 
 export default function AccountDetailsTab({
   formData,
   error,
+  passwordError,
   updateLoading,
+  passwordLoading,
   handleInputChange,
   handleSaveProfile,
+  handleChangePassword,
 }: AccountDetailsTabProps) {
   const translate = useTranslations("Account.details.accountDetails");
   const [errorPassword, setErrorPassword] = useState<string | null>(null);
-  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // Get addresses from the useAddresses hook and populate the address options in the select input
   const { addresses } = useAddresses();
 
-  const handleChangePassword = () => {
+  const handlePasswordSubmit = () => {
     setErrorPassword(null);
 
-    if (newPassword !== confirmPassword) {
+    if (formData.newPassword !== confirmPassword) {
       setErrorPassword(translate("message.passwordMismatch"));
       return;
     }
 
-    handleSaveProfile();
+    handleChangePassword();
   };
 
   // Note: The actual password change logic should be implemented in the parent component
-  // and passed down via props. This function just validates the input before calling the save handler.
+  // and passed down via props. This function validates password confirmation before calling it.
 
   return (
     <div className="xl:max-w-[770px] w-full">
-      <form onSubmit={handleSaveProfile}>
-        <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
+      <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveProfile();
+          }}
+        >
           <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
             <div className="w-full">
               <label htmlFor="firstName" className="block mb-2.5">
@@ -155,7 +167,7 @@ export default function AccountDetailsTab({
           )}
 
           <button
-            type="button"
+            type="submit"
             disabled={updateLoading}
             className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 ${
               updateLoading
@@ -165,15 +177,22 @@ export default function AccountDetailsTab({
           >
             {updateLoading ? "Saving..." : translate("formUser.button")}
           </button>
-        </div>
+        </form>
+      </div>
 
-        <p className="text-custom-sm mt-5 mb-9">{translate("info")}</p>
+      <p className="text-custom-sm mt-5 mb-9">{translate("info")}</p>
 
-        <p className="font-medium text-xl sm:text-2xl text-dark mb-7">
-          {translate("formPassword.title")}
-        </p>
+      <p className="font-medium text-xl sm:text-2xl text-dark mb-7">
+        {translate("formPassword.title")}
+      </p>
 
-        <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
+      <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handlePasswordSubmit();
+          }}
+        >
           <div className="mb-5">
             <label htmlFor="oldPassword" className="block mb-2.5">
               {translate("formPassword.oldPassword.label")}
@@ -183,6 +202,7 @@ export default function AccountDetailsTab({
               type="password"
               name="oldPassword"
               id="oldPassword"
+              value={formData.oldPassword}
               onChange={handleInputChange}
               placeholder={translate("formPassword.oldPassword.placeholder")}
               className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -199,7 +219,8 @@ export default function AccountDetailsTab({
               name="newPassword"
               id="newPassword"
               required
-              onChange={(e) => setNewPassword(e.target.value)}
+              value={formData.newPassword}
+              onChange={handleInputChange}
               placeholder={translate("formPassword.newPassword.placeholder")}
               className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
             />
@@ -215,6 +236,7 @@ export default function AccountDetailsTab({
               name="confirmPassword"
               id="confirmPassword"
               required
+              value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder={translate(
                 "formPassword.confirmPassword.placeholder",
@@ -223,21 +245,27 @@ export default function AccountDetailsTab({
             />
           </div>
 
-          {errorPassword && (
+          {(errorPassword || passwordError) && (
             <div className="mb-6 p-4 bg-red-50 border border-red rounded-lg">
-              <p className="text-red text-custom-sm">{errorPassword}</p>
+              <p className="text-red text-custom-sm">
+                {errorPassword || passwordError}
+              </p>
             </div>
           )}
 
           <button
-            type="button"
-            onClick={handleChangePassword}
-            className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+            type="submit"
+            disabled={passwordLoading}
+            className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 ${
+              passwordLoading
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-dark"
+            }`}
           >
-            {translate("formPassword.button")}
+            {passwordLoading ? "Saving..." : translate("formPassword.button")}
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

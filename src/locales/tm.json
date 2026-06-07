@@ -52,14 +52,24 @@
           "link": "Giriň"
         }
       }
+    },
+    "otp": {
+      "page": "OTP tassyklaň",
+      "title": "OTP giriziň",
+      "description": "Telefonyňyza iberilen 6 sanly kody giriziň",
+      "placeholder": "6 sanly kod",
+      "noPhoneError": "Telefon belgisi tapylmady. Ilki bilen hasap açyň.",
+      "successMessage": "OTP üstünlikli tassyklandy!",
+      "verificationFailed": "Tassyklamak şowsuz boldy",
+      "errorMessage": "Näldir ýalňyş boldy.",
+      "button": "OTP tassykla",
+      "buttonLoading": "Tassyklanýar..."
     }
   },
   "Home": {
     "title": "Hilkende hoş geldiňiz",
     "description": "Siziň ynanýan bazaryňyz",
     "hero": {
-      "title": "Hilkentde elektronika üçin iň gowy teklipleri açyň",
-      "description": "Elektronika üçin giň saýlamamyzdan ajaýyp bahalara göz aýlaň. Aram alyş we ajaýyp müşderi hyzmatyny başdan geçiriň.",
       "discount": "Arzanladyş",
       "button": "Giňişleýin",
       "offer": "çäkli-wagt teklibi",
@@ -171,10 +181,10 @@
       "popular": "Trendda",
       "shop": "Dükan",
       "contact": "Habarlaşmak",
+      "checkout": "Hasaplaşmak",
+      "cart": "Sebedim",
       "pages": {
         "title": "Sahypalar",
-        "checkout": "Hasaplaşmak",
-        "cart": "Sebedim",
         "error": "Ýalňyşlyk 404",
         "success": "Hat üstünlikli"
       },
@@ -392,13 +402,14 @@
     "review": "müşderi teswirleri",
     "stock": "Satuwda",
     "price": "Bahasy:",
-    "delivery": "Mugt eltip bermek hyzmaty",
+    "delivery": "Eltip bermek hyzmaty",
     "promotion": "Arzanladyşlaryň ajaýyp dünýäsini açmak üçin jadyly söz:",
     "button": "Häzir satyn al",
     "overview": {
       "review": {
         "title": "Müşderi Teswirleri",
         "listDescription": "Bu haryt barada müşderilerimiziň näme diýýändigini görüň",
+        "loadError": "Teswirleri ýüklemekde näsazlyk ýüze çykdy",
         "noUser": {
           "message": "Teswir ýazmak üçin bize goşulyň",
           "button": "Giriş"

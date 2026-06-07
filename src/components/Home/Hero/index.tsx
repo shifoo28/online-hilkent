@@ -39,7 +39,7 @@ const Hero = ({ products }: HeroProps) => {
   const heroProducts = products.filter((p) => !p.isSlider).map(mapHeroCard);  
 
   return (
-    <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-67 sm:pt-50 lg:pt-46 xl:pt-51.5 bg-[#E5EAF4]">
+    <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-67 sm:pt-50 lg:pt-46 xl:pt-50 bg-[#E5EAF4]">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
         <div className="flex flex-wrap gap-5">
           <div className="xl:max-w-[757px] w-full">

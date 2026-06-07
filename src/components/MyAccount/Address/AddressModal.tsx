@@ -156,7 +156,7 @@ const AddressModal = ({
                   })}
             </h3>
 
-            <form onSubmit={handleSubmit}>
+            <div onSubmit={handleSubmit}>
               {error && (
                 <div className="mb-5 p-4 bg-red-50 border border-red rounded-lg">
                   <p className="text-red text-custom-sm">{error}</p>
@@ -177,7 +177,7 @@ const AddressModal = ({
                     placeholder={translate("modal.name.placeholder")}
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                    className="rounded-md border text-dark border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
 
@@ -193,7 +193,7 @@ const AddressModal = ({
                     placeholder={translate("modal.email.placeholder")}
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                    className="rounded-md border text-dark border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
               </div>
@@ -201,7 +201,8 @@ const AddressModal = ({
               <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                 <div className="w-full">
                   <label htmlFor="phone" className="block mb-2.5">
-                    {translate("modal.phone.label")}{" "}
+                    {translate("modal.phone.label")}
+                    <span className="text-dark-5 text-sm">(6/7)x xxxxxx</span>
                     <span className="text-red">*</span>
                   </label>
 
@@ -209,10 +210,12 @@ const AddressModal = ({
                     type="text"
                     name="phone"
                     id="phone"
+                    // 6x xxxxxx or 7x xxxxxx
+                    pattern="^(6|7)\d{7}$"
                     placeholder={translate("modal.phone.placeholder")}
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                    className="rounded-md border text-dark border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
 
@@ -229,7 +232,7 @@ const AddressModal = ({
                     placeholder={translate("modal.address.placeholder")}
                     value={formData.address}
                     onChange={handleInputChange}
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                    className="rounded-md border text-dark border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
               </div>
@@ -271,7 +274,7 @@ const AddressModal = ({
                   {translate("modal.buttonCancel")}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

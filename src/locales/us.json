@@ -52,14 +52,24 @@
           "link": "Sign In Now"
         }
       }
+    },
+    "otp": {
+      "page": "Verify OTP",
+      "title": "Enter OTP",
+      "description": "Enter the 6-digit code sent to your phone",
+      "placeholder": "6-digit code",
+      "noPhoneError": "No Phone number found. Please sign up first.",
+      "successMessage": "OTP verified successfully!",
+      "verificationFailed": "Verification failed",
+      "errorMessage": "Something went wrong.",
+      "button": "Verify OTP",
+      "buttonLoading": "Verifying..."
     }
   },
   "Home": {
     "title": "Welcome to Hilkent",
     "description": "Your trusted marketplace",
     "hero": {
-      "title": "Discover the Best Deals on Electronics at Hilkent",
-      "description": "Explore our wide selection of electronics, from all at unbeatable prices. Experience seamless shopping and exceptional customer service.",
       "discount": "Sale off",
       "button": "Details",
       "offer": "limited time offer",
@@ -171,10 +181,10 @@
       "popular": "Popular",
       "shop": "Shop",
       "contact": "Contact",
+      "checkout": "Checkout",
+      "cart": "Cart",
       "pages": {
         "title": "Pages",
-        "checkout": "Checkout",
-        "cart": "Cart",
         "error": "Error 404",
         "success": "Mail Success"
       },
@@ -394,18 +404,19 @@
     "review": "customer reviews",
     "stock": "In Stock",
     "price": "Price:",
-    "delivery": "Free delivery available",
+    "delivery": "Delivery available",
     "promotion": "Unlock the magical world of savings by using the spell:",
     "button": "Purchase Now",
     "overview": {
       "review": {
         "title": "Customer Reviews",
         "listDescription": "See what our customers are saying about this product",
+        "noReviews": "No reviews yet. Be the first to review this product!",
+        "loadError": "Failed to load reviews",
         "noUser": {
           "message": "Please log in to write a review",
           "button": "Sign In"
         },
-        "noReviews": "No reviews yet. Be the first to review this product!",
         "form": {
           "title": "Write a Review",
           "description": "Your phone number will not be published. Required fields are marked",

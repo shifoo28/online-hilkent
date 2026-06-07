@@ -1,7 +1,6 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef, useEffect } from "react";
-import data from "./categoryData";
+import { useCallback, useRef, useEffect, useState } from "react";
 
 // Import Swiper styles
 import "swiper/css/navigation";
@@ -13,6 +12,7 @@ import ArrowLeftIcon from "@/components/Icons/ArrowIcon";
 const Categories = () => {
   const sliderRef = useRef(null);
   const translate = useTranslations("Home");
+  const [categories, setCategories] = useState<any[]>([]);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -28,6 +28,23 @@ const Categories = () => {
     if (sliderRef.current) {
       sliderRef.current.swiper.init();
     }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!mounted) return;
+        setCategories(data ?? []);
+      })
+      .catch((err) => {
+        console.error("Failed to load categories:", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
@@ -113,8 +130,8 @@ const Categories = () => {
               },
             }}
           >
-            {data.map((item, key) => (
-              <SwiperSlide key={key}>
+            {categories.map((item) => (
+              <SwiperSlide key={item.id}>
                 <SingleItem item={item} />
               </SwiperSlide>
             ))}

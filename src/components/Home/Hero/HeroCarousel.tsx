@@ -69,10 +69,10 @@ const HeroCarousel = ({ slides }: { slides: HeroProduct[] }) => {
               </div>
 
               <h1 className="font-semibold text-dark text-xl sm:text-3xl mb-3">
-                <a href="#">{translate("title")}</a>
+                <p>{item.headline}</p>
               </h1>
 
-              <p>{translate("description")}</p>
+              <p>{item.subline}</p>
 
               <a
                 href={"/shop-details/" + item.productId}
@@ -88,6 +88,7 @@ const HeroCarousel = ({ slides }: { slides: HeroProduct[] }) => {
                 alt="headphone"
                 width={351}
                 height={358}
+                className="rounded"
               />
             </div>
           </div>

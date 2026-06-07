@@ -1,3 +1,4 @@
+import { PaymentMethod } from "@prisma/client";
 import { useState, useCallback } from "react";
 
 export interface CheckoutFormData {
@@ -20,13 +21,13 @@ export interface CheckoutFormData {
   shippingMethodId: number | null;
 
   // Payment method
-  paymentMethod: "cash" | "rysgalbank" | "halkbank" | "senagatbank";
+  paymentMethod: PaymentMethod;
 
   // Coupon
   couponCode: string;
 
   // Notes
-  notes: string;
+  note: string;
 
   // Is logged in
   // isLoggedIn: boolean;
@@ -51,9 +52,9 @@ const INITIAL_STATE: CheckoutFormData = {
   shippingAddress: "",
   shippingAddressTwo: "",
   shippingMethodId: null,
-  paymentMethod: "cash",
+  paymentMethod: PaymentMethod.CASH,
   couponCode: "",
-  notes: "",
+  note: "",
 };
 
 export const useCheckoutForm = () => {

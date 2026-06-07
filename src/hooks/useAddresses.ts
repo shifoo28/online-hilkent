@@ -11,7 +11,6 @@ export interface Address {
 }
 
 const ADDRESSES_STORAGE_KEY = "user_addresses";
-const DEFAULT_ADDRESS_KEY = "default_address_id";
 
 export const useAddresses = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -72,6 +71,8 @@ export const useAddresses = () => {
   };
 
   const getDefaultAddress = (type: "shipping" | "billing") => {
+    console.log(addresses);
+    
     return addresses.find((addr) => addr.type === type && addr.isDefault);
   };
 

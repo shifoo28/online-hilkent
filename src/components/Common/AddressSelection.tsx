@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AddressModal from "../MyAccount/Address/AddressModal";
 import { Address, useAddresses } from "@/hooks/useAddresses";
 import { useTranslations } from "next-intl";
@@ -27,25 +27,25 @@ const AddressSelection = ({
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [addressId, setAddressId] = useState("");
+  const previousAddressIdRef = useRef<string>("");
 
   const addresses = getAddressesByType(addressType);
 
   // Populate form when address is selected
   useEffect(() => {
-    setAddressId(
+    const selectedId =
       addressType === "billing"
         ? formData.selectedBillingAddressId
-        : formData.selectedShippingAddressId,
-    );
+        : formData.selectedShippingAddressId;
 
-    if (addressId) {
-      const selectedAddress = addresses.find((addr) => addr.id === addressId);
+    setAddressId(selectedId || "");
+
+    // Only populate form fields if the selected address ID has changed
+    if (selectedId && selectedId !== previousAddressIdRef.current) {
+      previousAddressIdRef.current = selectedId;
+
+      const selectedAddress = addresses.find((addr) => addr.id === selectedId);
       if (selectedAddress) {
-        // onChange("firstName", selectedAddress.name.split(" ")[0] || "");
-        // onChange(
-        //   "lastName",
-        //   selectedAddress.name.split(" ").slice(1).join(" ") || "",
-        // );
         onChange("email", selectedAddress.email);
         if (addressType === "billing") {
           onChange("billingPhone", selectedAddress.phone);
@@ -57,7 +57,12 @@ const AddressSelection = ({
         onChange(`${addressType}Address`, selectedAddress.address);
       }
     }
-  }, [addressId, addresses, onChange]);
+  }, [
+    addressType,
+    addresses,
+    formData.selectedBillingAddressId,
+    formData.selectedShippingAddressId,
+  ]);
 
   const handleAddressSelect = (addressId: string) => {
     onChange(getAddressKey(addressType), addressId);

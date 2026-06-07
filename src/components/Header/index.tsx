@@ -283,7 +283,11 @@ const Header = () => {
                               ? translate("menu.shop")
                               : menuItem.id === 3
                                 ? translate("menu.contact")
-                                : menuItem.title}
+                                : menuItem.id === 4
+                                  ? translate("menu.checkout")
+                                  : menuItem.id === 5
+                                    ? translate("menu.cart")
+                                    : menuItem.title}
                         </Link>
                       </li>
                     ),
