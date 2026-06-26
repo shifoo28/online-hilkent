@@ -1,6 +1,7 @@
 import { useCart } from "@/hooks/useCart";
 import { getDatabaseLocale } from "@/locales/map";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import React from "react";
 
 const OrderSummary = () => {
@@ -43,41 +44,33 @@ const OrderSummary = () => {
               key={key}
               className="flex items-center justify-between py-5 border-b border-gray-3"
             >
-              <div>
-                <p className="text-dark">{titles[key]}</p>
-              </div>
-              <div>
-                <p className="text-dark text-right">
-                  {item.discountedPrice
-                    ? item.discountedPrice * item.quantity
-                    : item.price * item.quantity}{" "}
-                  TMT
-                </p>
-              </div>
+              <p className="text-dark line-clamp-2">{titles[key]}</p>
+              <p className="text-dark text-right min-w-max pl-1">
+                {item.discountedPrice
+                  ? item.discountedPrice * item.quantity
+                  : item.price * item.quantity}{" "}
+                TMT
+              </p>
             </div>
           ))}
 
           {/* <!-- total --> */}
           <div className="flex items-center justify-between pt-5">
-            <div>
-              <p className="font-medium text-lg text-dark">
-                {translate("total")}
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-lg text-dark text-right">
-                {totalPrice} TMT
-              </p>
-            </div>
+            <p className="font-medium text-lg text-dark">
+              {translate("total")}
+            </p>
+            <p className="font-medium text-lg text-dark text-right">
+              {totalPrice} TMT
+            </p>
           </div>
 
           {/* <!-- checkout button --> */}
-          <button
-            type="submit"
+          <Link
             className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
+            href={"/checkout"}
           >
             {translate("button")}
-          </button>
+          </Link>
         </div>
       </div>
     </div>

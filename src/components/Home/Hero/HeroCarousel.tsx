@@ -19,7 +19,7 @@ const mapHeroSlide = (heroProduct: HeroProduct) => {
       ? `${discount}%`
       : type === "FIXED"
         ? `-${discount} TMT`
-        : "New";
+        : "Exclusive";
 
   return {
     id: heroProduct.id,
@@ -85,7 +85,7 @@ const HeroCarousel = ({ slides }: { slides: HeroProduct[] }) => {
             <div>
               <Image
                 src={item.image}
-                alt="headphone"
+                alt="Hero Product"
                 width={351}
                 height={358}
                 className="rounded"

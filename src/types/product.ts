@@ -4,6 +4,7 @@ import {
   ProductProperty,
   ProductTranslation,
   Review,
+  Locale,
 } from "@prisma/client";
 
 export type Product = {
@@ -15,7 +16,7 @@ export type Product = {
   rating: number;
   salesCount?: number;
   reviews: Review[];
-  properties: ProductProperty[];
+  properties: ProductPropertyWithTranslations[];
   translations: ProductTranslation[];
   discounts: Discount[];
   images: ProductImage[];
@@ -30,4 +31,17 @@ export type HeroProduct = {
   image: string;
   position: number;
   product?: Product | null;
+};
+
+export type ProductPropertyWithTranslations = ProductProperty & {
+  name: {
+    id: number;
+    name: string;
+    propertyNameTranslations: Array<{
+      id: number;
+      propertyNameId: number;
+      name: string;
+      locale: Locale;
+    }>;
+  };
 };

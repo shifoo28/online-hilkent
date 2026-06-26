@@ -59,6 +59,14 @@ export interface CreateReviewRequest {
   comment: string;
 }
 
+export interface CreateContactMessageRequest {
+  firstName: string;
+  lastName: string;
+  subject?: string;
+  phone?: string;
+  message: string;
+}
+
 export interface UpdateReviewRequest {
   rating?: number;
   comment?: string;
@@ -204,7 +212,7 @@ export interface UpdateCategoryRequest {
 
 export interface ValidateCouponRequest {
   code: string;
-  orderTotal: number;
+  orderSubtotal?: number;
 }
 
 export interface CreateCouponRequest {

@@ -95,36 +95,54 @@ const AddressSelection = ({
     setEditingAddress(null);
   };
 
+  const selectionTitle =
+    addressType === "billing"
+      ? t("billing.selectSavedAddress")
+      : t("shipping.selectSavedAddress");
+  const addNewAddressLabel =
+    addressType === "billing"
+      ? t("billing.addNewAddress")
+      : t("shipping.addNewAddress");
+  const noAddressesText =
+    addressType === "billing"
+      ? t("billing.noSavedAddresses")
+      : t("shipping.noSavedAddresses");
+  const noAddressesHint =
+    addressType === "billing"
+      ? t("billing.noSavedAddressesHint")
+      : t("shipping.noSavedAddressesHint");
+
   return (
     <>
-      {addresses.length > 0 && (
-        <div className="mb-5">
-          <div className="flex justify-between">
-            <label className="block mb-2.5">
-              {t("billing.selectSavedAddress")}
-            </label>
-            <div className="flex gap-2 mb-2.5">
+      <div className="mb-5">
+        <div className="flex justify-between items-center gap-4">
+          <label className="block mb-2.5 text-sm font-medium text-dark">
+            {selectionTitle}
+          </label>
+          <div className="flex gap-2 mb-2.5">
+            <button
+              type="button"
+              onClick={handleAddNewAddress}
+              className="text-blue text-sm hover:underline min-w-max"
+            >
+              {addNewAddressLabel}
+            </button>
+            {addressId && (
               <button
                 type="button"
-                onClick={handleAddNewAddress}
-                className="text-blue text-sm hover:underline"
+                onClick={() => {
+                  const addr = addresses.find((a) => a.id === addressId);
+                  if (addr) handleEditAddress(addr);
+                }}
+                className="text-green text-sm hover:underline min-w-max"
               >
-                {t("billing.addNewAddress")}
+                {t("billing.editAddress")}
               </button>
-              {addressId && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const addr = addresses.find((a) => a.id === addressId);
-                    if (addr) handleEditAddress(addr);
-                  }}
-                  className="text-green text-sm hover:underline"
-                >
-                  {t("billing.editAddress")}
-                </button>
-              )}
-            </div>
+            )}
           </div>
+        </div>
+
+        {addresses.length > 0 ? (
           <div className="relative">
             <select
               value={addressId}
@@ -156,8 +174,13 @@ const AddressSelection = ({
               </svg>
             </span>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="rounded-xl border border-dashed border-gray-3 bg-gray-1 p-5 text-sm text-dark-4">
+            <p className="font-medium text-dark mb-2">{noAddressesText}</p>
+            <p>{noAddressesHint}</p>
+          </div>
+        )}
+      </div>
       {/* Address Modal */}
       <AddressModal
         isOpen={showAddressModal}

@@ -40,14 +40,12 @@ const CounDown = () => {
             </span>
 
             <h2 className="font-bold text-dark text-xl lg:text-heading-4 xl:text-heading-3 mb-3 min-w-max">
-              {translate("highlight")}
+              Ganat Interior Emulsiýa
             </h2>
-
-            <p>The Havit H206d is a wired PC headphone.</p>
 
             {/* <!-- Countdown timer --> */}
             <div
-              className="flex flex-wrap gap-6 mt-6"
+              className="flex flex-wrap gap-6 mt-6 max-w-[200px] md:max-w-none"
               x-data="timer()"
               x-init="countdown()"
             >
@@ -123,7 +121,7 @@ const CounDown = () => {
             fill
           />
           <Image
-            src="/images/countdown/countdown-01.png"
+            src="/images/countdown/ganat_icki.webp"
             alt="product"
             className="block absolute right-4 xl:right-33 bottom-4 xl:bottom-10 -z-1"
             width={

@@ -19,6 +19,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { AuthProvider } from "../../context/AuthContext";
+import { NavigationProvider } from "../../context/NavigationContext";
 
 type Props = {
   children: React.ReactNode;
@@ -50,13 +51,15 @@ export default async function RootLayout({ children, params }: Props) {
                 <CartProvider>
                   <CartModalProvider>
                     <ModalProvider>
-                      <PreviewSliderProvider>
-                        <Header />
-                        {children}
-                        <QuickViewModal />
-                        <CartSidebarModal />
-                        <PreviewSliderModal />
-                      </PreviewSliderProvider>
+                      <NavigationProvider>
+                        <PreviewSliderProvider>
+                          <Header />
+                          {children}
+                          <QuickViewModal />
+                          <CartSidebarModal />
+                          <PreviewSliderModal />
+                        </PreviewSliderProvider>
+                      </NavigationProvider>
                     </ModalProvider>
                   </CartModalProvider>
                 </CartProvider>

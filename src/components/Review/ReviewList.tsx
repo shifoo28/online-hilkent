@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import Image from "next/image";
 import GenerateStars from "./generateStars";
 import { useLocale, useTranslations } from "next-intl";
 import { getDateLocale } from "@/locales/map";
-import { useApiData } from "@/hooks/useApiCall";
+import { useLazyApiCall } from "@/hooks/useApiCall";
 import { useApiError } from "@/hooks/useApiError";
 import { reviewsService } from "@/services/api";
 import type { ReviewResponse } from "@/types/api/responses";
@@ -21,30 +21,49 @@ const ReviewList = ({ productId, userId, limit }: ReviewListProps) => {
   const { handleError } = useApiError();
 
   // Fetch reviews with proper type safety
-  const {
-    data: reviewsResponse,
-    loading,
-    error,
-  } = useApiData(
-    () =>
-      productId
-        ? reviewsService.getProductReviews(productId, {
-            page: 1,
-            pageSize: 100,
-          })
-        : userId
-          ? reviewsService.getUserReviews(userId, { page: 1, pageSize: 100 })
-          : reviewsService.getReviews({ page: 1, pageSize: 100 }),
-    [],
-    {
+  const fetchReviews = useCallback(() => {
+    if (productId) {
+      return reviewsService.getProductReviews(productId, {
+        page: 1,
+        pageSize: 100,
+      });
+    }
+
+    if (userId) {
+      return reviewsService.getUserReviews(userId, {
+        page: 1,
+        pageSize: 100,
+      });
+    }
+
+    return Promise.resolve({
+      success: true,
+      data: [] as ReviewResponse[],
+      pagination: {
+        total: 0,
+        page: 1,
+        pageSize: 100,
+        totalPages: 0,
+      },
+      timestamp: new Date().toISOString(),
+    });
+  }, [productId, userId]);
+
+  const [executeReviewFetch, { data: reviewsResponse, loading, error }] =
+    useLazyApiCall(fetchReviews, {
       onError: (error) => {
         handleError(error, {
           showToast: true,
           userMessage: translate("loadError"),
         });
       },
-    },
-  );
+    });
+
+  useEffect(() => {
+    if (productId || userId) {
+      executeReviewFetch();
+    }
+  }, [executeReviewFetch, productId, userId]);
 
   // Extract typed reviews data
   const reviews: ReviewResponse[] = reviewsResponse?.data ?? [];

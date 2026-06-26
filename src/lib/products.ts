@@ -1,9 +1,3 @@
-// Provides helper functions and Prisma queries for the e-commerce app:
-// - calculateDiscountedPrice: applies percentage or fixed discounts safely
-// - mapPrismaProduct: converts raw Prisma product data into typed Product objects
-// - mapPrismaHeroProduct: maps hero product entries with linked product data
-// - getProducts / getHeroProducts / getProductById: fetch products with relations
-
 import prisma from "@/lib/prisma";
 import { Product } from "@/types/product";
 import { Discount, HeroProduct } from "@prisma/client";
@@ -63,44 +57,6 @@ export function mapPrismaHeroProduct(
   };
 }
 
-// export async function getProducts(): Promise<Product[]> {
-//   const products = await prisma.product.findMany({
-//     include: {
-//       Reviews: {
-//         include: {
-//           user: true,
-//         },
-//       },
-//       Images: true,
-//       Discounts: true,
-//       Properties: true,
-//       Translations: true,
-//     },
-//     orderBy: { createdAt: "desc" },
-//   });
-
-//   return products.map(mapPrismaProduct);
-// }
-
-// export async function getProductById(id: string): Promise<Product | null> {
-//   const product = await prisma.product.findUnique({
-//     where: { id },
-//     include: {
-//       Reviews: {
-//         include: {
-//           user: true,
-//         },
-//       },
-//       Images: true,
-//       Discounts: true,
-//       Properties: true,
-//       Translations: true,
-//     },
-//   });
-//   if (!product) return null;
-//   return mapPrismaProduct(product);
-// }
-
 export async function getHeroProducts(): Promise<
   (HeroProduct & { product: Product | null })[]
 > {
@@ -109,6 +65,15 @@ export async function getHeroProducts(): Promise<
       product: {
         include: {
           Discounts: true,
+          Properties: {
+            include: {
+              name: {
+                include: { propertyNameTranslations: true },
+              },
+            },
+          },
+          Translations: true,
+          Images: true,
         },
       },
     },

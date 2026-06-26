@@ -1,15 +1,21 @@
 "use client";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { GlobeIcon } from "@/components/Icons";
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({
+  wrapperRef,
+}: {
+  wrapperRef?: RefObject<HTMLDivElement>;
+}) => {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("Header");
   const [isOpen, setIsOpen] = useState(false);
+  const internalRef = useRef<HTMLDivElement>(null);
+  const switcherRef = wrapperRef ?? internalRef;
 
   const languages = [
     { code: "us", name: t("language.english"), flag: "🇺🇸" },
@@ -17,40 +23,39 @@ const LanguageSwitcher = () => {
     { code: "ru", name: t("language.russian"), flag: "🇷🇺" },
   ];
 
-  const handleLanguageChange = (newLocale: string) => {
-    router.push(pathname, { locale: newLocale });
-    setIsOpen(false);
-    setSelectedOption(languages.find((l) => l.code === newLocale));
-    toggleDropdown();
-  };
-
   const [selectedOption, setSelectedOption] = useState(
     languages.find((l) => l.code === locale)
   );
 
+  const handleLanguageChange = (newLocale: string) => {
+    router.push(pathname, { locale: newLocale });
+    setIsOpen(false);
+    setSelectedOption(languages.find((l) => l.code === newLocale));
+  };
+
   const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
   };
 
   useEffect(() => {
-    // closing modal while clicking outside
-    function handleClickOutside(event) {
-      if (!event.target.closest(".dropdown-content")) {
-        toggleDropdown();
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (target && switcherRef.current && !switcherRef.current.contains(target)) {
+        setIsOpen(false);
       }
-    }
+    };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isOpen, switcherRef]);
 
   return (
     <div
+      ref={switcherRef}
       className="dropdown-content custom-select relative"
       style={{ width: "200px" }}
     >

@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import CustomSelect from "../Shop/CustomSelect";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Sidebar from "./Sidebar";
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
 import { useProducts } from "@/hooks/useProducts";
+import { CategoryOption } from "@/types/category";
 
 const ShopWithSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
@@ -16,9 +16,7 @@ const ShopWithSidebar = () => {
 
   const [page, setPage] = useState(1);
   const [limit] = useState(9);
-  const [categories, setCategories] = useState<
-    { id: number; name: string; products: number }[]
-  >([]);
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [selectedCategoryId, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [minPrice, setMinPrice] = useState(0);
@@ -34,7 +32,7 @@ const ShopWithSidebar = () => {
   const { products, totalItems, totalPages, loading, error } = useProducts({
     page,
     limit,
-    category: selectedCategoryId,
+    categoryId: selectedCategoryId,
     brand: selectedBrand,
     search: search ? search : undefined,
     minPrice: minPrice > 0 ? minPrice : undefined,
@@ -129,6 +127,7 @@ const ShopWithSidebar = () => {
         }
 
         const data = await res.json();
+
         if (Array.isArray(data)) {
           setCategories(
             data.map((item) => ({
@@ -204,7 +203,7 @@ const ShopWithSidebar = () => {
                 <div className="flex items-center justify-between">
                   {/* <!-- top bar left --> */}
                   <div className="flex flex-wrap items-center gap-4">
-                    <CustomSelect options={options} />
+                    {/* <CustomSelect options={options} /> */}
 
                     <form
                       onSubmit={handleSearchSubmit}
@@ -241,7 +240,7 @@ const ShopWithSidebar = () => {
                   </div>
 
                   {/* <!-- top bar right --> */}
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex flex-col md:flex-row items-center gap-2">
                     <button
                       onClick={() => setProductStyle("grid")}
                       aria-label="button for product grid tab"

@@ -7,6 +7,7 @@ export * as authService from "./auth";
 export * as userService from "./user";
 export * as productsService from "./products";
 export * as reviewsService from "./reviews";
+export * as contactService from "./contact";
 export * as ordersService from "./orders";
 export * as shippingService from "./shipping";
 

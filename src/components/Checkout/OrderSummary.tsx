@@ -1,4 +1,4 @@
-import { CartItem } from "@/context/CartContext";
+import { CartItemType } from "@/context/CartContext";
 import { useTranslations } from "next-intl";
 
 type OrderRowProps = {
@@ -10,7 +10,7 @@ type OrderRowProps = {
 
 const OrderRow = ({ label, value, highlight, valueClass }: OrderRowProps) => (
   <div className="flex items-center justify-between py-5 border-b border-gray-3">
-    <p className={`text-gray-6 ${highlight ? "font-medium text-lg" : ""}`}>
+    <p className={`text-gray-6 line-clamp-2 ${highlight ? "font-medium text-lg" : ""}`}>
       {label}
     </p>
     {value !== undefined && (
@@ -30,7 +30,7 @@ export default function OrderSummary({
   shippingFee,
   total,
 }: {
-  cartItemsWithTitle: (CartItem & { title: string })[];
+  cartItemsWithTitle: (CartItemType & { title: string })[];
   subtotal: number;
   couponDiscount: number;
   shippingFee: number;

@@ -25,6 +25,13 @@ export async function GET(request: NextRequest) {
           Discounts: true,
           Images: true,
           Translations: true,
+          Properties: {
+            include: {
+              name: {
+                include: { propertyNameTranslations: true },
+              },
+            },
+          },
         },
       });
 
@@ -79,9 +86,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (brand) {
-      where.properties = {
+      where.Properties = {
         some: {
-          name: "brand",
+          name: {
+            name: "brand",
+          },
           value: brand,
         },
       };
@@ -120,6 +129,13 @@ export async function GET(request: NextRequest) {
         Discounts: true,
         Images: true,
         Translations: true,
+        Properties: {
+          include: {
+            name: {
+              include: { propertyNameTranslations: true },
+            },
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,

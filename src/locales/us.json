@@ -76,7 +76,7 @@
       "features": {
         "shipping": {
           "title": "Free Shipping",
-          "description": "For all orders 200 TMT"
+          "description": "For all orders 2000 TMT"
         },
         "return": {
           "title": "1 & 1 Returns",
@@ -108,7 +108,6 @@
     },
     "countdown": {
       "title": "Don’t Miss!!",
-      "highlight": "Enhance Your Music Experience",
       "days": "Days",
       "hours": "Hours",
       "minutes": "Minutes",
@@ -188,7 +187,7 @@
         "error": "Error 404",
         "success": "Mail Success"
       },
-      "recentlyViewed": "Recently Viewed",
+      "recentlyViewed": "Recents",
       "wishlist": "Wishlist"
     },
     "language": {
@@ -396,11 +395,15 @@
     "loading": "Loading products...",
     "error": "Unable to load products.",
     "summary": "Showing {count} of {total} products, page {page} of {pages}",
-    "noProducts": "No products found."
+    "noProducts": "No products found.",
+    "addToCart": "Add to cart"
   },
   "ShopDetails": {
-    "title": "Product Details",
-    "discount": "% OFF",
+    "breadcrumb": {
+      "title": "Detailed Information",
+      "page": "Product details"
+    },
+    "discount": "OFF",
     "review": "customer reviews",
     "stock": "In Stock",
     "price": "Price:",
@@ -435,11 +438,13 @@
       },
       "specification": {
         "title": "Specification",
-        "description": "Detailed information about the product's features and technical specifications."
+        "description": "Detailed information about the product's features and technical specifications.",
+        "noSpecification": "No specifications available for this product."
       },
       "description": {
         "title": "Description",
-        "description": "Comprehensive overview of the product, including its features, benefits, and usage instructions."
+        "description": "Comprehensive overview of the product, including its features, benefits, and usage instructions.",
+        "noDescription": "No description available for this product."
       }
     }
   },
@@ -482,6 +487,10 @@
       "address": "Address: Dashoguz city, A.Nyyazov street, N61"
     },
     "message": {
+      "validationError": "First name, phone number and message are required.",
+      "sending": "Sending...",
+      "error": "Failed to send message. Please try again.",
+      "success": "Message sent successfully!",
       "first": {
         "name": "First Name",
         "placeholder": "Provide first name"
@@ -580,8 +589,10 @@
       "email": "Email Address",
       "selectSavedAddress": "Select Saved Address",
       "selectAddress": "Choose a saved address",
-      "addNewAddress": "Add New Address",
-      "editAddress": "Edit Address"
+      "addNewAddress": "Add New",
+      "editAddress": "Edit Address",
+      "noSavedAddresses": "No saved billing addresses yet.",
+      "noSavedAddressesHint": "Add an address now so you can select it quickly during checkout."
     },
     "shipping": {
       "differentAddress": "Ship to a different address?",
@@ -589,7 +600,9 @@
       "selectSavedAddress": "Select Saved Address",
       "selectAddress": "Choose a saved address",
       "addNewAddress": "Add New Address",
-      "editAddress": "Edit Address"
+      "editAddress": "Edit Address",
+      "noSavedAddresses": "No saved shipping addresses yet.",
+      "noSavedAddressesHint": "Add an address now so you can select it quickly during checkout."
     },
     "login": {
       "returningCustomer": "Returning customer?",
@@ -645,5 +658,12 @@
     "emailInfo": "You will receive an email confirmation including order details and payment information.",
     "viewOrders": "View My Orders",
     "backHome": "Back to Home"
+  },
+  "RecentlyViewed": {
+    "breadcrumb": {
+      "title": "Products you have recently viewed",
+      "page": "Recently Viewed"
+    },
+    "empty": "You haven't viewed any products yet."
   }
 }

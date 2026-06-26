@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { menuData } from "./menuData";
@@ -10,17 +10,22 @@ import { useCartModalContext } from "@/context/CartSidebarModalContext";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-import ExHeader from "./ExHeader";
+import UserPicks from "./UserPicks";
 import { UserIcon, SearchIcon, PhoneIcon, CartIcon } from "../Icons";
 import LanguageSwitcher from "../Common/LanguageSwitcher";
+import RecentlyViewed from "../Common/RecentlyViewedLink";
+import { useNavigationContext } from "@/context/NavigationContext";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [navigationOpen, setNavigationOpen] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
   const router = useRouter();
   const { openCartModal } = useCartModalContext();
+  const { navigationOpen, setNavigationOpen } = useNavigationContext();
+  const navRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const languageRef = useRef<HTMLDivElement>(null);
 
   const { items: product, totalPrice } = useCart();
 
@@ -65,6 +70,26 @@ const Header = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!navigationOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const path = event.composedPath?.();
+      const clickedInside = [navRef.current, toggleRef.current, languageRef.current].some(
+        (ref) => ref && (path?.includes(ref) || (event.target instanceof Node && ref.contains(event.target)))
+      );
+
+      if (!clickedInside) {
+        setNavigationOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [navigationOpen, setNavigationOpen]);
+
   return (
     <header
       className={`fixed left-0 top-0 w-full z-9999 bg-white transition-all ease-in-out duration-300 ${
@@ -90,13 +115,18 @@ const Header = () => {
                 />
               </Link>
 
-              {breakpoint === "mobile" && <WishlistLink />}
+              {breakpoint === "mobile" && (
+                <div className="flex flex-col gap-1">
+                  <WishlistLink />
+                  <RecentlyViewed />
+                </div>
+              )}
             </div>
 
             <div className="max-w-[475px] w-full">
               <form onSubmit={handleSearchSubmit}>
                 <div className="flex items-center">
-                  <LanguageSwitcher />
+                  <LanguageSwitcher wrapperRef={languageRef} />
 
                   <div className="relative max-w-[333px] xl:min-w-[333px] w-full h-full">
                     {/* <!-- divider --> */}
@@ -195,50 +225,10 @@ const Header = () => {
                 </button>
               </div>
 
-              <div className="flex items-center gap-5">
-                {breakpoint === "tablet" && <ExHeader translate={translate} />}
+              {breakpoint === "tablet" && <UserPicks />}
 
-                {/* <!-- Hamburger Toggle BTN --> */}
-                <button
-                  id="Toggle"
-                  aria-label="Toggler"
-                  className="lg:hidden block"
-                  onClick={() => setNavigationOpen(!navigationOpen)}
-                >
-                  <span className="block relative cursor-pointer w-5.5 h-5.5">
-                    <span className="du-block absolute right-0 w-full h-full">
-                      <span
-                        className={`block relative top-0 left-0 bg-dark rounded-sm w-0 h-0.5 my-1 ease-in-out duration-200 delay-[0] ${
-                          !navigationOpen && "!w-full delay-300"
-                        }`}
-                      ></span>
-                      <span
-                        className={`block relative top-0 left-0 bg-dark rounded-sm w-0 h-0.5 my-1 ease-in-out duration-200 delay-150 ${
-                          !navigationOpen && "!w-full delay-400"
-                        }`}
-                      ></span>
-                      <span
-                        className={`block relative top-0 left-0 bg-dark rounded-sm w-0 h-0.5 my-1 ease-in-out duration-200 delay-200 ${
-                          !navigationOpen && "!w-full delay-500"
-                        }`}
-                      ></span>
-                    </span>
-
-                    <span className="block absolute right-0 w-full h-full rotate-45">
-                      <span
-                        className={`block bg-dark rounded-sm ease-in-out duration-200 delay-300 absolute left-2.5 top-0 w-0.5 h-full ${
-                          !navigationOpen && "!h-0 delay-[0] "
-                        }`}
-                      ></span>
-                      <span
-                        className={`block bg-dark rounded-sm ease-in-out duration-200 delay-400 absolute left-0 top-2.5 w-full h-0.5 ${
-                          !navigationOpen && "!h-0 dealy-200"
-                        }`}
-                      ></span>
-                    </span>
-                  </span>
-                </button>
-                {/* //   <!-- Hamburger Toggle BTN --> */}
+              <div className="hidden sm:block lg:hidden">
+                <NavigationToggle buttonRef={toggleRef} />
               </div>
             </div>
           </div>
@@ -250,59 +240,123 @@ const Header = () => {
         <div className="max-w-[1170px] mx-auto px-4 sm:px-7.5 xl:px-0">
           <div className="flex items-center justify-between">
             {/* <!--=== Main Nav Start ===--> */}
-            <div
-              className={`w-[288px] absolute right-4 top-full lg:static lg:w-auto h-0 lg:h-auto invisible lg:visible lg:flex items-center justify-between ${
-                navigationOpen &&
-                `!visible bg-white shadow-lg border border-gray-3 !h-auto max-h-[400px] overflow-y-scroll rounded-md p-5`
-              }`}
-            >
-              {/* <!-- Main Nav Start --> */}
-              <nav>
-                <ul className="flex lg:items-center flex-col lg:flex-row gap-5 xl:gap-6">
-                  {menuData.map((menuItem, i) =>
-                    menuItem.submenu ? (
-                      <Dropdown
-                        key={i}
-                        menuItem={menuItem}
-                        stickyMenu={stickyMenu}
-                      />
-                    ) : (
-                      <li
-                        key={i}
-                        className="group relative before:w-0 before:h-[3px] before:bg-blue before:absolute before:left-0 before:top-0 before:rounded-b-[3px] before:ease-out before:duration-200 hover:before:w-full "
-                      >
-                        <Link
-                          href={menuItem.path}
-                          className={`hover:text-blue text-custom-sm font-medium text-dark flex ${
-                            stickyMenu ? "xl:py-4" : "xl:py-6"
-                          }`}
-                        >
-                          {menuItem.id === 1
-                            ? translate("menu.popular")
-                            : menuItem.id === 2
-                              ? translate("menu.shop")
-                              : menuItem.id === 3
-                                ? translate("menu.contact")
-                                : menuItem.id === 4
-                                  ? translate("menu.checkout")
-                                  : menuItem.id === 5
-                                    ? translate("menu.cart")
-                                    : menuItem.title}
-                        </Link>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              </nav>
-              {/* //   <!-- Main Nav End --> */}
-            </div>
+            <Navigations stickyMenu={stickyMenu} navigationRef={navRef} />
 
-            {breakpoint === "desktop" && <ExHeader translate={translate} />}
+            {breakpoint === "desktop" && <UserPicks />}
             {/* // <!--=== Main Nav End ===--> */}
           </div>
         </div>
       </div>
     </header>
+  );
+};
+
+export const Navigations = ({
+  stickyMenu,
+  navigationRef,
+}: {
+  stickyMenu?: boolean;
+  navigationRef: React.RefObject<HTMLDivElement>;
+}) => {
+  const translate = useTranslations("Header");
+  const { navigationOpen, setNavigationOpen } = useNavigationContext();
+
+  return (
+    <div
+      ref={navigationRef}
+      className={`w-[288px] absolute right-4 top-full lg:static lg:w-auto h-0 lg:h-auto invisible lg:visible lg:flex items-center justify-between ${
+        navigationOpen &&
+        `!visible bg-white shadow-lg border border-gray-3 !h-auto max-h-[400px] overflow-y-scroll rounded-md p-5`
+      }`}
+    >
+      {/* <!-- Main Nav Start --> */}
+      <nav>
+        <ul className="flex lg:items-center flex-col lg:flex-row gap-5 xl:gap-6">
+          {menuData.map((menuItem, i) =>
+            menuItem.submenu ? (
+              <Dropdown key={i} menuItem={menuItem} stickyMenu={stickyMenu} />
+            ) : (
+              <li
+                key={i}
+                className="group relative before:w-0 before:h-[3px] before:bg-blue before:absolute before:left-0 before:top-0 before:rounded-b-[3px] before:ease-out before:duration-200 hover:before:w-full "
+              >
+                <Link
+                  href={menuItem.path}
+                  onClick={() => setNavigationOpen(false)}
+                  className={`hover:text-blue text-custom-sm font-medium text-dark flex ${
+                    stickyMenu ? "xl:py-4" : "xl:py-6"
+                  }`}
+                >
+                  {menuItem.id === 1
+                    ? translate("menu.popular")
+                    : menuItem.id === 2
+                      ? translate("menu.shop")
+                      : menuItem.id === 3
+                        ? translate("menu.contact")
+                        : menuItem.id === 4
+                          ? translate("menu.checkout")
+                          : menuItem.id === 5
+                            ? translate("menu.cart")
+                            : menuItem.title}
+                </Link>
+              </li>
+            ),
+          )}
+        </ul>
+      </nav>
+      {/* //   <!-- Main Nav End --> */}
+    </div>
+  );
+};
+
+export const NavigationToggle = ({
+  buttonRef,
+}: {
+  buttonRef: React.RefObject<HTMLButtonElement>;
+}) => {
+  const { navigationOpen, setNavigationOpen } = useNavigationContext();
+
+  return (
+    <button
+      ref={buttonRef}
+      id="Toggle"
+      aria-label="Toggler"
+      className="lg:hidden block"
+      onClick={() => setNavigationOpen(!navigationOpen)}
+    >
+      <span className="block relative cursor-pointer w-5.5 h-5.5">
+        <span className="du-block absolute right-0 w-full h-full">
+          <span
+            className={`block relative top-0 left-0 bg-dark rounded-sm w-0 h-0.5 my-1 ease-in-out duration-200 delay-[0] ${
+              !navigationOpen && "!w-full delay-300"
+            }`}
+          ></span>
+          <span
+            className={`block relative top-0 left-0 bg-dark rounded-sm w-0 h-0.5 my-1 ease-in-out duration-200 delay-150 ${
+              !navigationOpen && "!w-full delay-400"
+            }`}
+          ></span>
+          <span
+            className={`block relative top-0 left-0 bg-dark rounded-sm w-0 h-0.5 my-1 ease-in-out duration-200 delay-200 ${
+              !navigationOpen && "!w-full delay-500"
+            }`}
+          ></span>
+        </span>
+
+        <span className="block absolute right-0 w-full h-full rotate-45">
+          <span
+            className={`block bg-dark rounded-sm ease-in-out duration-200 delay-300 absolute left-2.5 top-0 w-0.5 h-full ${
+              !navigationOpen && "!h-0 delay-[0] "
+            }`}
+          ></span>
+          <span
+            className={`block bg-dark rounded-sm ease-in-out duration-200 delay-400 absolute left-0 top-2.5 w-full h-0.5 ${
+              !navigationOpen && "!h-0 dealy-200"
+            }`}
+          ></span>
+        </span>
+      </span>
+    </button>
   );
 };
 

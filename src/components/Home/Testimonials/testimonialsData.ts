@@ -11,19 +11,19 @@ const testimonialsData: Testimonial[] = [
   },
   {
     review:
+      "I am very satisfied with the service. The product I ordered arrived on time and in excellent condition. I will definitely order again.",
+    authorName: "John D.",
+    authorImg: "/images/users/default.webp",
+    authorRole: "",
+    rating: 5,
+  },
+  {
+    review:
       "Sizden sargyt eden harydym gaty gowy ýagdaýda geldi we hilini begenç bilen kabul etdim. Müşderi hyzmatyňyz hem örän gowy.",
     authorName: "Serdar G.",
     authorImg: "/images/users/default.webp",
     authorRole: "",
     rating: 4,
-  },
-  {
-    review:
-      "Заказывал у вас на сайте, доставка была быстрой, а качество товара отличное. Очень доволен покупкой!",
-    authorName: "Елена П.",
-    authorImg: "/images/users/default.webp",
-    authorRole: "",
-    rating: 5,
   },
   {
     review:

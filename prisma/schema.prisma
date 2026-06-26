@@ -25,47 +25,18 @@ model User {
   // relations
   Orders          Order[]
   Reviews         Review[]
-  // accounts        Account[]
-  // sessions        Session[]
-  // addresses       Address[]
 }
 
-// model Account {
-//     userId            String
-//     type              String
-//     provider          String
-//     providerAccountId String
-//     refresh_token     String?
-//     access_token      String?
-//     expires_at        Int?
-//     token_type        String?
-//     scope             String?
-//     id_token          String?
-//     session_state     String?
-//     createdAt         DateTime @default(now())
-//     updatedAt         DateTime @updatedAt
-//     user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//     @@id([provider, providerAccountId])
-// }
-
-// model Session {
-//     id           String   @id @default(uuid())
-//     userId       String
-//     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     createdAt    DateTime @default(now())
-//     lastSeenAt   DateTime @default(now())
-//     expiresAt    DateTime
-//     ip           String?
-//     userAgent    String?
-//     deviceInfo   String? // optional JSON string: browser, os, tab metadata
-//     revoked      Boolean  @default(false)
-//     sessionToken String   @unique
-//     refreshToken String? // hashed refresh token if using refresh tokens
-
-//     @@index([userId])
-//     @@index([expiresAt])
-// }
+model ContactMessage {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String?
+  subject   String?
+  phone     String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 enum OrderStatus {
   PENDING
@@ -99,25 +70,6 @@ enum PaymentMethod {
   RYSGALBANK
 }
 
-// model Address {
-//   id         String   @id @default(uuid())
-//   userId     String? // optional: may be a guest address or a saved user address
-//   fullName   String
-//   phone      String
-//   country    String
-//   city       String
-//   address1   String
-//   address2   String?
-//   postalCode String?
-//   isDefault  Boolean  @default(false)
-//   createdAt  DateTime @default(now())
-//   updatedAt  DateTime @updatedAt
-
-//   user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   shippingFor Order[] @relation("OrderShippingAddress")
-//   billingFor  Order[] @relation("OrderBillingAddress")
-// }
-
 model OrderNote {
   id        String   @id @default(uuid())
   orderId   String   @unique
@@ -129,25 +81,28 @@ model OrderNote {
 }
 
 model Order {
-  id                       String        @id @default(uuid())
-  orderId                  String        @unique
-  userId                   String
-  status                   OrderStatus   @default(PENDING)
+  id               String        @id @default(uuid())
+  orderId          String        @unique
+  userId           String
+  status           OrderStatus   @default(PENDING)
   // checkout fields
-  note                     OrderNote?
-  paymentMethod            PaymentMethod
-  shippingAddress          String?
-  billingAddress           String
-  shippingFee              Decimal       @default(0)
-  shippingMethodId         Int
-  discountAmount           Decimal       @default(0)
-  subtotal                 Decimal // subtotal before shipping and discount
-  total                    Decimal // subtotal + shippingFee - discountAmount
-  createdAt                DateTime      @default(now())
-  updatedAt                DateTime      @updatedAt
+  note             OrderNote?
+  paymentMethod    PaymentMethod
+  shippingAddress  String?
+  billingAddress   String
+  shippingFee      Decimal       @default(0)
+  shippingMethodId Int
+  discountAmount   Decimal       @default(0)
+  subtotal         Decimal // subtotal before shipping and discount
+  total            Decimal // subtotal + shippingFee - discountAmount
+  couponCode       String?
+  couponId         String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   shippingMethod ShippingMethod @relation(fields: [shippingMethodId], references: [id])
+  coupon         Coupon?        @relation(fields: [couponId], references: [id])
   OrderItems     OrderItem[]
 }
 
@@ -284,6 +239,8 @@ model Coupon {
   expiryDate     DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  orders Order[]
 
   @@index([code])
   @@index([expiryDate])

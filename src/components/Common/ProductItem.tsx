@@ -107,16 +107,9 @@ const ProductItem = ({ item }: { item: Product }) => {
         <p className="text-custom-sm">({item.rating})</p>
       </div>
 
-      <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
+      <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5 line-clamp-2">
         <Link href={`/shop-details/${item.id}`}> {title} </Link>
       </h3>
-
-      <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">{item.discountedPrice} TMT</span>
-        {item.discountedPrice !== item.price && (
-          <span className="text-dark-4 line-through">{item.price} TMT</span>
-        )}
-      </span>
     </div>
   );
 };

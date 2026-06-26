@@ -87,8 +87,6 @@ const Checkout = () => {
 
       // Try to auto-fill from default billing address if available
       const defaultBillingAddress = getDefaultAddress("billing");
-      console.log(defaultBillingAddress);
-
       if (defaultBillingAddress) {
         updates.billingAddress = defaultBillingAddress.address;
         updates.selectedBillingAddressId = defaultBillingAddress.id;
@@ -125,7 +123,7 @@ const Checkout = () => {
       const response = await fetch("/api/coupons", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponCode }),
+        body: JSON.stringify({ code: couponCode, orderSubtotal: subtotal }),
       });
 
       const data = await response.json();

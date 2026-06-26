@@ -13,13 +13,6 @@ async function main() {
     { name: "General", image: "/images/categories/general.png" },
     { name: "Emulsions", image: "/images/categories/emulsions.png" },
     { name: "Kalekums", image: "/images/categories/kalekums.png" },
-    // { name: "Gaming", image: "/images/categories/categories-02.png" },
-    // { name: "Phones", image: "/images/categories/categories-03.png" },
-    // { name: "Computers", image: "/images/categories/categories-04.png" },
-    // { name: "Wearables", image: "/images/categories/categories-05.png" },
-    // { name: "Accessories", image: "/images/categories/categories-06.png" },
-    // { name: "Tablets", image: "/images/categories/categories-07.png" },
-    // { name: "Networking", image: "/images/categories/categories-08.png" },
   ];
   for (const category of categories) {
     await prisma.category.upsert({
@@ -559,46 +552,100 @@ async function main() {
     ],
   });
 
-  // Create hero products
-  await prisma.heroProduct.createMany({
-    data: [
-      {
-        productId: products[0].id,
-        isSlider: true,
-        headline: "MacBook Air M1",
-        subline: "Ultra-thin laptop with long battery life",
-        image: "/images/products/product-4-bg-1.png",
+  // General property names
+  const propertyNames = [
+    { name: "Brand" },
+    { name: "Finish" },
+    { name: "Color" },
+    { name: "Size" },
+    { name: "Packaging" },
+    { name: "Durability" },
+    { name: "Application Surface" },
+    { name: "Resistance" },
+    { name: "Coverage" },
+    { name: "Drying Time" },
+    { name: "Washability" },
+    { name: "Safety" },
+    { name: "Price Range" },
+  ];
+
+  for (const p of propertyNames) {
+    await prisma.propertyName.create({
+      data: {
+        name: p.name,
+        propertyNameTranslations: {
+          create: [
+            {
+              locale: "US",
+              name: p.name,
+            },
+            {
+              locale: "RU",
+              name:
+                p.name === "Brand"
+                  ? "Бренд"
+                  : p.name === "Finish"
+                    ? "Финиш"
+                    : p.name === "Color"
+                      ? "Цвет"
+                      : p.name === "Size"
+                        ? "Размер"
+                        : p.name === "Packaging"
+                          ? "Упаковка"
+                          : p.name === "Durability"
+                            ? "Прочность"
+                            : p.name === "Application Surface"
+                              ? "Поверхность применения"
+                              : p.name === "Resistance"
+                                ? "Сопротивляемость"
+                                : p.name === "Coverage"
+                                  ? "Покрытие"
+                                  : p.name === "Drying Time"
+                                    ? "Время высыхания"
+                                    : p.name === "Washability"
+                                      ? "Смываемость"
+                                      : p.name === "Safety"
+                                        ? "Безопасность"
+                                        : p.name === "Price Range"
+                                          ? "Ценовой диапазон"
+                                          : p.name,
+            },
+            {
+              locale: "TM",
+              name:
+                p.name === "Brand"
+                  ? "Brend"
+                  : p.name === "Finish"
+                    ? "Görünşi"
+                    : p.name === "Color"
+                      ? "Reňk"
+                      : p.name === "Size"
+                        ? "Ölçegi"
+                        : p.name === "Packaging"
+                          ? "Gaplama"
+                          : p.name === "Durability"
+                            ? "Durnuklylyk"
+                            : p.name === "Application Surface"
+                              ? "Ulanyş ýüzü"
+                              : p.name === "Resistance"
+                                ? "Çydamlylyk"
+                                : p.name === "Coverage"
+                                  ? "Örtügi"
+                                  : p.name === "Drying Time"
+                                    ? "Gurama wagty"
+                                    : p.name === "Washability"
+                                      ? "Ýuwulýanlyk"
+                                      : p.name === "Safety"
+                                        ? "Howpsuzlyk"
+                                        : p.name === "Price Range"
+                                          ? "Bahalar aralygy"
+                                          : p.name,
+            },
+          ],
+        },
       },
-      {
-        productId: products[1].id,
-        isSlider: false,
-        headline: "iPhone 15 Pro",
-        subline: "The most advanced iPhone ever",
-        image: "/images/products/product-2-bg-1.png",
-      },
-      {
-        productId: products[2].id,
-        isSlider: true,
-        headline: "Apple Watch Series 9",
-        subline: "The smartwatch that keeps you connected",
-        image: "/images/products/product-5-bg-1.png",
-      },
-      {
-        productId: products[3].id,
-        isSlider: true,
-        headline: "MacBook Pro 16-inch",
-        subline: "The ultimate pro notebook",
-        image: "/images/products/product-3-bg-1.png",
-      },
-      {
-        productId: products[4].id,
-        isSlider: false,
-        headline: "Apple iPad Air 5th Gen - 64GB",
-        subline: "Lightweight tablet with powerful processor and great display",
-        image: "/images/products/product-7-bg-1.png",
-      },
-    ],
-  });
+    });
+  }
 
   async function createShippingMethods() {
     const methods = [
@@ -621,124 +668,6 @@ async function main() {
   }
 
   await createShippingMethods();
-
-  // Create orders for users
-  const order1 = await prisma.order.upsert({
-    where: { orderId: generateOrderId(36, 6) },
-    update: {},
-    create: {
-      orderId: generateOrderId(36, 6),
-      status: "DELIVERED",
-      total: 150,
-      subtotal: 120,
-      shippingFee: 20,
-      discountAmount: 10,
-      paymentMethod: "CASH",
-      billingAddress: "123 Main St, Springfield, USA",
-      user: { connect: { id: user1.id } },
-      shippingMethod: { connect: { id: 1 } },
-    },
-  });
-
-  const order2 = await prisma.order.upsert({
-    where: { orderId: generateOrderId(36, 6) },
-    update: {},
-    create: {
-      orderId: generateOrderId(36, 6),
-      status: "PROCESSING",
-      total: 89,
-      subtotal: 79,
-      shippingFee: 10,
-      discountAmount: 0,
-      paymentMethod: "HALKBANK",
-      billingAddress: "123 Main St, Springfield, USA",
-      user: { connect: { id: user1.id } },
-      shippingMethod: { connect: { id: 2 } },
-    },
-  });
-
-  const order3 = await prisma.order.upsert({
-    where: { orderId: generateOrderId(36, 6) },
-    update: {},
-    create: {
-      orderId: generateOrderId(36, 6),
-      status: "SHIPPED",
-      total: 45,
-      subtotal: 45,
-      shippingFee: 0,
-      discountAmount: 0,
-      paymentMethod: "RYSGALBANK",
-      billingAddress: "123 Main St, Springfield, USA",
-      user: { connect: { id: user1.id } },
-      shippingMethod: { connect: { id: 2 } },
-    },
-  });
-
-  // Create order items
-  await prisma.orderItem.createMany({
-    data: [
-      {
-        orderId: order1.id,
-        productId: products[0].id,
-        quantity: 1,
-        price: 59,
-      },
-      {
-        orderId: order2.id,
-        productId: products[1].id,
-        quantity: 1,
-        price: 89,
-      },
-      {
-        orderId: order3.id,
-        productId: products[2].id,
-        quantity: 1,
-        price: 45,
-      },
-    ],
-  });
-
-  // Create reviews
-  await prisma.review.createMany({
-    data: [
-      {
-        userId: user1.id,
-        productId: products[0].id,
-        rating: 5,
-        comment: "Excellent product! Highly recommend.",
-      },
-      {
-        userId: user2.id,
-        productId: products[1].id,
-        rating: 4,
-        comment: "Good quality, fast delivery.",
-      },
-      {
-        userId: user1.id,
-        productId: products[2].id,
-        rating: 4,
-        comment: "Stylish and protective. Great value!",
-      },
-    ],
-  });
-
-  // Create wishlist items
-  // await prisma.wishlist.createMany({
-  //   data: [
-  //     {
-  //       userId: user1.id,
-  //       productId: products[3].id,
-  //     },
-  //     {
-  //       userId: user1.id,
-  //       productId: products[4].id,
-  //     },
-  //     {
-  //       userId: user2.id,
-  //       productId: products[4].id,
-  //     },
-  //   ],
-  // });
 
   console.log("Database seeded successfully!");
 }

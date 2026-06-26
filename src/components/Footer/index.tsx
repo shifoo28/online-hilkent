@@ -136,20 +136,20 @@ const Footer = () => {
 
               <a
                 href="#"
-                aria-label="Twitter Social Link"
-                className="flex ease-out duration-200 hover:text-blue"
+                aria-label="X Social Link"
+                className="flex ease-out duration-200 hover:text-dark"
               >
+                {/* svg of X social link */}
                 <svg
                   className="fill-current"
                   width="20"
                   height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
+                  viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M18.3332 4.91293C17.7353 5.18229 17.0875 5.36594 16.39 5.46389C17.1124 5.02312 17.6107 4.39869 17.8847 3.59061C17.2121 3.98241 16.4896 4.25177 15.7173 4.39869C15.0447 3.68856 14.1976 3.3335 13.1762 3.3335C12.2544 3.3335 11.4572 3.66407 10.7846 4.32523C10.1119 4.98639 9.77562 5.78223 9.77562 6.71274C9.77562 6.95762 9.81299 7.21473 9.88773 7.48409C8.49261 7.41063 7.17223 7.06781 5.92659 6.45563C4.70587 5.81896 3.67198 4.98639 2.82495 3.95792C2.526 4.47216 2.37652 5.03536 2.37652 5.64755C2.37652 6.23524 2.51354 6.77396 2.78758 7.26371C3.06162 7.75345 3.42286 8.14525 3.87129 8.4391C3.34812 8.4391 2.83741 8.30442 2.33915 8.03506V8.07179C2.33915 8.87987 2.60073 9.59 3.1239 10.2022C3.64707 10.8144 4.29481 11.2062 5.0671 11.3776C4.79306 11.451 4.49411 11.4878 4.17024 11.4878C3.97094 11.4878 3.75918 11.4633 3.53496 11.4143C3.75918 12.0999 4.15778 12.6632 4.73078 13.1039C5.32869 13.5202 5.98888 13.7406 6.71135 13.7651C5.49062 14.7201 4.08305 15.1976 2.48863 15.1976C2.21459 15.1976 1.94054 15.1853 1.6665 15.1609C3.26092 16.1648 5.00482 16.6668 6.89819 16.6668C8.89122 16.6668 10.66 16.1648 12.2046 15.1609C13.6247 14.2793 14.7333 13.0794 15.5305 11.5612C16.2779 10.1165 16.6516 8.635 16.6516 7.11678L16.6142 6.67601C17.2868 6.21075 17.8598 5.62306 18.3332 4.91293Z"
-                    fill=""
+                    d="M18.244 3H21.5l-7.42 8.49L22.5 21h-6.27l-4.94-5.87L6.06 21H2.5l7.92-9.06L2 3h6.42l4.47 5.31L18.24 3zM17.5 19h1.73L8.5 5H6.77l10.73 14z"
+                    fill="currentColor"
                   />
                 </svg>
               </a>
@@ -157,7 +157,7 @@ const Footer = () => {
               <a
                 href="#"
                 aria-label="Instagram Social Link"
-                className="flex ease-out duration-200 hover:text-blue"
+                className="flex ease-out duration-200 hover:text-red"
               >
                 <svg
                   className="fill-current"
@@ -368,46 +368,24 @@ const Footer = () => {
               <p className="font-medium">{translate("acceptedPayments")}</p>
 
               <div className="flex flex-wrap items-center gap-6">
-                <a href="#" aria-label="payment system with visa card">
-                  <Image
-                    src="/images/payment/payment-01.svg"
-                    alt="visa card"
-                    width={66}
-                    height={22}
-                  />
-                </a>
-                <a href="#" aria-label="payment system with paypal">
-                  <Image
-                    src="/images/payment/payment-02.svg"
-                    alt="paypal"
-                    width={18}
-                    height={21}
-                  />
-                </a>
-                <a href="#" aria-label="payment system with master card">
-                  <Image
-                    src="/images/payment/payment-03.svg"
-                    alt="master card"
-                    width={33}
-                    height={24}
-                  />
-                </a>
-                <a href="#" aria-label="payment system with apple pay">
-                  <Image
-                    src="/images/payment/payment-04.svg"
-                    alt="apple pay"
-                    width={52.94}
-                    height={22}
-                  />
-                </a>
-                <a href="#" aria-label="payment system with google pay">
-                  <Image
-                    src="/images/payment/payment-05.svg"
-                    alt="google pay"
-                    width={56}
-                    height={22}
-                  />
-                </a>
+                <Image
+                  src="/images/checkout/halkbank.png"
+                  alt="halkbank"
+                  width={33}
+                  height={24}
+                />
+                <Image
+                  src="/images/checkout/rysgalbank.png"
+                  alt="rysgalbank"
+                  width={33}
+                  height={24}
+                />
+                <Image
+                  src="/images/checkout/senagatbank.png"
+                  alt="senagatbank"
+                  width={33}
+                  height={24}
+                />
               </div>
             </div>
           </div>

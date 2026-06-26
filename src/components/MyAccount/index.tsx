@@ -104,7 +104,7 @@ const MyAccount = () => {
 
         if (!response.ok) {
           if (response.status === 401) {
-            setError(translate("message.unauthorized"));
+            setError(translate("message.unAuthorized"));
             router.push("/signin");
             return;
           }

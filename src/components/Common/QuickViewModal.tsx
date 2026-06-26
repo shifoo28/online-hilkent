@@ -201,12 +201,12 @@ const QuickViewModal = () => {
                 </span>
               )}
 
-              <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
+              <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4 line-clamp-3">
                 {title}
               </h3>
 
               <div className="flex flex-wrap items-center gap-5 mb-6">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-col">
                   <GenerateStars rating={product?.rating} size={18} />
                   <span>
                     <span className="font-medium text-dark">
@@ -243,7 +243,7 @@ const QuickViewModal = () => {
                 </div>
               </div>
 
-              <p>{description}</p>
+              <p className="line-clamp-6">{description}</p>
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
                 <div>

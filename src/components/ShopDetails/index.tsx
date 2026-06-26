@@ -3,35 +3,39 @@ import React, { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import Newsletter from "../Common/Newsletter";
-import RecentlyViewdItems from "./RecentlyViewed";
 import { usePreviewSlider } from "@/context/PreviewSliderContext";
-import { colors, storages, sims, types } from "./data";
 import Overview from "./Overview";
 import { Product } from "@/types/product";
 import { useParams } from "next/navigation";
 import GenerateStars from "../Review/generateStars";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useWishlist } from "@/hooks/useWishlist";
+import { useCart } from "@/hooks/useCart";
+import { getDatabaseLocale } from "@/locales/map";
+import RecentlyViewedSection from "./RecentlyViewed";
+import { STORAGE_KEY_RECENTLY_VIEWED } from "../RecentlyViewed";
 
 interface ProductPageProps {
   params: { id: string };
 }
 
-export const STORAGE_KEY_RECENTLY_VIEWED = "recentlyViewed";
-
 const ShopDetails = () => {
   const { addItem } = useWishlist();
+  const { addItemToCart } = useCart();
   const params = useParams() as ProductPageProps["params"];
   const translate = useTranslations("ShopDetails");
+  const locale = useLocale();
 
   const [product, setProduct] = useState({} as Product);
-  const [activeColor, setActiveColor] = useState("blue");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
 
-  const [storage, setStorage] = useState("gb128");
-  const [type, setType] = useState("active");
-  const [sim, setSim] = useState("dual");
+  // const [activeColor, setActiveColor] = useState("blue");
+  // const [storage, setStorage] = useState("gb128");
+  // const [type, setType] = useState("active");
+  // const [sim, setSim] = useState("dual");
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -39,19 +43,36 @@ const ShopDetails = () => {
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
+        const title =
+          data.translations?.find((t) => t.locale === getDatabaseLocale(locale))
+            ?.name ||
+          data.translations?.[0]?.name ||
+          "";
+        setTitle(title);
+        const description =
+          data.translations?.find((t) => t.locale === getDatabaseLocale(locale))
+            ?.description ||
+          data.translations?.[0]?.description ||
+          "";
+        setDescription(description);
       });
+  }, [params.id, locale]);
+
+  useEffect(() => {
+    if (!product?.id) return;
+
     const viewed = JSON.parse(
       localStorage.getItem(STORAGE_KEY_RECENTLY_VIEWED) || "[]",
     );
 
-    // Remove if already exists to avoid duplicates
     const filtered = viewed.filter((item) => item.id !== product.id);
-    product.id && filtered.unshift(product); // Add to front
+    filtered.unshift(product);
+
     localStorage.setItem(
       STORAGE_KEY_RECENTLY_VIEWED,
       JSON.stringify(filtered.slice(0, 10)),
-    ); // Keep last 10
-  }, [params.id, product.id]);
+    );
+  }, [product]);
 
   // pass the product here when you get the real data.
   const handlePreviewSlider = () => {
@@ -62,12 +83,21 @@ const ShopDetails = () => {
     addItem({ ...product });
   };
 
+  function handleOrderNow(): void {
+    // Redirect to checkout page after adding to cart
+    addItemToCart({ ...product, quantity });
+    window.location.href = "/checkout";
+  }
+
   return (
     <>
-      <Breadcrumb title={translate("title")} pages={["shop details"]} />
+      <Breadcrumb
+        title={translate("breadcrumb.title")}
+        pages={[translate("breadcrumb.page")]}
+      />
 
       {product.translations?.[0]?.name === "" ? (
-        "Please add product"
+        "This product has not yet been named, please check back later."
       ) : (
         <>
           <section className="overflow-hidden relative pb-10 pt-5 lg:pt-10">
@@ -135,12 +165,21 @@ const ShopDetails = () => {
                 <div className="max-w-[539px] w-full">
                   <div className="flex items-center justify-between mb-3">
                     <h2 className="font-semibold text-xl sm:text-2xl xl:text-custom-3 text-dark">
-                      {product.translations?.[0]?.name}
+                      {title}
                     </h2>
 
-                    <div className="min-w-max inline-flex font-medium text-custom-sm text-white bg-blue rounded py-0.5 px-2.5">
-                      30{translate("discount")}
-                    </div>
+                    {product.discounts?.[0] && (
+                      <div className="min-w-max inline-flex font-medium text-custom-sm text-white bg-blue rounded py-0.5 px-2.5">
+                        <span>
+                          {product.discounts?.[0]?.value}{" "}
+                          {product.discounts?.[0]?.type === "FIXED"
+                            ? "TMT"
+                            : product.discounts?.[0]?.type === "PERCENTAGE"
+                              ? "%"
+                              : ""}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-5.5 mb-4.5">
@@ -190,7 +229,11 @@ const ShopDetails = () => {
                     <span className="line-through">
                       {" "}
                       {product.discounts?.[0]?.value}{" "}
-                      {product.discounts?.[0]?.type === "FIXED" ? "TMT" : "%"}
+                      {product.discounts?.[0]?.type === "FIXED"
+                        ? "TMT"
+                        : product.discounts?.[0]?.type === "PERCENTAGE"
+                          ? "%"
+                          : ""}
                     </span>
                   </h3>
 
@@ -245,7 +288,7 @@ const ShopDetails = () => {
                   <form onSubmit={(e) => e.preventDefault()}>
                     <div className="flex flex-col gap-4.5 border-y border-gray-3 mt-7.5 mb-9 py-9">
                       {/* <!-- details item --> */}
-                      <div className="flex items-center gap-4">
+                      {/* <div className="flex items-center gap-4">
                         <div className="min-w-[65px]">
                           <h4 className="font-medium text-dark">Color:</h4>
                         </div>
@@ -280,10 +323,10 @@ const ShopDetails = () => {
                             </label>
                           ))}
                         </div>
-                      </div>
+                      </div> */}
 
                       {/* <!-- details item --> */}
-                      <div className="flex items-center gap-4">
+                      {/* <div className="flex items-center gap-4">
                         <div className="min-w-[65px]">
                           <h4 className="font-medium text-dark">Storage:</h4>
                         </div>
@@ -304,7 +347,6 @@ const ShopDetails = () => {
                                   onChange={() => setStorage(item.id)}
                                 />
 
-                                {/*  */}
                                 <div
                                   className={`mr-2 flex h-4 w-4 items-center justify-center rounded border ${
                                     storage === item.id
@@ -348,10 +390,10 @@ const ShopDetails = () => {
                             </label>
                           ))}
                         </div>
-                      </div>
+                      </div> */}
 
                       {/* // <!-- details item --> */}
-                      <div className="flex items-center gap-4">
+                      {/* <div className="flex items-center gap-4">
                         <div className="min-w-[65px]">
                           <h4 className="font-medium text-dark">Type:</h4>
                         </div>
@@ -372,7 +414,6 @@ const ShopDetails = () => {
                                   onChange={() => setType(item.id)}
                                 />
 
-                                {/*  */}
                                 <div
                                   className={`mr-2 flex h-4 w-4 items-center justify-center rounded border ${
                                     type === item.id
@@ -416,10 +457,10 @@ const ShopDetails = () => {
                             </label>
                           ))}
                         </div>
-                      </div>
+                      </div> */}
 
                       {/* // <!-- details item --> */}
-                      <div className="flex items-center gap-4">
+                      {/* <div className="flex items-center gap-4">
                         <div className="min-w-[65px]">
                           <h4 className="font-medium text-dark">Sim:</h4>
                         </div>
@@ -440,7 +481,6 @@ const ShopDetails = () => {
                                   onChange={() => setSim(item.id)}
                                 />
 
-                                {/*  */}
                                 <div
                                   className={`mr-2 flex h-4 w-4 items-center justify-center rounded border ${
                                     sim === item.id
@@ -484,7 +524,7 @@ const ShopDetails = () => {
                             </label>
                           ))}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4.5">
@@ -541,8 +581,8 @@ const ShopDetails = () => {
                       </div>
 
                       <a
-                        href="#"
-                        className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                        onClick={() => handleOrderNow()}
+                        className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark cursor-pointer"
                       >
                         {translate("button")}
                       </a>
@@ -575,9 +615,13 @@ const ShopDetails = () => {
             </div>
           </section>
 
-          <Overview id={product.id} />
+          <Overview
+            id={product.id}
+            description={description}
+            properties={product.properties}
+          />
 
-          <RecentlyViewdItems />
+          <RecentlyViewedSection />
 
           <Newsletter />
         </>

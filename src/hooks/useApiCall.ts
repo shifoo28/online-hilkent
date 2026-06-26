@@ -56,49 +56,54 @@ export function useApiCall<T, P extends any[] = []>(
   /**
    * Execute API call
    */
-  const execute = useCallback(
-    async (...args: P) => {
-      // Abort any previous requests
-      abortControllerRef.current?.abort();
+  const apiFunctionRef = useRef(apiFunction);
+  const optionsRef = useRef(options);
 
+  useEffect(() => {
+    apiFunctionRef.current = apiFunction;
+    optionsRef.current = options;
+  }, [apiFunction, options]);
+
+  const execute = useCallback(async (...args: P) => {
+    // Abort any previous requests
+    abortControllerRef.current?.abort();
+
+    if (!isMountedRef.current) return;
+
+    try {
+      setState((prev) => ({
+        ...prev,
+        loading: true,
+        error: null,
+      }));
+      const result = await apiFunctionRef.current(...args);
+
+      if (!isMountedRef.current) return; // Check if component is still mounted before updating state
+
+      setState({
+        data: result,
+        loading: false,
+        error: null,
+      });
+
+      await optionsRef.current.onSuccess?.(result);
+    } catch (error) {
       if (!isMountedRef.current) return;
 
-      try {
-        setState((prev) => ({
-          ...prev,
-          loading: true,
-          error: null,
-        }));
-        const result = await apiFunction(...args);
+      const apiError = toApiError(error);
 
-        if (!isMountedRef.current) return; // Check if component is still mounted before updating state
+      setState({
+        data: null,
+        loading: false,
+        error: apiError,
+      });
 
-        setState({
-          data: result,
-          loading: false,
-          error: null,
-        });
-
-        await options.onSuccess?.(result);
-      } catch (error) {
-        if (!isMountedRef.current) return;
-
-        const apiError = toApiError(error);
-
-        setState({
-          data: null,
-          loading: false,
-          error: apiError,
-        });
-
-        await options.onError?.(apiError);
-      } finally {
-        if (!isMountedRef.current) return;
-        await options.onFinally?.();
-      }
-    },
-    [apiFunction, options],
-  );
+      await optionsRef.current.onError?.(apiError);
+    } finally {
+      if (!isMountedRef.current) return;
+      await optionsRef.current.onFinally?.();
+    }
+  }, []);
 
   /**
    * Reset state
@@ -145,8 +150,8 @@ export function useApiData<T, P extends any[] = []>(
   const { execute, ...state } = useApiCall(apiFunction, options);
 
   useEffect(() => {
-    execute(...args);    
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    execute(...args);
+  }, [execute, ...args]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { ...state, refetch: () => execute(...args) };
 }

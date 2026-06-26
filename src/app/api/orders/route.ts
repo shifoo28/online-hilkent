@@ -33,6 +33,22 @@ interface CreateOrderRequest {
   total: number;
 }
 
+function calculateDiscountAmount(
+  discountType: "PERCENTAGE" | "FIXED",
+  discountValue: number,
+  orderAmount: Decimal,
+) {
+  if (discountType === "PERCENTAGE") {
+    return orderAmount
+      .times(discountValue)
+      .div(100)
+      .toDecimalPlaces(2, Decimal.ROUND_DOWN);
+  }
+
+  const fixedDiscount = new Decimal(discountValue);
+  return Decimal.min(orderAmount, fixedDiscount).toDecimalPlaces(2, Decimal.ROUND_DOWN);
+}
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body: CreateOrderRequest = await request.json();
@@ -140,22 +156,88 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         data: {
           email: body.billingDetails.email,
           name: `${body.billingDetails.firstName} ${body.billingDetails.lastName}`,
-          phone: parseInt(body.billingDetails.phone.replace(/\D/g, "")) || 0,
+          phone: parseInt(body.billingDetails.phone.replace(/\D/g, "")),
         },
       });
+    }
+
+    let coupon = null;
+    let couponDiscountAmount = new Decimal(0);
+
+    if (body.couponCode) {
+      coupon = await prisma.coupon.findUnique({
+        where: { code: body.couponCode },
+      });
+
+      if (!coupon) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Invalid coupon code",
+          },
+          { status: 400 },
+        );
+      }
+
+      if (!coupon.isActive) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Coupon is not active",
+          },
+          { status: 400 },
+        );
+      }
+
+      if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Coupon has expired",
+          },
+          { status: 400 },
+        );
+      }
+
+      if (coupon.maxUsageCount !== null && coupon.usageCount >= coupon.maxUsageCount) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Coupon usage limit has been reached",
+          },
+          { status: 400 },
+        );
+      }
+
+      const subtotalAmount = new Decimal(body.subtotal);
+      const minAmount = new Decimal(coupon.minOrderAmount ?? 0);
+      if (subtotalAmount.lessThan(minAmount)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Order must be at least ${minAmount.toFixed(2)} TMT to apply this coupon`,
+          },
+          { status: 400 },
+        );
+      }
+
+      couponDiscountAmount = calculateDiscountAmount(
+        coupon.discountType,
+        Number(coupon.discount),
+        subtotalAmount,
+      );
     }
 
     // Calculate and verify total (security: always recalculate server-side)
     const calculatedTotal = new Decimal(body.subtotal)
       .plus(new Decimal(body.shippingFee))
-      .minus(new Decimal(body.discountAmount));
+      .minus(couponDiscountAmount);
 
     const requestTotal = new Decimal(body.total);
     if (!calculatedTotal.equals(requestTotal)) {
       console.warn(
         `[Orders API] Total mismatch: Calculated=${calculatedTotal}, Request=${requestTotal}`,
       );
-      // Use calculated value for security
       body.total = Number(calculatedTotal);
     }
 
@@ -168,12 +250,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         status: "PENDING",
         subtotal: new Decimal(body.subtotal),
         billingAddress: body.billingDetails.address,
-        shippingAddress: body.shippingAddress ?? null,
+        shippingAddress: body.shippingAddress ?? undefined,
         // Store shipping fee and method for historical accuracy, even if they change later
         shippingFee: new Decimal(body.shippingFee),
-        discountAmount: new Decimal(body.discountAmount),
+        discountAmount: couponDiscountAmount,
         total: new Decimal(calculatedTotal),
-        note: { create: { content: body.note } },
+        couponCode: coupon?.code,
+        coupon: coupon ? { connect: { id: coupon.id } } : undefined,
+        note: body.note ? { create: { content: body.note } } : undefined,
         paymentMethod: body.paymentMethod,
         user: { connect: { id: user.id } },
         shippingMethod: { connect: { id: body.shippingMethodId } },
@@ -201,6 +285,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         user: true,
       },
     });
+
+    if (coupon) {
+      await prisma.coupon.update({
+        where: { id: coupon.id },
+        data: {
+          usageCount: {
+            increment: 1,
+          },
+        },
+      });
+    }
 
     // NEW: Trigger shipping notification (optional)
     // await notifyShippingProvider(order);
@@ -278,16 +373,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         },
       },
     });
-
-    if (!orders || orders.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Order not found",
-        },
-        { status: 404 },
-      );
-    }
 
     return NextResponse.json(
       {

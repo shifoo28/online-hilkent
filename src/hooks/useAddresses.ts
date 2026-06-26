@@ -71,8 +71,6 @@ export const useAddresses = () => {
   };
 
   const getDefaultAddress = (type: "shipping" | "billing") => {
-    console.log(addresses);
-    
     return addresses.find((addr) => addr.type === type && addr.isDefault);
   };
 

@@ -11,7 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import GenerateStars from "../Review/generateStars";
 import { EyeIcon, HeartIcon } from "@/components/Icons";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { getDatabaseLocale } from "@/locales/map";
 
 const SingleGridItem = ({ item }: { item: Product }) => {
@@ -19,6 +19,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { addItem } = useWishlist();
   const { addItemToCart } = useCart();
+  const t = useTranslations("Shop");
   const locale = useLocale();
 
   const title =
@@ -79,7 +80,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
             onClick={() => handleAddToCart()}
             className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
           >
-            Add to cart
+            {t("addToCart")}
           </button>
 
           <button
@@ -98,21 +99,29 @@ const SingleGridItem = ({ item }: { item: Product }) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 mb-2">
-        <GenerateStars rating={item.rating} size={18} />
-        <p className="text-custom-sm">({item.rating})</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2.5 mb-2">
+            <GenerateStars rating={item.rating} size={18} />
+            <p className="text-custom-sm">({item.rating})</p>
+          </div>
+
+          <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5 mr-4 line-clamp-2">
+            <Link href={`/shop-details/${item.id}`}> {title} </Link>
+          </h3>
+        </div>
+
+        <span className="flex flex-col items-center font-medium text-lg">
+          <span className="text-green min-w-max">
+            {item.discountedPrice} TMT
+          </span>
+          {item.discountedPrice !== item.price && (
+            <span className="text-dark-4 line-through min-w-max">
+              {item.price} TMT
+            </span>
+          )}
+        </span>
       </div>
-
-      <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-        <Link href={`/shop-details/${item.id}`}> {title} </Link>
-      </h3>
-
-      <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">{item.discountedPrice} TMT</span>
-        {item.discountedPrice !== item.price && (
-          <span className="text-dark-4 line-through">{item.price} TMT</span>
-        )}
-      </span>
     </div>
   );
 };

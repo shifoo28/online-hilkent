@@ -20,6 +20,13 @@ export async function GET(request: NextRequest) {
         Discounts: true,
         Images: true,
         Translations: true,
+        Properties: {
+          include: {
+            name: {
+              include: { propertyNameTranslations: true },
+            },
+          },
+        },
       },
     });
 

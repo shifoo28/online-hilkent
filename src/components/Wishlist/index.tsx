@@ -2,8 +2,8 @@
 import React from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import { useWishlist } from "@/hooks/useWishlist";
-import SingleItem from "./SingleItem";
 import { useTranslations } from "next-intl";
+import WishlistItem from "./WishlistItem";
 
 export const Wishlist = () => {
   const { items: wishlistItems, clearWishlist } = useWishlist();
@@ -29,7 +29,7 @@ export const Wishlist = () => {
                   {/* <!-- wish item --> */}
                   <div className="flex flex-col gap-4 md:block">
                     {wishlistItems.map((item, key) => (
-                      <SingleItem item={item} key={key} />
+                      <WishlistItem item={item} key={key} />
                     ))}
                   </div>
                 </div>

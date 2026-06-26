@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import SingleItem from "./SingleItem";
+import BestSellerItem from "./BestSellerItem";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Product } from "@/types/product";
@@ -66,7 +66,7 @@ const BestSeller = () => {
 
   return (
     <section className="overflow-hidden">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      <div className="max-w-[1170px] w-full mx-auto pt-8 px-4 sm:px-8 xl:px-0">
         {/* <!-- section title --> */}
         <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
@@ -87,7 +87,7 @@ const BestSeller = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-7.5">
           {products.map((item) => (
-            <SingleItem item={item} key={item.id} badge={translate("badge")} />
+            <BestSellerItem item={item} key={item.id} badge={translate("badge")} />
           ))}
         </div>
 

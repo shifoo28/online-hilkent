@@ -76,7 +76,7 @@
       "features": {
         "shipping": {
           "title": "Mugt Eltip bermek",
-          "description": "200 TMT-den ýokary ähli sargytlar üçin"
+          "description": "2000 TMT-den ýokary ähli sargytlar üçin"
         },
         "return": {
           "title": "1 we 1 Gaýtarmalar",
@@ -108,7 +108,6 @@
     },
     "countdown": {
       "title": "Sypdyrmaň!!",
-      "highlight": "Saz tejribäňizi kämilleşdiriň",
       "days": "Gün",
       "hours": "Sagat",
       "minutes": "Minut",
@@ -188,7 +187,7 @@
         "error": "Ýalňyşlyk 404",
         "success": "Hat üstünlikli"
       },
-      "recentlyViewed": "Soňky görenlerim",
+      "recentlyViewed": "Soňky görlen",
       "wishlist": "Halanlarym"
     },
     "language": {
@@ -201,7 +200,7 @@
     "title": "Meniň hasabym",
     "message": {
       "deletionAddress": "Bu salgyny pozmak isleýändigiňize ynanýarsyňyzmy? Bu hereketi yzyna gaýtaryp bolmaýar.",
-      "unauthorized": "Hasabynyzy görmek üçin log in ediň",
+      "unAuthorized": "Hasabynyzy görmek üçin log in ediň",
       "fetchUserError": "Hasabyňyzy ýükläp bolmady.",
       "profileUpdated": "Maglumatlar üstünlikli üýtgedildi.",
       "updateError": "Maglumatlary üýtgetmek başa barmady.",
@@ -394,11 +393,15 @@
     "loading": "Harytlar ýüklenilýär...",
     "error": "Harytlar ýüklenip bilmedi.",
     "summary": "{page}/{pages} sahypada {count}/{total} haryt görkezilýär",
-    "noProducts": "Haryt tapylmady."
+    "noProducts": "Haryt tapylmady.",
+    "addToCart": "Sebede goş"
   },
   "ShopDetails": {
-    "title": "Haryt maglumatlary",
-    "discount": "% Arzanladyş",
+    "breadcrumb": {
+      "title": "Giňişleýin maglumat",
+      "page": "Haryt barada"
+    },
+    "discount": "Arzanladyş",
     "review": "müşderi teswirleri",
     "stock": "Satuwda",
     "price": "Bahasy:",
@@ -433,11 +436,13 @@
       },
       "specification": {
         "title": "Haryt aýratynlyklary",
-        "description": "Bu harydyň aýratynlyklary barada maglumat alyň."
+        "description": "Bu harydyň aýratynlyklary barada maglumat alyň.",
+        "noSpecification": "Bu haryt üçin aýratynlyklar elýeterli däl."
       },
       "description": {
         "title": "Düşündiriş",
-        "description": "Bu harydyň aýratynlyklary, artykmaçlyklary we ulanyş görkezmeleri barada doly düşündiriş."
+        "description": "Bu harydyň aýratynlyklary, artykmaçlyklary we ulanyş görkezmeleri barada doly düşündiriş.",
+        "noDescription": "Bu haryt üçin düşündiriş berilmedik."
       }
     }
   },
@@ -450,7 +455,7 @@
       "title": "Sebediňizdäki harytlar",
       "clearCart": "Sebedi arassala",
       "product": "Önüm",
-      "price": "Birlik bahasy",
+      "price": "Bahasy",
       "quantity": "Mukdar",
       "subtotal": "Jemi",
       "actions": "Amal"
@@ -480,6 +485,10 @@
       "address": "Salgy: Daşoguz şäher, A.Nyýazow köçe, 61-nji jaý"
     },
     "message": {
+      "validationError": "Haýyş, adyňyzy, telefon belgiňizi we hatyňyzy dolduryň!",
+      "sending": "Ugradylýar...",
+      "error": "Hat ugradylmady. Täzeden synanyşyň.",
+      "success": "Hat üstünlikli ugradyldy!",
       "first": {
         "name": "Ady",
         "placeholder": "Adyňyzy ýazyň"
@@ -579,8 +588,10 @@
       "email": "Email salgysy",
       "selectSavedAddress": "Ýatda saklanan salgyny saýlaň",
       "selectAddress": "Ýatda saklanan salgyny saýlaň",
-      "addNewAddress": "Täze salgy goşuň",
-      "editAddress": "Salgyny redaktirläň"
+      "addNewAddress": "Salgy goşuň",
+      "editAddress": "Redaktirläň",
+      "noSavedAddresses": "Ýatda saklanan billing salgysy ýok.",
+      "noSavedAddressesHint": "Salgyny girizip, sargyt wagtynda ony aňsatlyk bilen saýlap bilersiňiz."
     },
     "shipping": {
       "differentAddress": "Başga salga iberilsinmi?",
@@ -588,7 +599,9 @@
       "selectSavedAddress": "Ýatda saklanan salgyny saýlaň",
       "selectAddress": "Ýatda saklanan salgyny saýlaň",
       "addNewAddress": "Täze salgy goşuň",
-      "editAddress": "Salgyny redaktirläň"
+      "editAddress": "Salgyny redaktirläň",
+      "noSavedAddresses": "Ýatda saklanan shipping salgysy ýok.",
+      "noSavedAddressesHint": "Salgyny girizip, sargyt wagtynda ony aňsatlyk bilen saýlap bilersiňiz."
     },
     "login": {
       "returningCustomer": "Gaýdyp gelen müşderimi?",
@@ -643,5 +656,12 @@
     "description": "Sargydyňyz barada maglumatlary öz içine alýan tassyklama emailini alarsyňyz. Sargydyňyzy gözegçilik etmek we hasap maglumatlaryňyzy görmek üçin \"Meniň sargytlarym\" bölümine geçiň.",
     "emailInfo": "Eger emailiňizi almadyk bolsaňyz, spam ýa-da junk folderiňizi barlaň ýa-da müşderi hyzmatlarymyz bilen habarlaşyň.",
     "button": { "viewOrders": "Meniň sargytlarym", "backHome": "Esasy sahypa" }
+  },
+  "RecentlyViewed": {
+    "breadcrumb": {
+      "title": "Soňky görlen harytlar",
+      "page": "Soňky görlenler"
+    },
+    "empty": "Siz heniz hiç hili haryt görmänsiňiz."
   }
 }

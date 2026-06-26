@@ -9,13 +9,13 @@ import React, {
   useMemo,
 } from "react";
 
-export type CartItem = Product & {
+export type CartItemType = Product & {
   quantity: number;
 };
 
 const STORAGE_KEY = "cart";
 
-function loadCart(): CartItem[] {
+function loadCart(): CartItemType[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -29,7 +29,7 @@ function loadCart(): CartItem[] {
   }
 }
 
-function saveCart(items: CartItem[]) {
+function saveCart(items: CartItemType[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
@@ -39,8 +39,8 @@ function saveCart(items: CartItem[]) {
 }
 
 interface CartContextType {
-  items: CartItem[];
-  addItemToCart: (item: CartItem) => void;
+  items: CartItemType[];
+  addItemToCart: (item: CartItemType) => void;
   removeItemFromCart: (id: string) => void;
   updateCartItemQuantity: ({
     id,
@@ -66,7 +66,7 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItemType[]>([]);
   const isFirstRender = React.useRef(true);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     saveCart(items);
   }, [items]);
 
-  const addItemToCart = useCallback((item: CartItem) => {
+  const addItemToCart = useCallback((item: CartItemType) => {
     setItems((prev) => {
       const existingItem = prev.find((i) => i.id === item.id);
       if (existingItem) {

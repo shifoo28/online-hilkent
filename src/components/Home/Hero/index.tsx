@@ -39,7 +39,7 @@ const Hero = ({ products }: HeroProps) => {
   const heroProducts = products.filter((p) => !p.isSlider).map(mapHeroCard);  
 
   return (
-    <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-67 sm:pt-50 lg:pt-46 xl:pt-50 bg-[#E5EAF4]">
+    <section className="overflow-hidden pb-10 lg:pb-12.5 xl:pb-15 pt-56 sm:pt-50 lg:pt-46 xl:pt-50 bg-[#E5EAF4]">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
         <div className="flex flex-wrap gap-5">
           <div className="xl:max-w-[757px] w-full">
@@ -62,11 +62,11 @@ const Hero = ({ products }: HeroProps) => {
               {heroProducts.map((item) => (
                 <div
                   key={item.id}
-                  className="w-full relative rounded-[10px] bg-white p-4 sm:p-7.5"
+                  className="w-full relative rounded-[10px] bg-white p-4"
                 >
-                  <div className="flex justify-between items-center w-full">
+                  <div className="flex justify-between items-center w-full gap-2">
                     <div className="flex flex-col justify-between xl:min-h-[190px]">
-                      <h2 className="max-w-full font-semibold text-dark text-xl">
+                      <h2 className="max-w-wull font-semibold text-dark text-xl line-clamp-2">
                         <a href={`/shop-details/${item.productId}`}>
                           {item.name}
                         </a>
@@ -92,8 +92,8 @@ const Hero = ({ products }: HeroProps) => {
                       <Image
                         src={item.image}
                         alt={item.name || "Hilkent product"}
-                        width={135}
-                        height={161}
+                        width={115}
+                        height={141}
                       />
                     </div>
                   </div>

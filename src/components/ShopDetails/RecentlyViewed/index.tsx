@@ -6,11 +6,11 @@ import { ArrowIcon } from "@/components/Icons";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCallback, useRef } from "react";
+import { STORAGE_KEY_RECENTLY_VIEWED } from "@/components/RecentlyViewed";
 import "swiper/css/navigation";
 import "swiper/css";
-import { STORAGE_KEY_RECENTLY_VIEWED } from "..";
 
-const RecentlyViewedItems = () => {
+const RecentlyViewedSection = () => {
   const sliderRef = useRef(null);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
 
@@ -53,59 +53,73 @@ const RecentlyViewedItems = () => {
               </h2>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button onClick={handleNext} className="swiper-button-next">
-                <ArrowIcon
-                  className="fill-current"
-                  width={24}
-                  height={24}
-                  aria-label="Next slide"
-                />
-              </button>
-              <button onClick={handlePrev} className="swiper-button-prev">
-                <ArrowIcon
-                  className="fill-current rotate-180"
-                  width={24}
-                  height={24}
-                  aria-label="Previous slide"
-                />
-              </button>
-            </div>
+            {recentlyViewed.length > 0 && (
+              <div className="flex items-center gap-3">
+                <button onClick={handleNext} className="swiper-button-next">
+                  <ArrowIcon
+                    className="fill-current"
+                    width={24}
+                    height={24}
+                    aria-label="Next slide"
+                  />
+                </button>
+                <button onClick={handlePrev} className="swiper-button-prev">
+                  <ArrowIcon
+                    className="fill-current rotate-180"
+                    width={24}
+                    height={24}
+                    aria-label="Previous slide"
+                  />
+                </button>
+              </div>
+            )}
           </div>
 
-          <Swiper
-            ref={sliderRef}
-            spaceBetween={20}
-            className="justify-between"
-            breakpoints={{
-              // Small screens (phones)
-              320: {
-                slidesPerView: 2,
-              },
-              // Medium screens (tablets)
-              768: {
-                slidesPerView: 3,
-              },
-              // when window width is >= 924px
-              924: {
-                slidesPerView: 4,
-              },
-              // Large screens (desktops)
-              1280: {
-                slidesPerView: 5,
-              },
-            }}
-          >
-            {recentlyViewed.map((item, key) => (
-              <SwiperSlide key={key}>
-                {item ? <ProductItem item={item} /> : <div>Loading...</div>}
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {recentlyViewed.length === 0 ? (
+            <div className="rounded-lg bg-gray-1 p-10 text-center text-dark">
+              <p className="text-base font-medium">
+                You have not viewed any products yet.
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                Recently viewed items will appear here once you open a product
+                page.
+              </p>
+            </div>
+          ) : (
+            <Swiper
+              ref={sliderRef}
+              spaceBetween={20}
+              className="justify-between"
+              breakpoints={{
+                // Small screens (phones)
+                320: {
+                  slidesPerView: 2,
+                },
+                // Medium screens (tablets)
+                768: {
+                  slidesPerView: 3,
+                },
+                // when window width is >= 924px
+                924: {
+                  slidesPerView: 4,
+                },
+                // Large screens (desktops)
+                1280: {
+                  slidesPerView: 5,
+                },
+              }}
+            >
+              {recentlyViewed.map((item, key) => (
+                <SwiperSlide key={key}>
+                  {item ? <ProductItem item={item} /> : <div>Loading...</div>}
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
       </div>
     </section>
   );
 };
 
-export default RecentlyViewedItems;
+export default RecentlyViewedSection

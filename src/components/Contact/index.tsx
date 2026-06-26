@@ -1,9 +1,111 @@
-import React from "react";
+"use client";
+
+import React, { useCallback, useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import { useTranslations } from "next-intl";
+import { useLazyApiCall } from "@/hooks/useApiCall";
+import { useApiError } from "@/hooks/useApiError";
+import { useAuth } from "@/hooks/useAuth";
+import { contactService } from "@/services/api";
+import { toast } from "react-hot-toast";
 
 const Contact = () => {
   const translate = useTranslations("Contact");
+  const { user } = useAuth();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    subject: "",
+    phone: "",
+    message: "",
+  });
+  const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const { handleError } = useApiError();
+
+  useEffect(() => {
+    if (!user) return;
+
+    const names = user.name?.split(" ") ?? [];
+    const firstName = names[0] ?? "";
+    const lastName = names.length > 1 ? names.slice(1).join(" ") : "";
+
+    setFormData((prev) => ({
+      ...prev,
+      firstName: prev.firstName || firstName,
+      lastName: prev.lastName || lastName,
+      phone: prev.phone || user.phone || "",
+    }));
+  }, [user]);
+
+  const createContact = useCallback(
+    (payload: {
+      firstName: string;
+      lastName: string;
+      subject?: string;
+      phone?: string;
+      message: string;
+    }) => contactService.sendMessage(payload),
+    [],
+  );
+
+  const [sendMessage, { loading: isSubmitting }] = useLazyApiCall(
+    createContact,
+    {
+      onSuccess: () => {
+        toast.success(translate("message.success"));
+        setSuccessMessage(translate("message.success"));
+        setFormData({
+          firstName: "",
+          lastName: "",
+          subject: "",
+          phone: "",
+          message: "",
+        });
+        setFormError("");
+      },
+      onError: (error) => {
+        handleError(error, {
+          showToast: true,
+          userMessage: translate("message.error"),
+        });
+      },
+    },
+  );
+
+  const handleInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    [],
+  );
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSuccessMessage("");
+    setFormError("");
+
+    const firstName = formData.firstName.trim();
+    const phone = formData.phone.trim();
+    const message = formData.message.trim();
+
+    if (!firstName || !phone || !message) {
+      setFormError(translate("message.validationError"));
+      return;
+    }
+
+    await sendMessage({
+      firstName,
+      lastName: formData.lastName.trim() || undefined,
+      subject: formData.subject.trim() || undefined,
+      phone,
+      message,
+    });
+  };
 
   return (
     <>
@@ -93,7 +195,15 @@ const Contact = () => {
             </div>
 
             <div className="xl:max-w-[770px] w-full bg-white rounded-xl shadow-1 p-4 sm:p-7.5 xl:p-10">
-              <form>
+              <form onSubmit={handleSubmit}>
+                {formError ? (
+                  <p className="text-red text-sm mb-5">{formError}</p>
+                ) : null}
+                {successMessage ? (
+                  <p className="text-emerald-600 text-sm mb-5">
+                    {successMessage}
+                  </p>
+                ) : null}
                 <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                   <div className="w-full">
                     <label htmlFor="firstName" className="block mb-2.5">
@@ -105,6 +215,8 @@ const Contact = () => {
                       type="text"
                       name="firstName"
                       id="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
                       placeholder={translate("message.first.placeholder")}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
@@ -113,13 +225,14 @@ const Contact = () => {
                   <div className="w-full">
                     <label htmlFor="lastName" className="block mb-2.5">
                       {translate("message.last.name")}
-                      <span className="text-red">*</span>
                     </label>
 
                     <input
                       type="text"
                       name="lastName"
                       id="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
                       placeholder={translate("message.last.placeholder")}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
@@ -136,6 +249,8 @@ const Contact = () => {
                       type="text"
                       name="subject"
                       id="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
                       placeholder={translate("message.subject.placeholder")}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
@@ -144,12 +259,15 @@ const Contact = () => {
                   <div className="w-full">
                     <label htmlFor="phone" className="block mb-2.5">
                       {translate("message.phone.name")}
+                      <span className="text-red">*</span>
                     </label>
 
                     <input
                       type="text"
                       name="phone"
                       id="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
                       placeholder={translate("message.phone.placeholder")}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
@@ -159,12 +277,15 @@ const Contact = () => {
                 <div className="mb-7.5">
                   <label htmlFor="message" className="block mb-2.5">
                     {translate("message.text.name")}
+                    <span className="text-red">*</span>
                   </label>
 
                   <textarea
                     name="message"
                     id="message"
                     rows={5}
+                    value={formData.message}
+                    onChange={handleInputChange}
                     placeholder={translate("message.text.placeholder")}
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   ></textarea>
@@ -172,9 +293,12 @@ const Contact = () => {
 
                 <button
                   type="submit"
-                  className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {translate("message.button")}
+                  {isSubmitting
+                    ? translate("message.sending")
+                    : translate("message.button")}
                 </button>
               </form>
             </div>

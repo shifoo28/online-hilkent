@@ -1,11 +1,11 @@
 import React from "react";
-import { CartItem, useCart } from "@/hooks/useCart";
+import { CartItemType, useCart } from "@/hooks/useCart";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { RemoveIcon } from "@/components/Icons";
 import { getDatabaseLocale } from "@/locales/map";
 
-const SingleItem = ({ item }: { item: CartItem }) => {
+const SingleItem = ({ item }: { item: CartItemType }) => {
   const locale = useLocale();
   const title =
     item.translations.find((t) => t.locale === getDatabaseLocale(locale))
@@ -34,7 +34,7 @@ const SingleItem = ({ item }: { item: CartItem }) => {
         </div>
 
         <div>
-          <h3 className="font-medium text-dark mb-1 ease-out duration-200 hover:text-blue">
+          <h3 className="font-medium text-dark mb-1 ease-out duration-200 hover:text-blue line-clamp-2">
             <a href="#"> {title} </a>
           </h3>
           <p className="text-custom-sm">

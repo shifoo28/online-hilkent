@@ -156,7 +156,7 @@ const AddressModal = ({
                   })}
             </h3>
 
-            <div onSubmit={handleSubmit}>
+            <div>
               {error && (
                 <div className="mb-5 p-4 bg-red-50 border border-red rounded-lg">
                   <p className="text-red text-custom-sm">{error}</p>
@@ -255,8 +255,8 @@ const AddressModal = ({
 
               <div className="flex gap-4">
                 <button
-                  type="submit"
                   disabled={loading}
+                  onClick={handleSubmit}
                   className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 ${
                     loading
                       ? "opacity-50 cursor-not-allowed"
@@ -267,7 +267,6 @@ const AddressModal = ({
                 </button>
 
                 <button
-                  type="button"
                   onClick={closeModal}
                   className="inline-flex font-medium text-dark-2 bg-gray-1 py-3 px-7 rounded-md ease-out duration-200 hover:bg-gray-2"
                 >

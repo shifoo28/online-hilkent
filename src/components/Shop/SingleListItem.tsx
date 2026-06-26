@@ -12,7 +12,7 @@ import Image from "next/image";
 import GenerateStars from "../Review/generateStars";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { EyeIcon, HeartIcon } from "@/components/Icons";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { getDatabaseLocale } from "@/locales/map";
 
 const SingleListItem = ({ item }: { item: Product }) => {
@@ -21,6 +21,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const { addItem } = useWishlist();
   const { addItemToCart } = useCart();
+  const t = useTranslations("Shop");
   const locale = useLocale();
 
   const title =
@@ -78,9 +79,9 @@ const SingleListItem = ({ item }: { item: Product }) => {
 
             <button
               onClick={() => handleAddToCart()}
-              className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
+              className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark min-w-max"
             >
-              Add to cart
+              {t("addToCart")}
             </button>
 
             <button
@@ -100,12 +101,12 @@ const SingleListItem = ({ item }: { item: Product }) => {
 
         <div className="w-full flex flex-col gap-5 sm:flex-row sm:items-center justify-center sm:justify-between py-5 px-4 sm:px-7.5 lg:pl-11 lg:pr-12">
           <div>
-            <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
+            <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5 line-clamp-2">
               <Link href={`/shop-details/${item.id}`}> {title} </Link>
             </h3>
 
             <span className="flex items-center gap-2 font-medium text-lg">
-              <span className="text-dark">{item.discountedPrice} TMT</span>
+              <span className="text-green">{item.discountedPrice} TMT</span>
               {item.discountedPrice !== item.price && (
                 <span className="text-dark-4 line-through">
                   {item.price} TMT

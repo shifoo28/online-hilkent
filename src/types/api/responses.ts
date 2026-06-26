@@ -130,6 +130,17 @@ export interface ReviewResponse {
   };
 }
 
+export interface ContactMessageResponse {
+  id: string;
+  firstName: string;
+  lastName: string;
+  subject: string | null;
+  phone: string | null;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /**
  * Order Response
  */
@@ -210,6 +221,7 @@ export interface CouponResponse {
   code: string;
   discountType: "PERCENTAGE" | "FIXED";
   discountValue: number;
+  discountAmount?: number;
   minOrderValue?: number;
   maxUses?: number;
   currentUses: number;

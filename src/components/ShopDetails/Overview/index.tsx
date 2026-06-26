@@ -1,14 +1,36 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ReviewList, ReviewForm } from "../../Review";
 import { tabs } from "../data";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/hooks/useAuth";
+import { getDatabaseLocale } from "@/locales/map";
+import { ProductPropertyWithTranslations } from "@/types/product";
 
-const Overview = ({ id }: { id: string }) => {
+interface OverviewProps {
+  id: string;
+  description?: string;
+  properties?: ProductPropertyWithTranslations[];
+}
+
+const Overview = ({ id, description, properties }: OverviewProps) => {
   const translate = useTranslations("ShopDetails.overview");
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState("tabOne");
   const { user } = useAuth();
+
+  const localeKey = useMemo(() => getDatabaseLocale(locale), [locale]);
+
+  const formatPropertyName = (property: ProductPropertyWithTranslations) => {
+    return (
+      property.name.propertyNameTranslations.find(
+        (translation) => translation.locale === localeKey,
+      )?.name ||
+      property.name.propertyNameTranslations[0]?.name ||
+      property.name.name ||
+      ""
+    );
+  };
 
   return (
     <section className="overflow-hidden bg-gray-2 py-10">
@@ -38,12 +60,12 @@ const Overview = ({ id }: { id: string }) => {
         {/* <!--== tab content start ==--> */}
         {/* <!-- tab content one start --> */}
         <div
-          className={`flex-col sm:flex-row gap-7.5 xl:gap-12.5 mt-12.5 ${
+          className={`flex-col sm:flex-row gap-7.5 xl:gap-12.5 mt-5 ${
             activeTab === "tabOne" ? "flex" : "hidden"
           }`}
         >
           <div className="max-w-[570px] w-full">
-            <ReviewList productId={id} />
+            <ReviewList productId={id} userId={user?.id} />
           </div>
 
           <div className="max-w-[550px] w-full">
@@ -76,127 +98,37 @@ const Overview = ({ id }: { id: string }) => {
         {/* <!-- tab content two start --> */}
         <div>
           <div
-            className={`rounded-xl bg-white shadow-1 p-4 sm:p-6 mt-10 ${
+            className={`rounded-xl bg-white shadow-1 p-4 sm:p-6 mt-5 min-h-[200px] ${
               activeTab === "tabTwo" ? "block" : "hidden"
             }`}
           >
             {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Brand</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">Apple</p>
-              </div>
-            </div>
+            {properties && properties.length > 0 ? (
+              <ul className="flex flex-col gap-3">
+                {properties.map((prop) => (
+                  <li
+                    key={prop.id}
+                    className="flex justify-between border-b border-gray-3 py-2"
+                  >
+                    <div className="max-w-[450px] min-w-[140px] w-full">
+                      <p className="text-sm sm:text-base text-dark">
+                        {formatPropertyName(prop)}
+                      </p>
+                    </div>
 
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Model</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">iPhone 14 Plus</p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Display Size</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">6.7 inches</p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Display Type</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  Super Retina XDR OLED, HDR10, Dolby Vision, 800 nits (HBM),
-                  1200 nits (peak)
-                </p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  Display Resolution
-                </p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  1284 x 2778 pixels, 19.5:9 ratio
-                </p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Chipset</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  Apple A15 Bionic (5 nm)
-                </p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Memory</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  128GB 6GB RAM | 256GB 6GB RAM | 512GB 6GB RAM
-                </p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Main Camera</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  12MP + 12MP | 4K@24/25/30/60fps, stereo sound rec.
-                </p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Selfie Camera</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  12 MP | 4K@24/25/30/60fps, 1080p@25/30/60/120fps, gyro-EIS
-                </p>
-              </div>
-            </div>
-
-            {/* <!-- info item --> */}
-            <div className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
-              <div className="max-w-[450px] min-w-[140px] w-full">
-                <p className="text-sm sm:text-base text-dark">Battery Info</p>
-              </div>
-              <div className="w-full">
-                <p className="text-sm sm:text-base text-dark">
-                  Li-Ion 4323 mAh, non-removable | 15W wireless (MagSafe), 7.5W
-                  wireless (Qi)
-                </p>
-              </div>
-            </div>
+                    <div className="w-full">
+                      <p className="text-sm sm:text-base text-dark-2">
+                        {prop.value}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm sm:text-base text-dark w-full text-center">
+                {translate("specification.noSpecification")}
+              </p>
+            )}
           </div>
         </div>
         {/* <!-- tab content two end --> */}
@@ -204,50 +136,19 @@ const Overview = ({ id }: { id: string }) => {
         {/* <!-- tab content three start --> */}
         <div>
           <div
-            className={`flex-col sm:flex-row gap-7.5 xl:gap-12.5 mt-12.5 ${
+            className={`flex-col bg-white mt-5 rounded-lg shadow-1 text-center sm:flex-row gap-7.5 xl:gap-12.5 min-h-[200px] p-4 sm:p-6 ${
               activeTab === "tabThree" ? "flex" : "hidden"
             }`}
           >
-            <div className="max-w-[670px] w-full">
-              <h2 className="font-medium text-2xl text-dark mb-7">
-                Specifications:
-              </h2>
-
-              <p className="mb-6">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry&apos;s standard
-                dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
+            {description ? (
+              <p className="text-sm sm:text-base text-dark text-left">
+                {description}
               </p>
-              <p className="mb-6">
-                It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was
-                popularised in the 1960s.
+            ) : (
+              <p className="text-sm sm:text-base text-dark w-full text-center">
+                {translate("description.noDescription")}
               </p>
-              <p>
-                with the release of Letraset sheets containing Lorem Ipsum
-                passages, and more recently with desktop publishing software
-                like Aldus PageMaker including versions.
-              </p>
-            </div>
-
-            <div className="max-w-[447px] w-full">
-              <h2 className="font-medium text-2xl text-dark mb-7">
-                Care & Maintenance:
-              </h2>
-
-              <p className="mb-6">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry&apos;s standard
-                dummy text ever since the 1500s, when an unknown printer took a
-                galley of type and scrambled it to make a type specimen book.
-              </p>
-              <p>
-                It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was
-                popularised in the 1960s.
-              </p>
-            </div>
+            )}
           </div>
         </div>
         {/* <!-- tab content three end --> */}
