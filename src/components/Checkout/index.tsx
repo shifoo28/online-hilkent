@@ -82,7 +82,7 @@ const Checkout = () => {
 
       // Auto-fill phone
       if (user.phone) {
-        updates.billingPhone = user.phone;
+        updates.billingPhone = String(user.phone);
       }
 
       // Try to auto-fill from default billing address if available
@@ -142,6 +142,13 @@ const Checkout = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const form = e.currentTarget;
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      form.reportValidity();
+      return;
+    }
+
     e.preventDefault();
 
     if (!validateForm()) {
@@ -223,108 +230,105 @@ const Checkout = () => {
   return (
     <>
       <Breadcrumb title={t("title")} pages={[t("page")]} />
-      <section className="overflow-hidden py-10 bg-gray-2">
-        <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-          {orderError && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-              {orderError}
-            </div>
-          )}
+      <form onSubmit={handleSubmit}>
+        <section className="overflow-hidden py-10 bg-gray-2">
+          <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+            {orderError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                {orderError}
+              </div>
+            )}
 
-          {orderSuccess && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-              {t("errors.orderSuccess")}
-            </div>
-          )}
+            {orderSuccess && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                {t("errors.orderSuccess")}
+              </div>
+            )}
 
-          <div>
-            <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
-              {/* <!-- checkout left --> */}
-              <div className="lg:max-w-[670px] w-full">
-                {/* <!-- login box --> */}
-                {/* <Login
+            <div>
+              <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
+                {/* <!-- checkout left --> */}
+                <div className="lg:max-w-[670px] w-full">
+                  {/* <!-- login box --> */}
+                  {/* <Login
                   emails={formData.loginEmail}
                   password={formData.loginPassword}
                   onEmailChange={(val) => updateField("loginEmail", val)}
                   onPasswordChange={(val) => updateField("loginPassword", val)}
                 /> */}
 
-                {/* <!-- billing details --> */}
-                <Billing
-                  formData={formData}
-                  errors={errors}
-                  onChange={updateField}
-                />
+                  {/* <!-- billing details --> */}
+                  <Billing
+                    formData={formData}
+                    errors={errors}
+                    onChange={updateField}
+                  />
 
-                {/* <!-- address box two --> */}
-                <Shipping
-                  formData={formData}
-                  errors={errors}
-                  onChange={updateField}
-                  onAddressSameChange={(val) =>
-                    updateField("shippingAddressSame", val)
-                  }
-                />
+                  {/* <!-- address box two --> */}
+                  <Shipping
+                    formData={formData}
+                    errors={errors}
+                    onChange={updateField}
+                    onAddressSameChange={(val) =>
+                      updateField("shippingAddressSame", val)
+                    }
+                  />
 
-                <Notes
-                  value={formData.note}
-                  onChange={(val) => updateField("note", val)}
-                />
-              </div>
+                  <Notes
+                    value={formData.note}
+                    onChange={(val) => updateField("note", val)}
+                  />
+                </div>
 
-              {/* // <!-- checkout right --> */}
-              <div className="max-w-[455px] w-full">
-                {/* <!-- order list box --> */}
-                <OrderSummary
-                  cartItemsWithTitle={cartItemsWithTitle}
-                  subtotal={subtotal}
-                  couponDiscount={couponDiscount}
-                  shippingFee={shippingFee}
-                  total={total}
-                />
+                {/* // <!-- checkout right --> */}
+                <div className="max-w-[455px] w-full">
+                  {/* <!-- order list box --> */}
+                  <OrderSummary
+                    cartItemsWithTitle={cartItemsWithTitle}
+                    subtotal={subtotal}
+                    couponDiscount={couponDiscount}
+                    shippingFee={shippingFee}
+                    total={total}
+                  />
 
-                {/* <!-- coupon box --> */}
-                <Coupon
-                  couponCode={formData.couponCode}
-                  onCouponApply={handleCouponApply}
-                />
+                  {/* <!-- coupon box --> */}
+                  <Coupon
+                    couponCode={formData.couponCode}
+                    onCouponApply={handleCouponApply}
+                  />
 
-                {/* <!-- shipping box --> */}
-                <ShippingMethod
-                  selectedMethodId={formData.shippingMethodId}
-                  onMethodChange={(methodId) =>
-                    updateField("shippingMethodId", methodId)
-                  }
-                />
+                  {/* <!-- shipping box --> */}
+                  <ShippingMethod
+                    selectedMethodId={formData.shippingMethodId}
+                    onMethodChange={(methodId) =>
+                      updateField("shippingMethodId", methodId)
+                    }
+                  />
 
-                {/* <!-- payment box --> */}
-                <PaymentMethod
-                  selectedMethod={formData.paymentMethod}
-                  onMethodChange={(method) =>
-                    updateField("paymentMethod", method)
-                  }
-                />
+                  {/* <!-- payment box --> */}
+                  <PaymentMethod
+                    selectedMethod={formData.paymentMethod}
+                    onMethodChange={(method) =>
+                      updateField("paymentMethod", method)
+                    }
+                  />
 
-                {/* <!-- checkout button --> */}
-                <button
-                  type="button"
-                  onClick={(e) =>
-                    handleSubmit(
-                      e as unknown as React.FormEvent<HTMLFormElement>,
-                    )
-                  }
-                  disabled={isSubmitting || cartItemsWithTitle.length === 0}
-                  className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting
-                    ? t("buttons.processing")
-                    : t("buttons.placeOrder")}
-                </button>
+                  {/* <!-- checkout button --> */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || cartItemsWithTitle.length === 0}
+                    className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting
+                      ? t("buttons.processing")
+                      : t("buttons.placeOrder")}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </form>
     </>
   );
 };

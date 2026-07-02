@@ -89,29 +89,35 @@ export const useCheckoutForm = () => {
     [],
   );
 
+  const normalizeStringValue = (value: unknown) => {
+    if (typeof value === "string") return value;
+    if (value === undefined || value === null) return "";
+    return String(value);
+  };
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
     // Required billing fields
-    if (!formData.firstName.trim())
+    if (!normalizeStringValue(formData.firstName).trim())
       newErrors.firstName = "First name is required";
-    if (!formData.billingAddress.trim())
+    if (!normalizeStringValue(formData.billingAddress).trim())
       newErrors.billingAddress = "Street address is required";
-    if (!formData.billingPhone.trim())
+    if (!normalizeStringValue(formData.billingPhone).trim())
       newErrors.billingPhone = "Phone is required";
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email && !emailRegex.test(formData.email)) {
+    const emailValue = normalizeStringValue(formData.email);
+    if (emailValue && !emailRegex.test(emailValue)) {
       newErrors.email = "Invalid email format";
     }
 
     // Shipping fields if different address
     if (!formData.shippingAddressSame) {
-      if (!formData.shippingAddress.trim())
+      if (!normalizeStringValue(formData.shippingAddress).trim())
         newErrors.shippingAddress = "Shipping address is required";
     }
-console.log(formData);
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

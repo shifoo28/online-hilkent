@@ -16,6 +16,26 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
   const t = useTranslations("Checkout.shippingMethod");
   const { shippingMethods, loading, error } = useShippingMethods();
 
+  const getShippingMethodTranslationKey = (name: string, vehicle?: string | null) => {
+    const normalized = name.trim().toLowerCase();
+
+    if (vehicle === "PASSENGER_CAR") return "passengerCar";
+    if (vehicle === "LIGHT_TRUCK") return "lightTruck";
+    if (normalized.includes("free")) return "free";
+    if (normalized.includes("express")) return "express";
+    if (normalized.includes("standard")) return "standard";
+
+    return null;
+  };
+
+  const getShippingMethodLabel = (method: {
+    name: string;
+    vehicle?: string | null;
+  }) => {
+    const key = getShippingMethodTranslationKey(method.name, method.vehicle);
+    return key ? t(key) : method.name;
+  };
+
   // Provide fallback for first method if none selected
   const effectiveSelection = useMemo(() => {
     if (selectedMethodId) return selectedMethodId;
@@ -89,7 +109,7 @@ const ShippingMethod: React.FC<ShippingMethodProps> = ({
               </div>
 
               <div className="flex-1 flex items-center justify-between">
-                <span className="text-dark">{method.name}</span>
+                <span className="text-dark">{getShippingMethodLabel(method)}</span>
                 {/* <span className="text-dark font-semibold">
                   {parseFloat(method.cost) === 0
                     ? t("free")

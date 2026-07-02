@@ -48,10 +48,10 @@ const AddressSelection = ({
       if (selectedAddress) {
         onChange("email", selectedAddress.email);
         if (addressType === "billing") {
-          onChange("billingPhone", selectedAddress.phone);
+          onChange("billingPhone", String(selectedAddress.phone));
         } else {
           if (!formData.billingPhone || formData.billingPhone === "")
-            onChange("billingPhone", selectedAddress.phone);
+            onChange("billingPhone", String(selectedAddress.phone));
         }
 
         onChange(`${addressType}Address`, selectedAddress.address);

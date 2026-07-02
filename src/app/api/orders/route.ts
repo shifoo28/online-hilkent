@@ -46,7 +46,10 @@ function calculateDiscountAmount(
   }
 
   const fixedDiscount = new Decimal(discountValue);
-  return Decimal.min(orderAmount, fixedDiscount).toDecimalPlaces(2, Decimal.ROUND_DOWN);
+  return Decimal.min(orderAmount, fixedDiscount).toDecimalPlaces(
+    2,
+    Decimal.ROUND_DOWN,
+  );
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -199,7 +202,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         );
       }
 
-      if (coupon.maxUsageCount !== null && coupon.usageCount >= coupon.maxUsageCount) {
+      if (
+        coupon.maxUsageCount !== null &&
+        coupon.usageCount >= coupon.maxUsageCount
+      ) {
         return NextResponse.json(
           {
             success: false,
@@ -241,61 +247,84 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       body.total = Number(calculatedTotal);
     }
 
-    // Create order with shipping information
-    const order = await prisma.order.create({
-      data: {
-        // .toString(36) → converts that number into a base‑36 string (digits 0–9 + letters a–z).
-        // .substr(2, 6) → chops off the leading "0." and takes the next 6 characters.
-        orderId: generateOrderId(36, 6),
-        status: "PENDING",
-        subtotal: new Decimal(body.subtotal),
-        billingAddress: body.billingDetails.address,
-        shippingAddress: body.shippingAddress ?? undefined,
-        // Store shipping fee and method for historical accuracy, even if they change later
-        shippingFee: new Decimal(body.shippingFee),
-        discountAmount: couponDiscountAmount,
-        total: new Decimal(calculatedTotal),
-        couponCode: coupon?.code,
-        coupon: coupon ? { connect: { id: coupon.id } } : undefined,
-        note: body.note ? { create: { content: body.note } } : undefined,
-        paymentMethod: body.paymentMethod,
-        user: { connect: { id: user.id } },
-        shippingMethod: { connect: { id: body.shippingMethodId } },
-        // Create order items
-        OrderItems: {
-          create: body.items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: new Decimal(item.price),
-          })),
-        },
+    // Increment product sales count for each purchased item and create the order atomically.
+    const productSalesMap = body.items.reduce<Record<string, number>>(
+      (acc, item) => {
+        acc[item.productId] = (acc[item.productId] ?? 0) + item.quantity;
+        return acc;
       },
-      include: {
-        OrderItems: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                price: true,
+      {},
+    );
+
+    const order = await prisma.$transaction(async (tx) => {
+      const createdOrder = await tx.order.create({
+        data: {
+          // .toString(36) → converts that number into a base‑36 string (digits 0–9 + letters a–z).
+          // .substr(2, 6) → chops off the leading "0." and takes the next 6 characters.
+          orderId: generateOrderId(36, 6),
+          status: "PENDING",
+          subtotal: new Decimal(body.subtotal),
+          billingAddress: body.billingDetails.address,
+          shippingAddress: body.shippingAddress ?? undefined,
+          // Store shipping fee and method for historical accuracy, even if they change later
+          shippingFee: new Decimal(body.shippingFee),
+          discountAmount: couponDiscountAmount,
+          total: new Decimal(calculatedTotal),
+          couponCode: coupon?.code,
+          coupon: coupon ? { connect: { id: coupon.id } } : undefined,
+          note: body.note ? { create: { content: body.note } } : undefined,
+          paymentMethod: body.paymentMethod,
+          user: { connect: { id: user.id } },
+          shippingMethod: { connect: { id: body.shippingMethodId } },
+          // Create order items
+          OrderItems: {
+            create: body.items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: new Decimal(item.price),
+            })),
+          },
+        },
+        include: {
+          OrderItems: {
+            include: {
+              product: {
+                select: {
+                  id: true,
+                  price: true,
+                },
               },
             },
           },
-        },
-        shippingMethod: true,
-        user: true,
-      },
-    });
-
-    if (coupon) {
-      await prisma.coupon.update({
-        where: { id: coupon.id },
-        data: {
-          usageCount: {
-            increment: 1,
-          },
+          shippingMethod: true,
+          user: true,
         },
       });
-    }
+
+      for (const [productId, quantity] of Object.entries(productSalesMap)) {
+        await tx.product.update({
+          where: { id: productId },
+          data: {
+            salesCount: {
+              increment: quantity,
+            },
+          },
+        });
+      }
+
+      if (coupon) {
+        await tx.coupon.update({
+          where: { id: coupon.id },
+          data: {
+            usageCount: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
+      return createdOrder;
+    });
 
     // NEW: Trigger shipping notification (optional)
     // await notifyShippingProvider(order);

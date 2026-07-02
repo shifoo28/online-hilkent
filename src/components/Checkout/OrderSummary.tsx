@@ -15,7 +15,7 @@ const OrderRow = ({ label, value, highlight, valueClass }: OrderRowProps) => (
     </p>
     {value !== undefined && (
       <p
-        className={`text-dark w-full max-w-max text-right ${highlight ? "font-medium text-lg" : ""} ${valueClass || ""}`}
+        className={`text-dark w-full max-w-max pl-1 text-right ${highlight ? "font-medium text-lg" : ""} ${valueClass || ""}`}
       >
         {value}
       </p>
@@ -77,7 +77,8 @@ export default function OrderSummary({
           <OrderRow
             label={t("orderSummary.discount")}
             value={`-${couponDiscount.toFixed(2)} TMT`}
-            valueClass="text-green-600"
+            highlight
+            valueClass="text-red"
           />
         )}
 

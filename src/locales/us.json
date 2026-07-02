@@ -465,12 +465,22 @@
     "discount": {
       "title": "Have any discount code?",
       "placeholder": "Enter coupon code",
-      "button": "Apply code"
+      "validating": "Validating...",
+      "apply": "Apply",
+      "invalid": "Invalid coupon code",
+      "inactive": "Coupon is not active",
+      "expired": "Coupon has expired",
+      "usageLimitReached": "Coupon usage limit has been reached",
+      "couponRequired": "Coupon code is required",
+      "minOrderAmount": "Order must be at least {amount} TMT to apply this coupon",
+      "failed": "Failed to validate coupon",
+      "applied": "Coupon code \"{code}\" applied successfully!"
     },
     "orderSummary": {
       "title": "Order Summary",
       "product": "Product",
       "subtotal": "Subtotal",
+      "discount": "Discount",
       "total": "Total",
       "button": "Press to Checkout"
     }

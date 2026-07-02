@@ -463,12 +463,22 @@
     "discount": {
       "title": "Arzanladyş kody barmy?",
       "placeholder": "Kupon kodyny giriziň",
-      "button": "Kody ulan"
+      "validating": "Barlanýar...",
+      "apply": "Ulanmak",
+      "invalid": "Nädogry kupon kody",
+      "inactive": "Kupon kody işjeň däl",
+      "expired": "Kupon kody möhleti gutardy",
+      "usageLimitReached": "Kupon kody üçin ulanyş çägi tabşyryldy",
+      "couponRequired": "Kupon kody zerur",
+      "minOrderAmount": "Bu kupony ulanmak üçin sargyt iň azyndan {amount} TMT bolmaly",
+      "failed": "Kupon barlamak başa barmady",
+      "applied": "Kupon kody \"{code}\" üstünlikli ulanyldy!"
     },
     "orderSummary": {
       "title": "Sargyt gysgaça mazmuny",
       "product": "Önüm",
       "subtotal": "Jemi",
+      "discount": "Arzanladyş",
       "total": "Umumy",
       "button": "Töleg geçmek"
     }

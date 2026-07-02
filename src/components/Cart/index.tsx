@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import ApplyCoupon from "./ApplyCoupon";
 import OrderSummary from "./OrderSummary";
 import { useCart } from "@/hooks/useCart";
@@ -12,6 +12,83 @@ import { EmptyCartIcon } from "../Icons";
 const Cart = () => {
   const { items: cartItems } = useCart();
   const translate = useTranslations("Cart");
+  const discountTranslate = useTranslations("Cart.discount");
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discountAmount: number;
+  } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [isCouponLoading, setIsCouponLoading] = useState(false);
+
+  const subtotal = useMemo(() => {
+    return cartItems.reduce((total, item) => {
+      const unitPrice = item.discountedPrice || item.price;
+      return total + unitPrice * item.quantity;
+    }, 0);
+  }, [cartItems]);
+
+  const discountAmount = appliedCoupon?.discountAmount ?? 0;
+  const orderTotal = Math.max(0, subtotal - discountAmount);
+
+  const getCouponErrorMessage = (errorMessage: string) => {
+    switch (errorMessage) {
+      case "Coupon code is required":
+        return discountTranslate("couponRequired");
+      case "Invalid coupon code":
+        return discountTranslate("invalid");
+      case "Coupon is not active":
+        return discountTranslate("inactive");
+      case "Coupon has expired":
+        return discountTranslate("expired");
+      case "Coupon usage limit has been reached":
+        return discountTranslate("usageLimitReached");
+      case "Failed to validate coupon":
+        return discountTranslate("failed");
+      default: {
+        const minAmountMatch = errorMessage.match(
+          /^Order must be at least ([\d.]+) TMT to apply this coupon$/,
+        );
+        if (minAmountMatch) {
+          return discountTranslate("minOrderAmount", {
+            amount: minAmountMatch[1],
+          });
+        }
+        return discountTranslate("failed");
+      }
+    }
+  };
+
+  const handleCouponApply = async (couponCode: string) => {
+    setCouponError(null);
+    setIsCouponLoading(true);
+
+    try {
+      const response = await fetch("/api/coupons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCode, orderSubtotal: subtotal }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid && data.coupon) {
+        setAppliedCoupon({
+          code: data.coupon.code,
+          discountAmount: data.coupon.discountAmount || 0,
+        });
+        return true;
+      }
+
+      setCouponError(getCouponErrorMessage(data.error));
+      return false;
+    } catch (error) {
+      console.error("Coupon validation error:", error);
+      setCouponError(discountTranslate("failed"));
+      return false;
+    } finally {
+      setIsCouponLoading(false);
+    }
+  };
 
   return (
     <>
@@ -70,8 +147,23 @@ const Cart = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11 mt-9">
-              <ApplyCoupon />
-              <OrderSummary />
+              <ApplyCoupon
+                onApply={handleCouponApply}
+                isLoading={isCouponLoading}
+                error={couponError}
+                successMessage={
+                  appliedCoupon
+                    ? discountTranslate("applied", { code: appliedCoupon.code })
+                    : null
+                }
+                appliedCouponCode={appliedCoupon?.code ?? null}
+              />
+              <OrderSummary
+                subtotal={subtotal}
+                discountAmount={discountAmount}
+                appliedCouponCode={appliedCoupon?.code ?? null}
+                orderTotal={orderTotal}
+              />
             </div>
           </div>
         </section>
