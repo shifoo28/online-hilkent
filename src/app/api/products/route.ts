@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { mapPrismaProduct } from "@/lib/products";
+import { buildCacheKey, getCachedData, setCachedData } from "@/lib/redis";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60; // seconds
@@ -13,6 +14,20 @@ export async function GET(request: NextRequest) {
     const productId = searchParams.get("id");
 
     if (productId) {
+      const detailCacheKey = buildCacheKey("products:detail", {
+        id: productId,
+      });
+      const cachedProduct = await getCachedData<any>(detailCacheKey);
+
+      if (cachedProduct) {
+        return NextResponse.json(cachedProduct, {
+          status: 200,
+          headers: {
+            "Cache-Control": "public, max-age=300, stale-while-revalidate=60",
+          },
+        });
+      }
+
       // Get specific product with Reviews
       const product = await prisma.product.findUnique({
         where: { id: productId },
@@ -43,11 +58,14 @@ export async function GET(request: NextRequest) {
       }
 
       const baseProduct = mapPrismaProduct(product);
-
-      return NextResponse.json({
+      const payload = {
         ...baseProduct,
         reviewCount: product._count.Reviews,
-      });
+      };
+
+      await setCachedData(detailCacheKey, payload, 300);
+
+      return NextResponse.json(payload);
     }
 
     const page = Math.max(parseInt(searchParams.get("page") || "1", 10), 1);
@@ -112,6 +130,28 @@ export async function GET(request: NextRequest) {
       ];
     }
 
+    const listCacheKey = buildCacheKey("products:list", {
+      page,
+      limit,
+      categoryId: categoryId ?? undefined,
+      category: category ?? undefined,
+      brand: brand ?? undefined,
+      search: search ?? undefined,
+      minPrice,
+      maxPrice,
+      minRating,
+    });
+    const cachedList = await getCachedData<any>(listCacheKey);
+
+    if (cachedList) {
+      return NextResponse.json(cachedList, {
+        status: 200,
+        headers: {
+          "Cache-Control": "public, max-age=60, stale-while-revalidate=30",
+        },
+      });
+    }
+
     const totalItems = await prisma.product.count({ where });
     const totalPages = Math.max(Math.ceil(totalItems / limit), 1);
 
@@ -143,22 +183,22 @@ export async function GET(request: NextRequest) {
     });
 
     const mapped = products.map(mapPrismaProduct);
+    const payload = {
+      data: mapped,
+      page,
+      limit,
+      totalItems,
+      totalPages,
+    };
 
-    return NextResponse.json(
-      {
-        data: mapped,
-        page,
-        limit,
-        totalItems,
-        totalPages,
+    await setCachedData(listCacheKey, payload, 60);
+
+    return NextResponse.json(payload, {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=30",
       },
-      {
-        status: 200,
-        headers: {
-          "Cache-Control": "public, max-age=60, stale-while-revalidate=30",
-        },
-      },
-    );
+    });
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(

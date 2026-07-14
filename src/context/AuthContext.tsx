@@ -40,6 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchUser = async () => {
     try {
       const response = await fetch("/api/user");
+      
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);

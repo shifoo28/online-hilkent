@@ -5,8 +5,9 @@
  * GET /api/shipping-methods - List all active shipping methods
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getCachedData, setCachedData } from "@/lib/redis";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -34,6 +35,13 @@ export const revalidate = 60;
  */
 export async function GET(): Promise<NextResponse> {
   try {
+    const cacheKey = "shipping-methods:active";
+    const cachedMethods = await getCachedData<any>(cacheKey);
+
+    if (cachedMethods) {
+      return NextResponse.json(cachedMethods, { status: 200 });
+    }
+
     const shippingMethods = await prisma.shippingMethod.findMany({
       where: {
         isActive: true,
@@ -59,14 +67,15 @@ export async function GET(): Promise<NextResponse> {
       isActive: method.isActive,
     }));
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: formattedMethods,
-        timestamp: new Date().toISOString(),
-      },
-      { status: 200 },
-    );
+    const payload = {
+      success: true,
+      data: formattedMethods,
+      timestamp: new Date().toISOString(),
+    };
+
+    await setCachedData(cacheKey, payload, 300);
+
+    return NextResponse.json(payload, { status: 200 });
   } catch (error) {
     console.error("[Shipping Methods API] Error fetching methods:", error);
     return NextResponse.json(
