@@ -8,9 +8,24 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getCachedData, setCachedData } from "@/lib/redis";
+import { ShippingVehicle } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 60;
+export const revalidate = 300;
+
+type FormattedShippingMethod = {
+  id: number;
+  name: string;
+  fee: string;
+  vehicle: ShippingVehicle | null;
+  isActive: boolean;
+};
+
+type ShippingMethodsPayload = {
+  success: boolean;
+  data: FormattedShippingMethod[];
+  timestamp: string;
+};
 
 /**
  * GET /api/shipping-methods
@@ -36,10 +51,15 @@ export const revalidate = 60;
 export async function GET(): Promise<NextResponse> {
   try {
     const cacheKey = "shipping-methods:active";
-    const cachedMethods = await getCachedData<any>(cacheKey);
+    const cachedMethods = await getCachedData<ShippingMethodsPayload>(cacheKey);
 
     if (cachedMethods) {
-      return NextResponse.json(cachedMethods, { status: 200 });
+      return NextResponse.json(cachedMethods, {
+        status: 200,
+        headers: {
+          "Cache-Control": "public, max-age=300, stale-while-revalidate=60",
+        },
+      });
     }
 
     const shippingMethods = await prisma.shippingMethod.findMany({
@@ -59,7 +79,7 @@ export async function GET(): Promise<NextResponse> {
     });
 
     // Convert Decimal to string for JSON serialization
-    const formattedMethods = shippingMethods.map((method) => ({
+    const formattedMethods: FormattedShippingMethod[] = shippingMethods.map((method) => ({
       id: method.id,
       name: method.name,
       fee: method.fee.toString(),
@@ -67,7 +87,7 @@ export async function GET(): Promise<NextResponse> {
       isActive: method.isActive,
     }));
 
-    const payload = {
+    const payload: ShippingMethodsPayload = {
       success: true,
       data: formattedMethods,
       timestamp: new Date().toISOString(),
@@ -75,7 +95,12 @@ export async function GET(): Promise<NextResponse> {
 
     await setCachedData(cacheKey, payload, 300);
 
-    return NextResponse.json(payload, { status: 200 });
+    return NextResponse.json(payload, {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, max-age=300, stale-while-revalidate=60",
+      },
+    });
   } catch (error) {
     console.error("[Shipping Methods API] Error fetching methods:", error);
     return NextResponse.json(

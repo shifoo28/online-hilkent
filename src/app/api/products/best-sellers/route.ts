@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { mapPrismaProduct } from "@/lib/products";
 import { buildCacheKey, getCachedData, setCachedData } from "@/lib/redis";
+import { Product } from "@/types/product";
+
+type BestSellersPayload = {
+  data: Product[];
+};
 
 export const dynamic = "force-dynamic";
 export const revalidate = 180; // seconds
@@ -11,7 +16,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const limit = Math.max(Number(searchParams.get("limit") ?? "10"), 1);
     const cacheKey = buildCacheKey("products:best-sellers", { limit });
-    const cachedBestSellers = await getCachedData<any>(cacheKey);
+    const cachedBestSellers = await getCachedData<BestSellersPayload>(cacheKey);
 
     if (cachedBestSellers) {
       return NextResponse.json(cachedBestSellers, {

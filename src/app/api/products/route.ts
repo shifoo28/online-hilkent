@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { mapPrismaProduct } from "@/lib/products";
 import { buildCacheKey, getCachedData, setCachedData } from "@/lib/redis";
+import { Product } from "@/types/product";
+
+type ProductDetailPayload = Product & {
+  reviewCount: number;
+};
+
+type ProductListPayload = {
+  data: Product[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+};
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60; // seconds
@@ -17,7 +30,7 @@ export async function GET(request: NextRequest) {
       const detailCacheKey = buildCacheKey("products:detail", {
         id: productId,
       });
-      const cachedProduct = await getCachedData<any>(detailCacheKey);
+      const cachedProduct = await getCachedData<ProductDetailPayload>(detailCacheKey);
 
       if (cachedProduct) {
         return NextResponse.json(cachedProduct, {
@@ -65,7 +78,12 @@ export async function GET(request: NextRequest) {
 
       await setCachedData(detailCacheKey, payload, 300);
 
-      return NextResponse.json(payload);
+      return NextResponse.json(payload, {
+        status: 200,
+        headers: {
+          "Cache-Control": "public, max-age=300, stale-while-revalidate=60",
+        },
+      });
     }
 
     const page = Math.max(parseInt(searchParams.get("page") || "1", 10), 1);
@@ -141,7 +159,7 @@ export async function GET(request: NextRequest) {
       maxPrice,
       minRating,
     });
-    const cachedList = await getCachedData<any>(listCacheKey);
+    const cachedList = await getCachedData<ProductListPayload>(listCacheKey);
 
     if (cachedList) {
       return NextResponse.json(cachedList, {

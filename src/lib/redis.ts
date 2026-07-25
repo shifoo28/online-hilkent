@@ -8,7 +8,7 @@ const redis =
   new Redis(redisUrl, {
     lazyConnect: true,
     enableReadyCheck: true,
-    maxRetriesPerRequest: 0,
+    maxRetriesPerRequest: 3,
     retryStrategy: (times) => Math.min(times * 50, 2000),
   });
 
@@ -45,13 +45,10 @@ export function buildCacheKey(prefix: string, params: Record<string, unknown>) {
 
 export async function getCachedData<T>(key: string): Promise<T | null> {
   try {
-    console.log('passed');
-    
     const client = await getRedisClient();
     if (!client) return null;
 
     const cachedValue = await client.get(key);
-    console.log("Cached List:", cachedValue);
     if (!cachedValue) return null;
 
     return JSON.parse(cachedValue) as T;
