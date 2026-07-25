@@ -7,7 +7,7 @@
         "description": "Hoş geldiňiz! Maglumatlaryňyzy giriziň.",
         "phone": {
           "label": "Telefon",
-          "placeholder": "Telefon belgini giriziň"
+          "placeholder": "Telefon belgini giriziň!"
         },
         "password": {
           "label": "Açar sözi",
